@@ -7,7 +7,7 @@ font = {}
 world = {}
 camera = {}
 
-debugRender = false
+debugRender = true
 
 require("levelgen")
 require("player")
@@ -16,11 +16,20 @@ require("colours")
 
 colours = japanesque
 
+-- Basically an enum; at most 16 entries allowed
+collisionCategories = {
+  player= 16,
+  enemies= 2,
+  walls= 3,
+}
+
 function love.load()
   -- Init physics and world
   world = love.physics.newWorld(0, 0, true)
   
   -- TODO: Determine start point in the world instead of this hardcoded spot
+  local tilesWidth = 60
+  local tilesHeight = 60
   local initX = 400
   local initY = 300
   
@@ -28,15 +37,15 @@ function love.load()
 
   player = love.physics.newBody(world, initX, initY, "dynamic")
   player:setFixedRotation(true)
-  playerData.size = 22  -- 16 x 16
-  playerData.moveSpeed = 100  -- 1 to 5 is good, with 5 being max upgraded
+  playerData.size = 22 
+  playerData.moveSpeed = 100  
   playerBox = love.physics.newRectangleShape(-5, 5, playerData.size, playerData.size)
   love.physics.newFixture(player, playerBox)
   
   -- Screen Settings
   screen.tileSize = 24
-  screen.width = screen.tileSize * 40
-  screen.height = screen.tileSize * 30
+  screen.width = screen.tileSize * 40 -- viewport width
+  screen.height = screen.tileSize * 30 -- viewport height
   screen.settings = {
     resizable=true,
   }
@@ -46,9 +55,9 @@ function love.load()
   love.window.updateMode(screen.width, screen.height, screen.settings)
   
   -- Generate Level
-  map = makeSimplexCave(100, 100, caveGenParams)
-  makePhysicsBody(map, world)
-  levelCanvas = love.graphics.newCanvas(100 * 24, 100 * 24)
+  map = makeSimplexCave(tilesWidth, tilesHeight, caveGenParams)
+  makePhysicsBody(map.map, world)
+  levelCanvas = love.graphics.newCanvas(tilesWidth * screen.tileSize, tilesHeight * screen.tileSize)
   updateMapCanvas()
 
 end
@@ -65,9 +74,9 @@ function updateMapCanvas()
   love.graphics.setColor(colours.white) -- nord white
   love.graphics.setCanvas(levelCanvas)
   local tileSize = screen.tileSize
-  for y=0, #map do
-    for x=0, #map[y] do
-      love.graphics.print(map[y][x].char, x*tileSize, y*tileSize)
+  for y=0, #map.map do
+    for x=0, #map.map[y] do
+      love.graphics.print(map.map[y][x].char, x*tileSize, y*tileSize)
     end
   end
   
@@ -90,24 +99,14 @@ function love.draw(dt)
   love.graphics.setBackgroundColor(colours.black) -- nord black
   love.graphics.translate(-camera:getX(), -camera:getY())
   love.graphics.draw(levelCanvas)
-  local playerStep = 2*math.sin((player:getX() + player:getY())/4)
-  local tSize = screen.tileSize
-  love.graphics.setColor(colours.green) -- nord green
-  love.graphics.print("@", player:getX()-tSize/2, player:getY()-tSize/2 + playerStep, player:getAngle())
+  drawPlayer(player)
   love.graphics.setColor(colours.white) -- nord white
-  
-  -- DEBUG 
-  if debugRender then
-    love.graphics.setColor(0.1, 0.1, 0.5, 0.5)
-    love.graphics.polygon("fill", player:getWorldPoints(playerBox:getPoints()))
-    love.graphics.setColor(1, 1, 1, 1)
-  end
   
 end
 
 function love.resize(width, height)
   screen.width = width
   screen.height = height
-  levelCanvas = love.graphics.newCanvas(100 * 24, 100 * 24)
+  levelCanvas = love.graphics.newCanvas(map.widthPixels, map.heightPixels)
   updateMapCanvas()
 end

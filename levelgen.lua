@@ -60,7 +60,15 @@ function makeSimplexCave(width, height, params)
       map[y][x] = determineTile(x,y,params)
     end
   end
-  return map
+  
+  result = {
+    map = map,
+    widthTiles = width,
+    heightTiles = height,
+    widthPixels = width * screen.tileSize,
+    heightPixels = height * screen.tileSize,
+  }
+  return result
 end
 
 function determineTile(x,y,genParams)
