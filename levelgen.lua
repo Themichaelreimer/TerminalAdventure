@@ -14,7 +14,6 @@ caveGenParams={
 -- PHYSICS CONSTRUCTION
 
 function makePhysicsBody(map, world)
-  -- idea: scanlines maybe?
   local body = love.physics.newBody(world, 0, 0, "static")
   local tSize = screen.tileSize
   for y=0, #map do
@@ -32,6 +31,7 @@ end
 
 function spaceNeedsCollider(map, x, y)
   -- Determines whether this space needs a collider
+  -- Decided via being a solid space, adjacent to a not-solid space
   if not map[y][x].solid then
     return false
   end

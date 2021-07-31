@@ -5,7 +5,7 @@ function playerUpdate(dt, body)
   local dx = 0
   local dy = 0
   
-  if love.keyboard.isDown("down") and player:getY() < screen.height-playerData.size then
+  if love.keyboard.isDown("down") then --and player:getY() < screen.height-playerData.size then
     dy = playerData.moveSpeed
   end
   
@@ -17,14 +17,17 @@ function playerUpdate(dt, body)
     dx = -playerData.moveSpeed
   end
   
-  if love.keyboard.isDown("right") and player:getX() < screen.width-playerData.size then
+  if love.keyboard.isDown("right") then --and player:getX() < screen.width-playerData.size then
     dx = playerData.moveSpeed
+  end
+  
+  if love.keyboard.isDown("x") and isSwinging then
+    swingSword()
   end
   
   player:setLinearVelocity(dx,dy)
 end
 
 function swingSword()
-  
   
 end
