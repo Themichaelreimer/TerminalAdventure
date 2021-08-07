@@ -1,13 +1,11 @@
-player = {} -- player body
-playerBox = {}
-playerData = {}
 screen = {}
 map = {}
 font = {}
 world = {}
 camera = {}
+player = {}
 
-debugRender = true
+debugRender = false
 
 require("levelgen")
 require("player")
@@ -33,14 +31,8 @@ function love.load()
   local initX = 400
   local initY = 300
   
+  player = Player:new(nil, world, initX, initY)
   camera = makeCamera(world, initX, initY)
-
-  player = love.physics.newBody(world, initX, initY, "dynamic")
-  player:setFixedRotation(true)
-  playerData.size = 22 
-  playerData.moveSpeed = 100  
-  playerBox = love.physics.newRectangleShape(-5, 5, playerData.size, playerData.size)
-  love.physics.newFixture(player, playerBox)
   
   -- Screen Settings
   screen.tileSize = 24
@@ -64,8 +56,8 @@ end
 
 function love.update(dt)
   
-  moveCamera(camera, player, dt)
-  playerUpdate(dt,player)
+  moveCamera(camera, dt)
+  player:update(dt)
   world:update(dt)
 
 end
@@ -99,7 +91,7 @@ function love.draw(dt)
   love.graphics.setBackgroundColor(colours.black) -- nord black
   love.graphics.translate(-camera:getX(), -camera:getY())
   love.graphics.draw(levelCanvas)
-  drawPlayer(player)
+  player:draw()
   love.graphics.setColor(colours.white) -- nord white
   
 end

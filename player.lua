@@ -1,90 +1,184 @@
-isSwinging = false
-swordObject = {} 
+NORTH = 0
+EAST = 1
+SOUTH = 2
+WEST = 3
 
-function drawPlayer(player)
-  local px = player:getX()
-  local py = player:getY()
+Player = {
+  shape = {},
+  body = {},
+  size = 22,
+  moveSpeed = 100,
+  isSwinging = false,
+  swordObject = {},
+  facing = NORTH,
+  swingDuration = 0.75
+} 
+
+function Player:new(o, world, x, y)
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+  self.body = love.physics.newBody(world, x, y, "dynamic")
+  self.body:setMass(5000)
+  self.body:setFixedRotation(true)
+  self.shape = love.physics.newRectangleShape(-5, 5, self.size, self.size)
+  self.fixture = love.physics.newFixture(self.body, self.shape)
+  self.fixture:setCategory(collisionCategories.player)
+  return o
+end
+
+function Player:draw()
+  local px = self.body:getX()
+  local py = self.body:getY()
   local playerStep = 2*math.sin((px + py)/4)
   local tSize = screen.tileSize
-  local swordBody = swordObject.body
+  local swordBody = self.swordObject.body
   
   love.graphics.setColor(colours.green) -- nord green
-  love.graphics.print("@", px-tSize/2, py-tSize/2 + playerStep, player:getAngle())
-  if isSwinging then
-    local swordOriginX = swordBody:getX() - swordObject.width/2 
-    local swordOriginY = swordBody:getY() - swordObject.height/2 + tSize/2
-    love.graphics.print("t", swordOriginX, swordOriginY, swordBody:getAngle(), 1, 1, swordObject.width/2, swordObject.height/2)
+  love.graphics.print("@", px-tSize/2, py-tSize/2 + playerStep, self.body:getAngle())
+  if self.isSwinging then
+    local swordOriginX = swordBody:getX() -- - self.swordObject.width/2 
+    local swordOriginY = swordBody:getY() -- - self.swordObject.height/2 --+ tSize/2
+    local swordAngle = swordBody:getAngle() 
+    love.graphics.print("l", swordOriginX, swordOriginY, swordAngle, 1, 1, self.swordObject.width/2, self.swordObject.height/2)
   end
   
     -- DEBUG 
   if debugRender then
     love.graphics.setColor(0.1, 0.1, 0.5, 0.5)
-    love.graphics.polygon("fill", player:getWorldPoints(playerBox:getPoints()))
-    if isSwinging then 
-      love.graphics.polygon("fill", swordObject.body:getWorldPoints(swordObject.shape:getPoints()))
+    love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+    if self.isSwinging then 
+      love.graphics.setColor(0,0,1,0.6)
+      love.graphics.polygon("fill", self.swordObject.body:getWorldPoints(self.swordObject.shape:getPoints()))
+      local itemX, itemY = self:getItemPosition()
+
+      love.graphics.circle("fill", itemX, itemY, 4)
     end
     love.graphics.setColor(1, 1, 1, 1)
   end
+  
 end
 
-function playerUpdate(dt, body)
+function Player:update(dt)
   local tileSize = screen.tileSize
   local halfTile = tileSize/2
   local dx = 0
   local dy = 0
   
-  local px = player:getX()
-  local py = player:getY()
+  local px = self.body:getX()
+  local py = self.body:getY()
   
   if love.keyboard.isDown("down") and py < map.heightPixels - halfTile then
-    dy = playerData.moveSpeed
+    dy = self.moveSpeed
+    self.facing = SOUTH
   end
   
   if love.keyboard.isDown("up") and py > halfTile then
-    dy = -playerData.moveSpeed
+    dy = -self.moveSpeed
+    self.facing = NORTH
   end
   
   if love.keyboard.isDown("left") and px > 0 then
-    dx = -playerData.moveSpeed
+    dx = -self.moveSpeed
+    self.facing = WEST
   end
   
   if love.keyboard.isDown("right") and px < map.widthPixels then
-    dx = playerData.moveSpeed
+    dx = self.moveSpeed
+    self.facing = EAST
   end
   
-  if love.keyboard.isDown("x") and not isSwinging then
-    swingSword()
+  if love.keyboard.isDown("x") and not self.isSwinging then
+    self:swingSword()
   end
   
-  player:setLinearVelocity(dx,dy)
-  if isSwinging then
-    swordObject.timer = swordObject.timer - dt
-    if swordObject.timer < 0 then endSwingSword() end
+  self.body:setLinearVelocity(dx,dy)
+  
+  if self.isSwinging then
+    self.swordObject.timeElapsed = self.swordObject.timeElapsed + dt
+    if self.swordObject.timeElapsed > self.swordObject.timeMax then
+      self:endSwingSword() 
+    else
+      self:updateSword()
+    end
   end
 end
 
-function swingSword()
-  isSwinging = true
-  swordObject = {
-      body = love.physics.newBody(world, player:getX(), player:getY(), "dynamic"),
-      shape =  love.physics.newRectangleShape(8,36),
+function Player:getItemPosition()
+  local xOffset = 0
+  local yOffset = 0
+  if self.facing == WEST then
+    xOffset = -self.size
+  elseif self.facing == EAST then
+    xOffset = self.size
+  elseif self.facing == NORTH then
+    yOffset = -self.size
+  else
+    yOffset = self.size
+  end
+  return self.body:getX() - self.size/4, self.body:getY() + self.size/4
+end
+
+function Player:updateSword(dt)
+  local body = self.swordObject.body
+  -- Update Angle of Sword
+  local angularVelocity = (self.swordObject.stopAngle - self.swordObject.startAngle) / self.swordObject.timeMax
+  local angle = self.swordObject.startAngle + angularVelocity * self.swordObject.timeElapsed
+  body:setAngle(angle + math.pi/2)
+  
+  local itemX, itemY = self:getItemPosition()
+  
+  local r = self.swordObject.height
+  body:setPosition(itemX - r * math.cos(angle), itemY -  r * math.sin(angle))
+end
+
+function Player:getSwordAngleRange()
+  if self.facing == NORTH then
+    local start = math.pi * 1 / 4
+    local stop = start + math.pi/2
+    return start, stop
+    
+  elseif self.facing == EAST then
+    
+    local start = math.pi * 3 / 4
+    local stop = start + math.pi/2
+    return start, stop
+
+  elseif self.facing == SOUTH then
+  
+    local start = math.pi * 5 / 4
+    local stop = start + math.pi/2
+    return start, stop
+
+  else -- WEST
+    local start = math.pi * 7 / 4
+    local stop = start + math.pi/2
+    return start, stop
+  end
+end
+
+function Player:swingSword()
+  local start, stop = self:getSwordAngleRange()
+  self.isSwinging = true
+  self.swordObject = {
+      body = love.physics.newBody(world, self.body:getX(), self.body:getY(), "kinematic"),
+      shape =  love.physics.newRectangleShape(8,24),
       width = 8,
-      height = 12,
-      timer = 0.25,
+      height = 24,
+      timeMax = 0.25,
+      timeElapsed = 0.0,
+      startAngle = start,
+      stopAngle = stop
     }
-  swordObject.fixture = love.physics.newFixture(swordObject.body, swordObject.shape, 10)
-  swordObject.fixture:setMask(collisionCategories.player) -- Might not be necessary with the joint
-  swordObject.joint = love.physics.newRevoluteJoint(player, swordObject.body, player:getX(), player:getY(), false)
-  swordObject.joint:setMotorSpeed(20)
-  swordObject.joint:setMaxMotorTorque(1000000)
-  swordObject.joint:setMotorEnabled(true)
+  self.swordObject.fixture = love.physics.newFixture(self.swordObject.body, self.swordObject.shape)
+  self.swordObject.fixture:setMask(collisionCategories.player) -- Might not be necessary with the joint
+  
 end
 
-function endSwingSword()
-  swordObject.joint:destroy()
-  swordObject.fixture:destroy()
-  --swordObject.shape:destroy()
-  swordObject.body:destroy()
-  swordObject = {}
-  isSwinging = false
+function Player:endSwingSword()
+  self.swordObject.fixture:destroy()
+  --swordObject.shape:destroy()  -- Can't seem to call this destructor, but I think I need one for memory leakage?
+  self.swordObject.body:destroy()
+  self.swordObject = {}
+  self.isSwinging = false
 end

@@ -3,6 +3,11 @@ A randomly generated exploration heavy adventure game
 
 # Devlog
 
+## Weekend 2/3
+
+### Sword, Camera, Colours
+![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/3.gif)
+
 ## Weekend 1
 
 ### Working out collision kinks

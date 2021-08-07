@@ -8,16 +8,16 @@ function makeCamera(world, xPixel, yPixel)
   
 end
 
-function moveCamera(camera, player, dt)
+function moveCamera(camera, dt)
   local halfWidth = screen.width/2
   local halfHeight = screen.height/2
   local halfTile = screen.tileSize/2
   
-  local tx = math.max(player:getX(), halfWidth - halfTile)
+  local tx = math.max(player.body:getX(), halfWidth - halfTile)
   tx = math.min(tx, map.widthPixels - halfWidth)
   local dx = tx - camera:getX() - halfWidth
   
-  local ty = math.max(player:getY(), halfHeight - halfTile)
+  local ty = math.max(player.body:getY(), halfHeight - halfTile)
   ty = math.min(ty, map.heightPixels - halfHeight )
   local dy = ty - camera:getY() - halfHeight
   
