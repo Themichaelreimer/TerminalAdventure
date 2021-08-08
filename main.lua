@@ -1,5 +1,5 @@
 screen = {}
-map = {}
+level = {}
 font = {}
 world = {}
 camera = {}
@@ -28,8 +28,8 @@ function love.load()
   -- TODO: Determine start point in the world instead of this hardcoded spot
   local tilesWidth = 60
   local tilesHeight = 60
-  local initX = 400
-  local initY = 300
+  local initX = 24 * 40
+  local initY = 24 * 30
 
   player = Player:new(nil, world, initX, initY)
   camera = makeCamera(world, initX, initY)
@@ -46,11 +46,7 @@ function love.load()
   love.graphics.setFont(font)
   love.window.updateMode(screen.width, screen.height, screen.settings)
 
-  -- Generate Level
-  map = makeSimplexCave(tilesWidth, tilesHeight, caveGenParams)
-  makePhysicsBody(map.map, world)
-  levelCanvas = love.graphics.newCanvas(tilesWidth * screen.tileSize, tilesHeight * screen.tileSize)
-  updateMapCanvas()
+  level = Level:new(nil, world, caveGenParams)
 
 end
 
@@ -58,34 +54,11 @@ function love.update(dt)
 
   moveCamera(camera, dt)
   player:update(dt)
+  level:update(dt)
   world:update(dt)
 
 end
 
-function updateMapCanvas()
-  love.graphics.setColor(colours.lightGray) -- nord white
-  love.graphics.setCanvas(levelCanvas)
-  local tileSize = screen.tileSize
-  for y=0, #map.map do
-    for x=0, #map.map[y] do
-      love.graphics.print(map.map[y][x].char, x*tileSize, y*tileSize)
-    end
-  end
-
-  -- DEBUG REGION
-  -- Draw bounding boxes for physics; can be deleted once physics works
-  if debugRender then
-    love.graphics.setColor(0.5, 0.1, 0.1,0.5)
-    bodies = world:getBodies()
-    body = bodies[1]
-    for k,v in pairs(body:getFixtures()) do
-      love.graphics.polygon("fill", body:getWorldPoints(v:getShape():getPoints()))
-    end
-    love.graphics.setColor(1, 1, 1, 1)
-  end
-
-  love.graphics.setCanvas()
-end
 
 function love.draw(dt)
 
@@ -94,14 +67,15 @@ function love.draw(dt)
   local margin = 12
   local lineHeight = 24
 
-  -- DRAW LEVEL
-  love.graphics.setBackgroundColor(colours.black) -- nord black
-  love.graphics.translate(-camera:getX(), -camera:getY()) -- Transform into camera space
-  love.graphics.draw(levelCanvas)
+  -- CAMERA SPACE
+  love.graphics.translate(-camera:getX(), -camera:getY())
+
+  level:draw()
   player:draw()
   love.graphics.setColor(colours.white) -- nord white
 
-  love.graphics.translate(camera:getX(), camera:getY()) -- Transform back to screen space
+  -- SCREEN SPACE
+  love.graphics.translate(camera:getX(), camera:getY())
 
   -- DRAW GUI
   love.graphics.translate(0, 4*uiSize) -- Transform into UI screen space
@@ -129,6 +103,4 @@ end
 function love.resize(width, height)
   screen.width = width
   screen.height = height
-  levelCanvas = love.graphics.newCanvas(map.widthPixels, map.heightPixels)
-  updateMapCanvas()
 end

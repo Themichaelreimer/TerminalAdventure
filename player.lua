@@ -4,6 +4,7 @@ SOUTH = 2
 WEST = 3
 
 Player = {
+  className = "Player",
   shape = {},
   body = {},
   size = 22,
@@ -12,7 +13,7 @@ Player = {
   swordObject = {},
   facing = NORTH,
   swingDuration = 0.75
-} 
+}
 
 function Player:new(o, world, x, y)
   o = o or {}
@@ -33,21 +34,21 @@ function Player:draw()
   local playerStep = 2*math.sin((px + py)/4)
   local tSize = screen.tileSize
   local swordBody = self.swordObject.body
-  
+
   love.graphics.setColor(colours.green) -- nord green
   love.graphics.print("@", px-tSize/2, py-tSize/2 + playerStep, self.body:getAngle())
   if self.isSwinging then
-    local swordOriginX = swordBody:getX() -- - self.swordObject.width/2 
+    local swordOriginX = swordBody:getX() -- - self.swordObject.width/2
     local swordOriginY = swordBody:getY() -- - self.swordObject.height/2 --+ tSize/2
-    local swordAngle = swordBody:getAngle() 
+    local swordAngle = swordBody:getAngle()
     love.graphics.print("l", swordOriginX, swordOriginY, swordAngle, 1, 1, self.swordObject.width/2, self.swordObject.height/2)
   end
-  
-    -- DEBUG 
+
+    -- DEBUG
   if debugRender then
     love.graphics.setColor(0.1, 0.1, 0.5, 0.5)
     love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
-    if self.isSwinging then 
+    if self.isSwinging then
       love.graphics.setColor(0,0,1,0.6)
       love.graphics.polygon("fill", self.swordObject.body:getWorldPoints(self.swordObject.shape:getPoints()))
       local itemX, itemY = self:getItemPosition()
@@ -56,7 +57,7 @@ function Player:draw()
     end
     love.graphics.setColor(1, 1, 1, 1)
   end
-  
+
 end
 
 function Player:update(dt)
@@ -64,40 +65,40 @@ function Player:update(dt)
   local halfTile = tileSize/2
   local dx = 0
   local dy = 0
-  
+
   local px = self.body:getX()
   local py = self.body:getY()
-  
-  if love.keyboard.isDown("down") and py < map.heightPixels - halfTile then
+
+  if love.keyboard.isDown("down") and py < level.pixelHeight - halfTile then
     dy = self.moveSpeed
     self.facing = SOUTH
   end
-  
+
   if love.keyboard.isDown("up") and py > halfTile then
     dy = -self.moveSpeed
     self.facing = NORTH
   end
-  
+
   if love.keyboard.isDown("left") and px > 0 then
     dx = -self.moveSpeed
     self.facing = WEST
   end
-  
-  if love.keyboard.isDown("right") and px < map.widthPixels then
+
+  if love.keyboard.isDown("right") and px < level.pixelWidth then
     dx = self.moveSpeed
     self.facing = EAST
   end
-  
+
   if love.keyboard.isDown("x") and not self.isSwinging then
     self:swingSword()
   end
-  
+
   self.body:setLinearVelocity(dx,dy)
-  
+
   if self.isSwinging then
     self.swordObject.timeElapsed = self.swordObject.timeElapsed + dt
     if self.swordObject.timeElapsed > self.swordObject.timeMax then
-      self:endSwingSword() 
+      self:endSwingSword()
     else
       self:updateSword()
     end
@@ -125,9 +126,9 @@ function Player:updateSword(dt)
   local angularVelocity = (self.swordObject.stopAngle - self.swordObject.startAngle) / self.swordObject.timeMax
   local angle = self.swordObject.startAngle + angularVelocity * self.swordObject.timeElapsed
   body:setAngle(angle + math.pi/2)
-  
+
+  -- Update position of sword, which follows a circle centered on the owner
   local itemX, itemY = self:getItemPosition()
-  
   local r = self.swordObject.height
   body:setPosition(itemX - r * math.cos(angle), itemY -  r * math.sin(angle))
 end
@@ -137,15 +138,15 @@ function Player:getSwordAngleRange()
     local start = math.pi * 1 / 4
     local stop = start + math.pi/2
     return start, stop
-    
+
   elseif self.facing == EAST then
-    
+
     local start = math.pi * 3 / 4
     local stop = start + math.pi/2
     return start, stop
 
   elseif self.facing == SOUTH then
-  
+
     local start = math.pi * 5 / 4
     local stop = start + math.pi/2
     return start, stop
@@ -172,7 +173,7 @@ function Player:swingSword()
     }
   self.swordObject.fixture = love.physics.newFixture(self.swordObject.body, self.swordObject.shape)
   self.swordObject.fixture:setMask(collisionCategories.player) -- Might not be necessary with the joint
-  
+
 end
 
 function Player:endSwingSword()
