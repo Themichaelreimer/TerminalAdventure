@@ -7,6 +7,7 @@ A randomly generated exploration heavy adventure game
 
 ### GUI and Started Lighting
 ![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/4.gif)
+I swear this looks fine in person, I blame the gif encoder
 
 ### Sword, Camera, Colours
 ![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/3.gif)
