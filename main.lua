@@ -4,6 +4,7 @@ font = {}
 world = {}
 camera = {}
 player = {}
+debugString = ""
 
 debugRender = false
 
@@ -67,10 +68,12 @@ function love.draw(dt)
   local margin = 12
   local lineHeight = 24
 
+  level:updateLevelCanvas()
+
   -- CAMERA SPACE
   love.graphics.translate(-camera:getX(), -camera:getY())
 
-  level:draw()
+  level:draw(dt)
   player:draw()
   love.graphics.setColor(colours.white) -- nord white
 
@@ -96,7 +99,8 @@ function love.draw(dt)
 
   love.graphics.setColor(colours.white)
   love.graphics.print("X: Sword", margin, 3*lineHeight)
-  love.graphics.print("Z:", margin, 4*lineHeight)
+  love.graphics.print("Z:", margin + halfWidth, 3*lineHeight)
+  love.graphics.print(debugString, margin, 4*lineHeight)
 
 end
 

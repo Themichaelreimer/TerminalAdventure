@@ -105,6 +105,10 @@ function Player:update(dt)
   end
 end
 
+function Player:getMapCoordinates()
+  return math.floor(self.body:getX()/screen.tileSize), math.floor(self.body:getY()/screen.tileSize)
+end
+
 function Player:getItemPosition()
   local xOffset = 0
   local yOffset = 0
