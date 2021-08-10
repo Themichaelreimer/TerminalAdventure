@@ -33,7 +33,6 @@ function Level:new(o, world, genParams)
   self:makeSimplexCave(self.tileWidth, self.tileHeight)
   self:makePhysicsBody()
   self:resetCanvas() -- Sets the initial value of self.canvas
-  --self:renderEntireCanvas()
 
   return o
 end
@@ -71,17 +70,13 @@ function Level:updateCanvasLighting(x, y, dist)
   local tileSize = screen.tileSize
   love.graphics.setCanvas(self.canvas)
 
+  --[[
   local yMin = math.max(0, y-dist)
   local yMax = math.min(y+dist, #self.map)
   local xMin = math.max(0, x-dist)
   local xMax = math.min(x+dist, #self.map[y])
 
-  -- Clear render region
 
-  --love.graphics.setColor(colours.black)
-  --love.graphics.rectangle("fill", xMin*screen.tileSize, yMin*screen.tileSize, (xMax-xMin)*screen.tileSize, (yMax-yMin)*screen.tileSize)
-
-  --love.graphics.setColor(colours.lightGray)
   for ly=yMin, yMax do
     for lx=xMin, xMax do
       if self.lightMap[y][x] < 1.0 then
@@ -95,11 +90,18 @@ function Level:updateCanvasLighting(x, y, dist)
         self:redrawCell(lx, ly, lightness)
         --self.lightMap[ly][lx] = lightness
       end
-
-      --love.graphics.print(self.map[y][x].char, x*tileSize, y*tileSize)
-      --local tl = "(" .. yMin .. ", " .. xMin .. ")"
-      --local br = "(" .. yMax .. ", " .. xMax .. ")"
-      --debugString = "DREW FROM " .. tl .. " TO " .. br
+    end
+  end
+  ]]--
+  rays = self:rayTrace(x, y, 30)
+  for iRay=0, #rays do
+    if rays[iRay] ~= nil then
+      for iRaySpace=0, #rays[iRay] do
+        local data = rays[iRay][iRaySpace]
+        if data ~= nil then
+          self:redrawCell(data.x, data.y, data.lightness)
+        end
+      end
     end
   end
 
@@ -117,9 +119,54 @@ function Level:redrawCell(x, y, alpha)
 
   --Draw
   love.graphics.setColor(colour[1], colour[2], colour[3], alpha)
-  --love.graphics.setColor(colour)
   love.graphics.print(self.map[y][x].char, x*screen.tileSize, y*screen.tileSize)
 
+end
+
+function Level:rayTrace(x, y, numRays)
+  local maxdist = 12
+  local results = {}
+  for iAngle=0, numRays do
+    local rads = 2 * math.pi * iAngle / numRays
+    table.insert(results, self:traceRay(x, y, rads, maxdist))
+  end
+  return results
+end
+
+function Level:traceRay(x, y, angle, maxDistance)
+  local results = {}
+  local angleX = math.cos(angle) -- Contribution of the angle to dx / dy
+  local angleY = math.sin(angle)
+  local dx = 0 -- Stores the change in x/y from the movement of the ray
+  local dy = 0
+  for i=0, maxDistance do
+    dx = dx + angleX
+    dy = dy + angleY
+
+    -- The use of math.floor is arbitrary, since we need a round, but the round
+    -- doesn't have to be exact. As long as we're consistently off by the
+    -- same amount for each ray, it should be fine
+    local tileX = math.floor(x + dx)
+    local tileY = math.floor(y + dy)
+
+    -- Stop the raycast if we go off the map. Return previous results
+    if tileY < 0 or tileY > self.tileHeight then return results end
+    if tileX < 0 or tileX > self.tileWidth then return results end
+
+    local tile = self.map[tileY][tileX]
+
+    local result = {
+      x = tileX,
+      y = tileY,
+      distance = i,
+      lightness = (maxDistance - i) / maxDistance
+    }
+    table.insert(results, result)
+
+    -- Terminate the ray if we hit something solid
+    if tile.solid then return results end
+  end
+  return results
 end
 
 function Level:renderEntireCanvas()
