@@ -34,14 +34,16 @@ function Level:new(o, world, genParams)
   self:makePhysicsBody()
   self:resetCanvas() -- Sets the initial value of self.canvas
 
+  self.tileUpdateQueue = {}
+
   return o
 end
 
 function Level:update(dt)
   local playerX, playerY = player:getMapCoordinates()
-  local tileKey = playerX .. ";" .. playerY
+  local tileKey = getTileKey(playerX, playerY)
   --debugString = tileKey
-  if self.traversedTiles[tileKey] == nil then
+  if self.traversedTiles[tileKey] == nil or true then
     self.traversedTiles[tileKey] = true
     self:updateCanvasLighting(playerX, playerY, 3)
     self.mustUpdateCanvas = true
@@ -51,6 +53,10 @@ end
 function Level:draw(dt)
   love.graphics.setBackgroundColor(colours.black) -- nord black
   love.graphics.draw(self.canvas)
+end
+
+function getTileKey(x,y)
+  return x .. ";" .. y
 end
 
 function Level:updateLevelCanvas()
@@ -93,13 +99,28 @@ function Level:updateCanvasLighting(x, y, dist)
     end
   end
   ]]--
-  rays = self:rayTrace(x, y, 30)
+
+  -- Idea: Cast out 45 rays in equally spaced angles from (x, y)
+  -- For each ray cast, and for each space each ray touches, if the lightMap at the sp is darker
+  -- than the ray's lightness value for that space, then update the lightMap with the brighter value and redraw the space
+  rays = self:rayTrace(x, y, 45)
   for iRay=0, #rays do
     if rays[iRay] ~= nil then
       for iRaySpace=0, #rays[iRay] do
         local data = rays[iRay][iRaySpace]
         if data ~= nil then
-          self:redrawCell(data.x, data.y, data.lightness)
+          -- If the player has a map, then the lightness is taken as the highest ever value for that space
+          -- ie, the space can only get brighter, never darker
+          if hasMap then
+            if self.lightMap[data.y][data.x] < data.lightness then
+              self.lightMap[data.y][data.x] = data.lightness
+              self:redrawCell(data.x, data.y, data.lightness)
+              print("DRAW (" .. data.x .. ", ".. data.y .. ")")
+            end
+          else
+            print("NO MAP")
+            self:redrawCell(data.x, data.y, data.lightness)
+          end
         end
       end
     end
@@ -124,7 +145,7 @@ function Level:redrawCell(x, y, alpha)
 end
 
 function Level:rayTrace(x, y, numRays)
-  local maxdist = 12
+  local maxdist = 10
   local results = {}
   for iAngle=0, numRays do
     local rads = 2 * math.pi * iAngle / numRays

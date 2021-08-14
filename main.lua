@@ -22,6 +22,8 @@ collisionCategories = {
   walls= 3,
 }
 
+hasMap = true
+
 function love.load()
   -- Init physics and world
   world = love.physics.newWorld(0, 0, true)
