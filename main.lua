@@ -12,6 +12,7 @@ require("levelgen")
 require("player")
 require("camera")
 require("colours")
+require("items")
 
 colours = japanesque
 
@@ -22,11 +23,12 @@ collisionCategories = {
   walls= 3,
 }
 
-hasMap = true
+hasMap = false
 
 function love.load()
   -- Init physics and world
   world = love.physics.newWorld(0, 0, true)
+  world:setCallbacks(beginContact, endContact)
 
   -- TODO: Determine start point in the world instead of this hardcoded spot
   local tilesWidth = 60
@@ -61,7 +63,6 @@ function love.update(dt)
   world:update(dt)
 
 end
-
 
 function love.draw(dt)
 
@@ -109,4 +110,40 @@ end
 function love.resize(width, height)
   screen.width = width
   screen.height = height
+end
+
+-- ONLY WORKS IF BOTH ITEMS AREN'T THE SAME CLASS
+function findObjectOfClassInFixtures(obj1, obj2, className)
+  local result = nil
+  if obj1.className == className then
+    result = obj1
+  elseif obj2.className == className then
+    result = obj2
+  end
+  return result
+end
+
+function beginContact(fixture1, fixture2, contact)
+
+
+  local obj1 = fixture1:getUserData()
+  local obj2 = fixture2:getUserData()
+
+  -- The only interactions we have to care about in this callback
+  -- are ones involving custom classes. If userData isn't set,
+  -- then one or more objects isn't from a custom class
+  if obj1 == nil or obj2 == nil then return nil end
+
+  local playerObj = findObjectOfClassInFixtures(obj1, obj2, "Player")
+  local itemObj = findObjectOfClassInFixtures(obj1, obj2, "Item")
+
+  if playerObj ~=nil and itemObj ~=nil then
+    itemObj:collect()
+    -- TODO: Have items list and remove it from there
+  end
+
+end
+
+function endContact(fixture1, fixture2, contact)
+
 end

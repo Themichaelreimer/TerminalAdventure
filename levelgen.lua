@@ -15,7 +15,8 @@ Level = {
   className = "Level",
   traversedTiles = {}, -- Set of visited tiles, formatted as strings like "x;y". Maps to lightness level
   updateQueue = {}, -- List of cells that need to be updated, and the lightness level
-  mustUpdateCanvas = true
+  mustUpdateCanvas = true,
+  items = {}
 }
 
 function Level:new(o, world, genParams)
@@ -33,9 +34,8 @@ function Level:new(o, world, genParams)
   self:makeSimplexCave(self.tileWidth, self.tileHeight)
   self:makePhysicsBody()
   self:resetCanvas() -- Sets the initial value of self.canvas
-
-  self.tileUpdateQueue = {}
-
+  local mapCollectable = createMapObject(world, 40*screen.tileSize, 40*screen.tileSize)
+  self:addItemToLevel(mapCollectable)
   return o
 end
 
@@ -52,7 +52,12 @@ end
 
 function Level:draw(dt)
   love.graphics.setBackgroundColor(colours.black) -- nord black
+  love.graphics.setColor(1,1,1)
   love.graphics.draw(self.canvas)
+
+  for iItem=1, #self.items do
+    self.items[iItem]:draw(dt)
+  end
 end
 
 function getTileKey(x,y)
@@ -100,10 +105,14 @@ function Level:updateCanvasLighting(x, y, dist)
   end
   ]]--
 
-  -- Idea: Cast out 45 rays in equally spaced angles from (x, y)
+  if not hasMap then
+    self:resetMapCanvas()
+  end
+
+  -- Idea: Cast out rays in equally spaced angles from (x, y)
   -- For each ray cast, and for each space each ray touches, if the lightMap at the sp is darker
   -- than the ray's lightness value for that space, then update the lightMap with the brighter value and redraw the space
-  rays = self:rayTrace(x, y, 45)
+  rays = self:rayTrace(x, y, 80)
   for iRay=0, #rays do
     if rays[iRay] ~= nil then
       for iRaySpace=0, #rays[iRay] do
@@ -115,10 +124,8 @@ function Level:updateCanvasLighting(x, y, dist)
             if self.lightMap[data.y][data.x] < data.lightness then
               self.lightMap[data.y][data.x] = data.lightness
               self:redrawCell(data.x, data.y, data.lightness)
-              print("DRAW (" .. data.x .. ", ".. data.y .. ")")
             end
           else
-            print("NO MAP")
             self:redrawCell(data.x, data.y, data.lightness)
           end
         end
@@ -216,6 +223,11 @@ function Level:renderEntireCanvas()
   love.graphics.setCanvas()
 end
 
+function Level:resetMapCanvas()
+  love.graphics.setColor(colours.black)
+  love.graphics.rectangle("fill", 0, 0, self.pixelWidth, self.pixelHeight)
+end
+
 -- PHYSICS CONSTRUCTION
 
 function Level:makePhysicsBody()
@@ -252,6 +264,22 @@ function Level:spaceNeedsCollider(x, y)
 
   return false
 
+end
+
+function Level:addItemToLevel(itemPtr)
+  table.insert(self.items, itemPtr)
+end
+
+function Level:removeItemFromLevel(itemPtr)
+  for i=1, #self.items do
+    if self.items[i] == itemPtr then
+      table.remove(self.items, i)
+    end
+  end
+end
+
+function Level:getLightnessAtTile(x, y)
+  return self.lightMap[y][x]
 end
 
 -- LOGICAL LEVEL GENERATION

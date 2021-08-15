@@ -16,6 +16,10 @@ japanesque = {
     blue = { 0.298, 0.603, 0.831 },
     purple = { 0.647, 0.498, 0.768 },
     brown = { 0.470, 0.349, 0.184 },
-    pink = { 0.819, 0.560, 0.650 } 
-    
+    pink = { 0.819, 0.560, 0.650 }
+
 }
+
+function alphaBlendColour(colour, alpha)
+  return colour[1], colour[2], colour[3], alpha
+end
