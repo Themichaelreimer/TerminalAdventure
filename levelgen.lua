@@ -36,18 +36,24 @@ function Level:new(o, world, genParams)
   self:resetCanvas() -- Sets the initial value of self.canvas
   local mapCollectable = createMapObject(world, 40*screen.tileSize, 40*screen.tileSize)
   self:addItemToLevel(mapCollectable)
+
+  local coins = createCoinsObject(world, 40*screen.tileSize, 44*screen.tileSize)
+  self:addItemToLevel(coins)
+
   return o
 end
 
 function Level:update(dt)
   local playerX, playerY = player:getMapCoordinates()
   local tileKey = getTileKey(playerX, playerY)
+
   --debugString = tileKey
   if self.traversedTiles[tileKey] == nil or true then
     self.traversedTiles[tileKey] = true
     self:updateCanvasLighting(playerX, playerY, 3)
     self.mustUpdateCanvas = true
   end
+
 end
 
 function Level:draw(dt)
@@ -56,8 +62,17 @@ function Level:draw(dt)
   love.graphics.draw(self.canvas)
 
   for iItem=1, #self.items do
-    self.items[iItem]:draw(dt)
+    self.items[iItem]:draw()
   end
+
+  --[[
+  if mapCollectable then
+    mapCollectable:draw()
+  end
+  if coins then
+    coins:draw()
+  end
+  ]]--
 end
 
 function getTileKey(x,y)
@@ -81,31 +96,8 @@ function Level:updateCanvasLighting(x, y, dist)
   local tileSize = screen.tileSize
   love.graphics.setCanvas(self.canvas)
 
-  --[[
-  local yMin = math.max(0, y-dist)
-  local yMax = math.min(y+dist, #self.map)
-  local xMin = math.max(0, x-dist)
-  local xMax = math.min(x+dist, #self.map[y])
-
-
-  for ly=yMin, yMax do
-    for lx=xMin, xMax do
-      if self.lightMap[y][x] < 1.0 then
-        local dx = lx-x
-        local dy = ly-y
-        local lightness = 50 / (2*((dx*dx) + (dy*dy)))
-        --local lightness = 1.0
-        lightness = math.min(lightness, 1.0)
-        lightness = math.max(lightness, 0.0)
-
-        self:redrawCell(lx, ly, lightness)
-        --self.lightMap[ly][lx] = lightness
-      end
-    end
-  end
-  ]]--
-
   if not hasMap then
+    self:resetMapLightness()
     self:resetMapCanvas()
   end
 
@@ -126,6 +118,7 @@ function Level:updateCanvasLighting(x, y, dist)
               self:redrawCell(data.x, data.y, data.lightness)
             end
           else
+            self.lightMap[data.y][data.x] = data.lightness
             self:redrawCell(data.x, data.y, data.lightness)
           end
         end
@@ -228,6 +221,14 @@ function Level:resetMapCanvas()
   love.graphics.rectangle("fill", 0, 0, self.pixelWidth, self.pixelHeight)
 end
 
+function Level:resetMapLightness()
+  for y=0, #self.lightMap do
+    for x=0, #self.lightMap[y] do
+      self.lightMap[y][x] = 0.0
+    end
+  end
+end
+
 -- PHYSICS CONSTRUCTION
 
 function Level:makePhysicsBody()
@@ -268,6 +269,7 @@ end
 
 function Level:addItemToLevel(itemPtr)
   table.insert(self.items, itemPtr)
+  --self.items[#self.items] = itemPtr
 end
 
 function Level:removeItemFromLevel(itemPtr)

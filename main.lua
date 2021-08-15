@@ -23,6 +23,7 @@ collisionCategories = {
   walls= 3,
 }
 
+blockingText = nil
 hasMap = false
 
 function love.load()
@@ -57,14 +58,21 @@ end
 
 function love.update(dt)
 
-  moveCamera(camera, dt)
-  player:update(dt)
-  level:update(dt)
-  world:update(dt)
+  if blockingText == nil then
+    moveCamera(camera, dt)
+    player:update(dt)
+    level:update(dt)
+    world:update(dt)
+  else
+    if blockingText ~= nil then
+      blockingText.time = blockingText.time - dt
+      if blockingText.time < 0 then blockingText = nil end
+    end
+  end
 
 end
 
-function love.draw(dt)
+function love.draw()
 
   local uiSize = screen.height/5
   local halfWidth = screen.width/2
@@ -76,7 +84,7 @@ function love.draw(dt)
   -- CAMERA SPACE
   love.graphics.translate(-camera:getX(), -camera:getY())
 
-  level:draw(dt)
+  level:draw()
   player:draw()
   love.graphics.setColor(colours.white) -- nord white
 
@@ -105,11 +113,41 @@ function love.draw(dt)
   love.graphics.print("Z:", margin + halfWidth, 3*lineHeight)
   love.graphics.print(debugString, margin, 4*lineHeight)
 
+  love.graphics.translate(0, -4*uiSize) -- Transform into UI screen space
+
+  if blockingText ~= nil then
+    displayBlockingText()
+  end
+
 end
 
 function love.resize(width, height)
   screen.width = width
   screen.height = height
+end
+
+function displayBlockingText()
+
+  -- Transparent background
+  love.graphics.setColor(colours.black[1], colours.black[2], colours.black[3], 0.8)
+  love.graphics.rectangle("fill", 0, 0, screen.width, screen.height)
+
+  -- Text
+  love.graphics.setColor(colours.white)
+  font = love.graphics.newFont("VeraMono.ttf", 4*screen.tileSize)
+  love.graphics.printf(blockingText.text, 0, screen.height/2 - 2*screen.tileSize, screen.width, "center")
+  font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
+  love.graphics.printf(blockingText.subtext, 0, screen.height/2, screen.width, "center")
+
+  if blockingText.time < 0 then blockingText = nil end
+end
+
+function setBlockingText(text, subtext, time)
+  blockingText = {
+    text=text,
+    subtext=subtext,
+    time=time
+  }
 end
 
 -- ONLY WORKS IF BOTH ITEMS AREN'T THE SAME CLASS
@@ -124,8 +162,6 @@ function findObjectOfClassInFixtures(obj1, obj2, className)
 end
 
 function beginContact(fixture1, fixture2, contact)
-
-
   local obj1 = fixture1:getUserData()
   local obj2 = fixture2:getUserData()
 
@@ -138,12 +174,15 @@ function beginContact(fixture1, fixture2, contact)
   local itemObj = findObjectOfClassInFixtures(obj1, obj2, "Item")
 
   if playerObj ~=nil and itemObj ~=nil then
-    itemObj:collect()
-    -- TODO: Have items list and remove it from there
+    if itemObj.itemName ~= "Coins" then
+      itemObj:collect()
+    else
+      debugString = "5 gold. Too bad you don't have your wallet!"
+    end
   end
 
 end
 
 function endContact(fixture1, fixture2, contact)
-
+  debugString = ""
 end

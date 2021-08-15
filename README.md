@@ -1,7 +1,12 @@
 # TerminalAdventure
-A randomly generated exploration heavy adventure game
+You've lost your wallet, and have to journey deep into "The Cave of Nothing" to find it, in this randomly generated
+adventure game!
 
 # Devlog
+
+## Weekend 4
+![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/5.gif)
+Lighting via raytracing and the beginnings of items and collectables
 
 ## Weekend 2/3
 

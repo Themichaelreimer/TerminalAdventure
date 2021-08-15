@@ -25,7 +25,7 @@ function Player:new(o, world, x, y)
   self.shape = love.physics.newRectangleShape(-5, 5, self.size, self.size)
   self.fixture = love.physics.newFixture(self.body, self.shape)
   self.fixture:setCategory(collisionCategories.player)
-  self.fixture:setUserData(self)
+  self.fixture:setUserData(o)
   return o
 end
 
