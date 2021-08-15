@@ -69,7 +69,7 @@ function createMapObject(world, x, y)
 end
 
 function createCoinsObject(world, x, y)
-  local result = Item:new(nil, world, x, y, 'c', colours.yellow, badCallback)
+  local result = Item:new(nil, world, x, y, '$', colours.yellow, badCallback)
   result.itemName = "Coins"
   return result
 end
