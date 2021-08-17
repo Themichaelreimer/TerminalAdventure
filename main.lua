@@ -24,7 +24,10 @@ collisionCategories = {
 }
 
 blockingText = nil
+
+-- TODO - Put upgrades and equipment into a table
 hasMap = false
+hasXRay = false
 
 function love.load()
   -- Init physics and world

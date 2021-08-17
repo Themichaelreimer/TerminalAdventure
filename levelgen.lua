@@ -25,8 +25,8 @@ function Level:new(o, world, genParams)
   self.__index = self
 
   self.genParams = genParams
-  self.tileWidth = 60
-  self.tileHeight = 60
+  self.tileWidth = 256 -- 450 about should be max
+  self.tileHeight = 256
   self.pixelWidth = self.tileWidth * screen.tileSize
   self.pixelHeight = self.tileHeight * screen.tileSize
   self.world = world
@@ -34,11 +34,14 @@ function Level:new(o, world, genParams)
   self:makeSimplexCave(self.tileWidth, self.tileHeight)
   self:makePhysicsBody()
   self:resetCanvas() -- Sets the initial value of self.canvas
-  local mapCollectable = createMapObject(world, 40*screen.tileSize, 40*screen.tileSize)
+  local mapCollectable = createMapObject(world, 40.5*screen.tileSize, 40.5*screen.tileSize)
   self:addItemToLevel(mapCollectable)
 
-  local coins = createCoinsObject(world, 40*screen.tileSize, 44*screen.tileSize)
+  local coins = createCoinsObject(world, 40.5*screen.tileSize, 44.5*screen.tileSize)
   self:addItemToLevel(coins)
+
+  local xRayCollectable = createXRayGlassesObject(world, 42.5*screen.tileSize, 46.5 * screen.tileSize)
+  self:addItemToLevel(xRayCollectable)
 
   return o
 end
@@ -65,14 +68,6 @@ function Level:draw(dt)
     self.items[iItem]:draw()
   end
 
-  --[[
-  if mapCollectable then
-    mapCollectable:draw()
-  end
-  if coins then
-    coins:draw()
-  end
-  ]]--
 end
 
 function getTileKey(x,y)
@@ -185,7 +180,7 @@ function Level:traceRay(x, y, angle, maxDistance)
     table.insert(results, result)
 
     -- Terminate the ray if we hit something solid
-    if tile.solid then return results end
+    if tile.solid and not hasXRay then return results end
   end
   return results
 end

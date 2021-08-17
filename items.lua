@@ -45,6 +45,10 @@ function Item:draw()
   local y = self.body:getY()
   local size = screen.tileSize
 
+  love.graphics.setColor(colours.black)
+  --love.graphics.rectangle("fill", x-size, y, size, size)
+  love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+
   local c1,c2,c3,c4 = alphaBlendColour(self.colour, level:getLightnessAtTile(math.floor(x/size), math.floor(y/size)))
   love.graphics.setColor(c1, c2, c3, c4)
   love.graphics.print(self.char, x-size/2, y-size/2)
@@ -72,6 +76,17 @@ function createCoinsObject(world, x, y)
   local result = Item:new(nil, world, x, y, '$', colours.yellow, badCallback)
   result.itemName = "Coins"
   return result
+end
+
+function createXRayGlassesObject(world, x, y)
+  local result = Item:new(nil, world, x, y, 'x', colours.yellow, collectXRay)
+  result.itemName = "X Ray Glasses"
+  result.acquireString = "You can now see through walls"
+  return result
+end
+
+function collectXRay()
+  hasXRay = true
 end
 
 function collectMap()

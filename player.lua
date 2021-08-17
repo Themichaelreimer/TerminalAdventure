@@ -36,6 +36,9 @@ function Player:draw()
   local tSize = screen.tileSize
   local swordBody = self.swordObject.body
 
+  love.graphics.setColor(colours.black)
+  --love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+  
   love.graphics.setColor(colours.green) -- nord green
   love.graphics.print("@", px-tSize/2, py-tSize/2 + playerStep, self.body:getAngle())
   if self.isSwinging then
