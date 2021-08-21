@@ -8,8 +8,10 @@ debugString = ""
 
 debugRender = false
 normalizeDiagonalSpeed = true
+seed = love.math.random()*10000,
 
-require("levelgen")
+require("map")
+require("level")
 require("player")
 require("camera")
 require("colours")
