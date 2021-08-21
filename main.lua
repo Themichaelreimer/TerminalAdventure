@@ -38,13 +38,10 @@ function love.load()
   world:setCallbacks(beginContact, endContact)
 
   -- TODO: Determine start point in the world instead of this hardcoded spot
+
   local tilesWidth = 60
   local tilesHeight = 60
-  local initX = 24 * 40
-  local initY = 24 * 30
 
-  player = Player:new(nil, world, initX, initY)
-  camera = makeCamera(world, initX, initY)
 
   -- Screen Settings
   screen.tileSize = 24
@@ -54,11 +51,16 @@ function love.load()
     resizable=true,
   }
 
+  level = Level:new(nil, world)
+  local playerInitPos = level.map.upstairs
+  player = Player:new(nil, world, playerInitPos.x * screen.tileSize, playerInitPos.y * screen.tileSize)
+  camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
+
   font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
   love.graphics.setFont(font)
   love.window.updateMode(screen.width, screen.height, screen.settings)
 
-  level = Level:new(nil, world, caveGenParams)
+
 
 end
 

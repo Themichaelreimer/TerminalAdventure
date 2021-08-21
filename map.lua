@@ -2,8 +2,8 @@ tiles={
   floor = {char='.', solid=false, color='white'},
   wall = {char='#', solid=true, color='white'},
   water = {char='~', solid=true, color='blue'},
-  stairsUp = {char='<', solid=false, color='white'},
-  stairsDown = {char='>', solid=false, color='white'},
+  upstairs = {char='<', solid=false, color='white'},
+  downstairs = {char='>', solid=false, color='white'},
 }
 
 Map = {
@@ -27,10 +27,59 @@ function Map:new(o)
   local params = generateSimplexGenParams()
   self.width = params.width
   self.height = params.height
-  self.map, self.lightMap = makeSimplexCave(params)
+  self.map, self.lightMap = makeSimplexCave(params)  -- Lightmap isn't really a function of map, but it's faster this way
+
+  local stairs = self:placeStairs()
+  self.upstairs = stairs.up
+  self.downstairs = stairs.down
+  -- Generates nil error somehow
+  --self.map[self.upstairs.y][self.upstairs.x] = tiles.upstairs
+  --self.map[self.downstairs.y][self.downstairs.x] = tiles.downstairs
   return o
 end
 
+function Map:placeStairs()
+
+  local up = nil
+  local down = nil
+
+  local x = math.random(0, self.width)
+  local y = math.random(0, self.height)
+
+  -- TODO: Mandate a minimum area via paintbucket algorithm
+  -- For now, it's "fine", because of how continuous simplex noise is
+
+  while self.map[y][x].solid do
+    x = math.random(0, self.width)
+    y = math.random(0, self.height)
+  end
+
+  up = {
+    x = x,
+    y = y
+  }
+
+  x = math.random(0, self.width)
+  y = math.random(0, self.height)
+  while self.map[y][x].solid do
+    x = math.random(0, self.width)
+    y = math.random(0, self.height)
+  end
+
+  down = {
+    x = x,
+    y = y
+  }
+
+  return {
+    up = up,
+    down = down
+  }
+end
+
+-----------------------------------------------------------------------------------------------------------------------
+-- Procedural procedural-generation functions. Ie, pure functions
+-----------------------------------------------------------------------------------------------------------------------
 function generateSimplexGenParams()
   -- This function generates the parameters used to generate a map
   -- This includes things like width, height, and the proportion of walls to open space
