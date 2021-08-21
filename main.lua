@@ -7,6 +7,7 @@ player = {}
 debugString = ""
 
 debugRender = false
+normalizeDiagonalSpeed = true
 
 require("levelgen")
 require("player")

@@ -38,7 +38,7 @@ function Player:draw()
 
   love.graphics.setColor(colours.black)
   --love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
-  
+
   love.graphics.setColor(colours.green) -- nord green
   love.graphics.print("@", px-tSize/2, py-tSize/2 + playerStep, self.body:getAngle())
   if self.isSwinging then
@@ -95,6 +95,15 @@ function Player:update(dt)
 
   if love.keyboard.isDown("x") and not self.isSwinging then
     self:swingSword()
+  end
+
+  -- Normalize speed on diagonal
+  if normalizeDiagonalSpeed then
+    local sqrt2 = math.sqrt(2)
+    if dx ~= 0 and dy ~=0 then
+      dx = dx/sqrt2
+      dy = dy/sqrt2
+    end
   end
 
   self.body:setLinearVelocity(dx,dy)
