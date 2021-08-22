@@ -33,8 +33,8 @@ function Map:new(o)
   self.upstairs = stairs.up
   self.downstairs = stairs.down
   -- Generates nil error somehow
-  --self.map[self.upstairs.y][self.upstairs.x] = tiles.upstairs
-  --self.map[self.downstairs.y][self.downstairs.x] = tiles.downstairs
+  self.map[self.upstairs.y][self.upstairs.x] = tiles.upstairs
+  self.map[self.downstairs.y][self.downstairs.x] = tiles.downstairs
   return o
 end
 
@@ -43,28 +43,14 @@ function Map:placeStairs()
   local up = nil
   local down = nil
 
-  local x = math.random(0, self.width)
-  local y = math.random(0, self.height)
-
-  -- TODO: Mandate a minimum area via paintbucket algorithm
-  -- For now, it's "fine", because of how continuous simplex noise is
-
-  while self.map[y][x].solid do
-    x = math.random(0, self.width)
-    y = math.random(0, self.height)
-  end
+  local x, y = self:getRandomEmptyTile()
 
   up = {
     x = x,
     y = y
   }
 
-  x = math.random(0, self.width)
-  y = math.random(0, self.height)
-  while self.map[y][x].solid do
-    x = math.random(0, self.width)
-    y = math.random(0, self.height)
-  end
+  x,y = self:getRandomEmptyTile()
 
   down = {
     x = x,
@@ -77,6 +63,16 @@ function Map:placeStairs()
   }
 end
 
+function Map:getRandomEmptyTile()
+  local x = math.random(0, self.width)
+  local y = math.random(0, self.height)
+  while self.map[y][x].solid do
+    x = math.random(0, self.width)
+    y = math.random(0, self.height)
+  end
+  return x, y
+end
+
 -----------------------------------------------------------------------------------------------------------------------
 -- Procedural procedural-generation functions. Ie, pure functions
 -----------------------------------------------------------------------------------------------------------------------
@@ -84,9 +80,9 @@ function generateSimplexGenParams()
   -- This function generates the parameters used to generate a map
   -- This includes things like width, height, and the proportion of walls to open space
   local result = {
-    width = math.random(100,400),
-    height = math.random(100,400),
-    wallThreshold = 0.4 * math.random() + 0.3,
+    width = math.random(60,80),
+    height = math.random(60,80),
+    wallThreshold = (0.4 * math.random()) + 0.3,
     smoothness = math.random(8,20),
   }
   return result

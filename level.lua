@@ -1,15 +1,3 @@
-tiles={
-  floor = {char='.', solid=false, color='white'},
-  wall = {char='#', solid=true, color='white'},
-  water = {char='~', solid=true, color='blue'}
-}
-
-caveGenParams={
-  smoothness = 10,  -- Somewhere in the 8-20 range is probably good
-  wallThreshold = 0.6,
-  waterThreshold= 0.0 -- Setting water this way looks a little too "normal"
-}
-
 Level = {
   className = "Level",
   traversedTiles = {}, -- Set of visited tiles, formatted as strings like "x;y". Maps to lightness level
@@ -18,32 +6,65 @@ Level = {
   items = {}
 }
 
+itemFactory = {
+  coins = createCoinsObject,
+  map = createMapObject,
+  xray = createXRayGlassesObject,
+}
+
 function Level:new(o, world, genParams)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
 
   self.genParams = genParams
-  self.tileWidth = 256 -- 450 about should be max
-  self.tileHeight = 256
+  self.world = world
+  self.map = Map:new()
+  self.tileWidth = #self.map.map[0]
+  self.tileHeight = #self.map.map
   self.pixelWidth = self.tileWidth * screen.tileSize
   self.pixelHeight = self.tileHeight * screen.tileSize
-  self.world = world
-
-  self.map = Map:new()
 
   self:makePhysicsBody()
   self:resetCanvas() -- Sets the initial value of self.canvas
-  local mapCollectable = createMapObject(world, 40.5*screen.tileSize, 40.5*screen.tileSize)
-  self:addItemToLevel(mapCollectable)
 
-  local coins = createCoinsObject(world, 40.5*screen.tileSize, 44.5*screen.tileSize)
-  self:addItemToLevel(coins)
+  --local mapCollectable = createMapObject(world, 40.5*screen.tileSize, 40.5*screen.tileSize)
+  --self:addItemToLevel(mapCollectable)
 
-  local xRayCollectable = createXRayGlassesObject(world, 42.5*screen.tileSize, 46.5 * screen.tileSize)
-  self:addItemToLevel(xRayCollectable)
+  --local coins = createCoinsObject(world, 40.5*screen.tileSize, 44.5*screen.tileSize)
+  --self:addItemToLevel(coins)
+
+  --local xRayCollectable = createXRayGlassesObject(world, 42.5*screen.tileSize, 46.5 * screen.tileSize)
+  --self:addItemToLevel(xRayCollectable)
+
+  self:placeItemInLevel(world, "map")
+  self:placeItemInLevel(world, "xray")
+  self:placeItemInLevel(world, "coins")
+  self:placeItemInLevel(world, "coins")
+  self:placeItemInLevel(world, "coins")
 
   return o
+end
+
+function Level:placeItemInLevel(world, itemName, x, y)
+  if not x or y then
+    x, y = self.map:getRandomEmptyTile()
+  end
+
+  -- Convert x and y from tile coords to pixel coords; offset into middle of tile
+  x = (x + 0.5)*screen.tileSize
+  y = (y + 0.5)*screen.tileSize
+
+  local item
+  if itemName == "map" then
+    item = createMapObject(world, x, y)
+  elseif itemName == 'xray' then
+    item = createXRayGlassesObject(world, x, y)
+  elseif itemName == 'coins' then
+    item = createCoinsObject(world, x, y)
+  end
+  -- Add 0.5 offset, to put the item in the middle of the cell
+  self:addItemToLevel(item)
 end
 
 function Level:update(dt)

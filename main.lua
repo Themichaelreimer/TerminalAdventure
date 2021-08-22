@@ -45,6 +45,7 @@ function love.load()
 
   -- Screen Settings
   screen.tileSize = 24
+  halfTile = screen.tileSize/2
   screen.width = screen.tileSize * 40 -- viewport width
   screen.height = screen.tileSize * 30 -- viewport height
   screen.settings = {
@@ -53,7 +54,8 @@ function love.load()
 
   level = Level:new(nil, world)
   local playerInitPos = level.map.upstairs
-  player = Player:new(nil, world, playerInitPos.x * screen.tileSize, playerInitPos.y * screen.tileSize)
+
+  player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
   camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
 
   font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
