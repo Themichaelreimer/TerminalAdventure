@@ -21,7 +21,7 @@ function Item:new(o, world, x, y, char, colour, collectCallback)
   return o
 end
 
-function Item:destroy()
+function Item:tearDown()
   self.fixture:destroy()
   self.shape:release()
   self.body:destroy()

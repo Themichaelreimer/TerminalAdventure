@@ -15,6 +15,8 @@ Player = {
   swingDuration = 0.75
 }
 
+-- Used to prevent multiple key pressed on hold for keys where that matters
+
 function Player:new(o, world, x, y)
   o = o or {}
   setmetatable(o, self)
@@ -94,22 +96,22 @@ function Player:update(dt)
     self.facing = EAST
   end
 
-  if love.keyboard.isDown("x") and not self.isSwinging then
+  if keyboard.x and not self.isSwinging then
     self:swingSword()
   end
 
   if level:getTileAtCoordinates(px/tileSize, py/tileSize) == tiles.downstairs then
-    debugString = "Stairs leading downwards. Press > to go down a floor."
-    if love.keyboard.isDown(">") then
+    debugString = "Stairs leading downwards. Press 'a' to go down a floor."
+    if love.keyboard.isDown("a") then
       nextLevel()
     end
     displayedTileHintThisFrame = true
   end
 
   if level:getTileAtCoordinates(px/tileSize, py/tileSize) == tiles.upstairs then
-    debugString = "Stairs leading upwards. Press < to go up a floor."
-    if love.keyboard.isDown("<") then
-      prevLevel()
+    debugString = "Stairs leading upwards. Press 'a' to go up a floor."
+    if love.keyboard.isDown("a") then
+      nextLevel()
     end
     displayedTileHintThisFrame = true
   end

@@ -1,9 +1,5 @@
 Level = {
   className = "Level",
-  traversedTiles = {}, -- Set of visited tiles, formatted as strings like "x;y". Maps to lightness level
-  updateQueue = {}, -- List of cells that need to be updated, and the lightness level
-  mustUpdateCanvas = true,
-  items = {}
 }
 
 itemFactory = {
@@ -13,18 +9,22 @@ itemFactory = {
 }
 
 -- Generates an entirely new level
-function Level:new(o, world, genParams)
+function Level:new(o, world, floorNum)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
 
-  self.genParams = genParams
   self.world = world
   self.map = Map:new()
   self.tileWidth = #self.map.map[0]
   self.tileHeight = #self.map.map
   self.pixelWidth = self.tileWidth * screen.tileSize
   self.pixelHeight = self.tileHeight * screen.tileSize
+  self.items = {}
+  self.traversedTiles = {} -- Set of visited tiles, formatted as strings like "x;y". Maps to lightness level
+  self.updateQueue = {} -- List of cells that need to be updated, and the lightness level
+  self.mustUpdateCanvas = true
+  self.floorNum = floorNum
 
   self:makePhysicsBody()
   self:resetCanvas() -- Sets the initial value of self.canvas
@@ -38,6 +38,10 @@ function Level:new(o, world, genParams)
   return o
 end
 
+function Level:getFloorNum()
+  return self.floorNum
+end
+
 --Restores a level by it's saved data
 function Level:restore(o, world, map, objects)
 
@@ -47,11 +51,14 @@ function Level:destroy()
 
   -- Free items
   for i=1, #self.items do
-    self.items[i]:destroy()
+    if self.items[i] ~= nil then
+      self.items[i]:tearDown()
+    end
+    self.items = {}
   end
 
   -- Free canvas
-  self.canvas:destroy()
+  --self.canvas:destroy()
 
   -- Free physics objects
   --[[

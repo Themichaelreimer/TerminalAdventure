@@ -10,6 +10,7 @@ debugRender = false
 normalizeDiagonalSpeed = true
 seed = love.math.random()*10000,
 
+require("controller")
 require("map")
 require("level")
 require("player")
@@ -37,8 +38,6 @@ function love.load()
   world = love.physics.newWorld(0, 0, true)
   world:setCallbacks(beginContact, endContact)
 
-  -- TODO: Determine start point in the world instead of this hardcoded spot
-
   local tilesWidth = 60
   local tilesHeight = 60
 
@@ -51,7 +50,7 @@ function love.load()
     resizable=true,
   }
 
-  level = Level:new(nil, world)
+  level = Level:new(nil, world, 1)
   local playerInitPos = level.map.upstairs
 
   player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
@@ -71,10 +70,12 @@ function nextLevel()
     If this is true, we can replace level:destroy() with world:destroy(); world =newWorld()
   ]]--
 
+  local levelNum = level.floorNum
+
   level:destroy()
 
   world = love.physics.newWorld(0, 0, true)
-  level = Level:new(nil, world)
+  level = Level:new(nil, world, levelNum+1)
   local playerInitPos = level.map.upstairs
   player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
   camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
@@ -82,16 +83,12 @@ function nextLevel()
 end
 
 function prevLevel()
-  level:destroy()
 
-  world = love.physics.newWorld(0, 0, true)
-  level = Level:new(nil, world)
-  local playerInitPos = level.map.upstairs
-  player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
-  camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
 end
 
 function love.update(dt)
+
+  keyboardUpdate(dt)
 
   if blockingText == nil then
     moveCamera(camera, dt)
@@ -133,7 +130,7 @@ function love.draw()
   love.graphics.setColor(colours.white)
 
   love.graphics.print("Jerry the Destroyer", margin, lineHeight)
-  love.graphics.print("Dungeon: L1", margin + halfWidth, lineHeight)
+  love.graphics.print("Dungeon: L"..level:getFloorNum(), margin + halfWidth, lineHeight)
 
   love.graphics.print("Health: 24/24", margin, 2*lineHeight)
   love.graphics.setColor(colours.green)
