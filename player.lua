@@ -72,6 +72,7 @@ function Player:update(dt)
 
   local px = self.body:getX()
   local py = self.body:getY()
+  displayedTileHintThisFrame = false
 
   if love.keyboard.isDown("down") and py < level.pixelHeight - halfTile then
     dy = self.moveSpeed
@@ -95,6 +96,26 @@ function Player:update(dt)
 
   if love.keyboard.isDown("x") and not self.isSwinging then
     self:swingSword()
+  end
+
+  if level:getTileAtCoordinates(px/tileSize, py/tileSize) == tiles.downstairs then
+    debugString = "Stairs leading downwards. Press > to go down a floor."
+    if love.keyboard.isDown(">") then
+      nextLevel()
+    end
+    displayedTileHintThisFrame = true
+  end
+
+  if level:getTileAtCoordinates(px/tileSize, py/tileSize) == tiles.upstairs then
+    debugString = "Stairs leading upwards. Press < to go up a floor."
+    if love.keyboard.isDown("<") then
+      prevLevel()
+    end
+    displayedTileHintThisFrame = true
+  end
+
+  if not displayedTileHintThisFrame then
+    debugString = ''
   end
 
   -- Normalize speed on diagonal

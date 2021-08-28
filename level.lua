@@ -12,6 +12,7 @@ itemFactory = {
   xray = createXRayGlassesObject,
 }
 
+-- Generates an entirely new level
 function Level:new(o, world, genParams)
   o = o or {}
   setmetatable(o, self)
@@ -28,15 +29,6 @@ function Level:new(o, world, genParams)
   self:makePhysicsBody()
   self:resetCanvas() -- Sets the initial value of self.canvas
 
-  --local mapCollectable = createMapObject(world, 40.5*screen.tileSize, 40.5*screen.tileSize)
-  --self:addItemToLevel(mapCollectable)
-
-  --local coins = createCoinsObject(world, 40.5*screen.tileSize, 44.5*screen.tileSize)
-  --self:addItemToLevel(coins)
-
-  --local xRayCollectable = createXRayGlassesObject(world, 42.5*screen.tileSize, 46.5 * screen.tileSize)
-  --self:addItemToLevel(xRayCollectable)
-
   self:placeItemInLevel(world, "map")
   self:placeItemInLevel(world, "xray")
   self:placeItemInLevel(world, "coins")
@@ -44,6 +36,39 @@ function Level:new(o, world, genParams)
   self:placeItemInLevel(world, "coins")
 
   return o
+end
+
+--Restores a level by it's saved data
+function Level:restore(o, world, map, objects)
+
+end
+
+function Level:destroy()
+
+  -- Free items
+  for i=1, #self.items do
+    self.items[i]:destroy()
+  end
+
+  -- Free canvas
+  self.canvas:destroy()
+
+  -- Free physics objects
+  --[[
+  local bodies = self.world:getBodies()
+  for i,body in ipairs(bodies) do
+    local fixtures = body:getFixtures()
+    for j, fixture in ipairs(fixtures) do
+      local shape = fixture:getShape()
+      fixture:destroy()
+      shape:destroy()
+    end
+    body:destroy()
+  end
+  ]]--
+  self.world:destroy()
+
+
 end
 
 function Level:placeItemInLevel(world, itemName, x, y)
@@ -298,4 +323,9 @@ end
 
 function Level:getLightnessAtTile(x, y)
   return self.map.lightMap[y][x]
+end
+
+function Level:getTileAtCoordinates(x, y)
+  -- TODO: Probably better if we can check if x,y are ints already. For now, it's fine to just assume float and round
+  return self.map.map[math.floor(y)][math.floor(x)]
 end

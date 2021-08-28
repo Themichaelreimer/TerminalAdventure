@@ -42,7 +42,6 @@ function love.load()
   local tilesWidth = 60
   local tilesHeight = 60
 
-
   -- Screen Settings
   screen.tileSize = 24
   halfTile = screen.tileSize/2
@@ -62,8 +61,34 @@ function love.load()
   love.graphics.setFont(font)
   love.window.updateMode(screen.width, screen.height, screen.settings)
 
+end
 
+function nextLevel()
 
+  --[[
+    TODO: According to the docs, destroying a world destroys everything inside of it (safely?)
+    So it may not be necessary to call all the destructors manually and tear it down myself. Investigate later.
+    If this is true, we can replace level:destroy() with world:destroy(); world =newWorld()
+  ]]--
+
+  level:destroy()
+
+  world = love.physics.newWorld(0, 0, true)
+  level = Level:new(nil, world)
+  local playerInitPos = level.map.upstairs
+  player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
+  camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
+
+end
+
+function prevLevel()
+  level:destroy()
+
+  world = love.physics.newWorld(0, 0, true)
+  level = Level:new(nil, world)
+  local playerInitPos = level.map.upstairs
+  player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
+  camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
 end
 
 function love.update(dt)
