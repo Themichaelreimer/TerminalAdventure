@@ -100,9 +100,17 @@ function Player:update(dt)
     self:swingSword()
   end
 
+  if keyboard.q then
+    prevLevel()
+  end
+
+  if keyboard.w then
+    nextLevel()
+  end
+
   if level:getTileAtCoordinates(px/tileSize, py/tileSize) == tiles.downstairs then
     debugString = "Stairs leading downwards. Press 'a' to go down a floor."
-    if love.keyboard.isDown("a") then
+    if keyboard.a then
       nextLevel()
     end
     displayedTileHintThisFrame = true
@@ -110,8 +118,8 @@ function Player:update(dt)
 
   if level:getTileAtCoordinates(px/tileSize, py/tileSize) == tiles.upstairs then
     debugString = "Stairs leading upwards. Press 'a' to go up a floor."
-    if love.keyboard.isDown("a") then
-      nextLevel()
+    if keyboard.a then
+      prevLevel()
     end
     displayedTileHintThisFrame = true
   end

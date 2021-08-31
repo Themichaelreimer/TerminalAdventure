@@ -4,6 +4,10 @@ adventure game!
 
 # Devlog
 
+## Weekend 5/6
+![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/6.gif)
+More variety in world generation; multiple floors, X-Ray glasses collectable
+
 ## Weekend 4
 ![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/5.gif)
 Lighting via raytracing and the beginnings of items and collectables

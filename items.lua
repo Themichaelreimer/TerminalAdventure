@@ -17,7 +17,6 @@ function Item:new(o, world, x, y, char, colour, collectCallback)
   o.fixture:setSensor(true)
   o.fixture:setUserData(o)
 
-  --level:addItemToLevel(self)
   return o
 end
 
@@ -32,7 +31,7 @@ function Item:collect()
   setBlockingText(acquireText, self.acquireString, self.minTextTime)
   level:removeItemFromLevel(self)
   self:collectCallback()
-  self:destroy()
+  self:tearDown()
 end
 
 function Item:update(dt)

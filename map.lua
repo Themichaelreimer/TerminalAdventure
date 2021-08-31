@@ -38,6 +38,28 @@ function Map:new(o)
   return o
 end
 
+function Map:getSaveData()
+  return {
+    tileMap = self.map,
+    lightMap = self.lightMap,
+    upstairs = self.upstairs,
+    downstairs = self.downstairs,
+  }
+end
+
+function Map:restore(o, data)
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+
+  self.upstairs = data.upstairs
+  self.downstairs = data.downstairs
+  self.map = data.tileMap
+  self.lightMap = data.lightMap
+
+  return o
+end
+
 function Map:placeStairs()
 
   local up = nil

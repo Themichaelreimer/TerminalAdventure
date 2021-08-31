@@ -22,7 +22,6 @@ function Level:new(o, world, floorNum)
   self.pixelHeight = self.tileHeight * screen.tileSize
   self.items = {}
   self.traversedTiles = {} -- Set of visited tiles, formatted as strings like "x;y". Maps to lightness level
-  self.updateQueue = {} -- List of cells that need to be updated, and the lightness level
   self.mustUpdateCanvas = true
   self.floorNum = floorNum
 
@@ -42,9 +41,38 @@ function Level:getFloorNum()
   return self.floorNum
 end
 
---Restores a level by it's saved data
-function Level:restore(o, world, map, objects)
+function Level:getLevelSaveData()
+  local result = {
+    mapData = self.map:getSaveData(),
+    floorNum = self.floorNum,
+    items = {},
+  }
+  return result
+end
 
+--Restores a level by it's saved data
+function Level:restore(o, world, data)
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+
+  self.world = world
+  self.map = Map:restore(nil, data.mapData)
+
+  self.tileWidth = #self.map.map[0]
+  self.tileHeight = #self.map.map
+  self.pixelWidth = self.tileWidth * screen.tileSize
+  self.pixelHeight = self.tileHeight * screen.tileSize
+
+  --items = reconstructItems(data.items)
+  self.items = {}
+
+  self.floorNum = data.floorNum
+  self:makePhysicsBody()
+  self:resetCanvas()
+  self:renderEntireCanvas()
+
+  return o
 end
 
 function Level:destroy()
@@ -57,24 +85,7 @@ function Level:destroy()
     self.items = {}
   end
 
-  -- Free canvas
-  --self.canvas:destroy()
-
-  -- Free physics objects
-  --[[
-  local bodies = self.world:getBodies()
-  for i,body in ipairs(bodies) do
-    local fixtures = body:getFixtures()
-    for j, fixture in ipairs(fixtures) do
-      local shape = fixture:getShape()
-      fixture:destroy()
-      shape:destroy()
-    end
-    body:destroy()
-  end
-  ]]--
   self.world:destroy()
-
 
 end
 
@@ -245,7 +256,8 @@ function Level:renderEntireCanvas()
 
   for y=0, #self.map.map do
     for x=0, #self.map.map[y] do
-      love.graphics.print(self.map.map[y][x].char, x*tileSize, y*tileSize)
+      --love.graphics.print(self.map.map[y][x].char, x*tileSize, y*tileSize)
+      self:redrawCell(x, y, self.map.lightMap[y][x])
     end
   end
 

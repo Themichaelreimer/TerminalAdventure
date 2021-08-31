@@ -1,5 +1,6 @@
 screen = {}
 level = {}
+levelTable = {}
 font = {}
 world = {}
 camera = {}
@@ -10,6 +11,8 @@ debugRender = false
 normalizeDiagonalSpeed = true
 seed = love.math.random()*10000,
 
+--require("lib/")
+require("helpers")
 require("controller")
 require("map")
 require("level")
@@ -30,8 +33,16 @@ collisionCategories = {
 blockingText = nil
 
 -- TODO - Put upgrades and equipment into a table
-hasMap = false
+hasMap = true
 hasXRay = false
+
+WINDOW_TITLES = {
+  "It's a Game About Nothing",
+  "He's a Close-Attacker",
+  "The Caves of Nothing",
+  "Wallet Quest",
+  "What's the Deal with ASCII?",
+}
 
 function love.load()
   -- Init physics and world
@@ -47,35 +58,46 @@ function love.load()
   screen.width = screen.tileSize * 40 -- viewport width
   screen.height = screen.tileSize * 30 -- viewport height
   screen.settings = {
-    resizable=true,
+    resizable=false,
   }
 
   level = Level:new(nil, world, 1)
   local playerInitPos = level.map.upstairs
 
   player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
-  camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
+  camera = makeCamera(world, playerInitPos.x * screen.tileSize, playerInitPos.y* screen.tileSize)
 
   font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
   love.graphics.setFont(font)
+  love.window.setTitle(randomElement(WINDOW_TITLES))
   love.window.updateMode(screen.width, screen.height, screen.settings)
 
 end
 
+function saveLevel()
+  local lvlNum = level.floorNum
+  levelTable[lvlNum] = level:getLevelSaveData()
+end
+
 function nextLevel()
 
-  --[[
-    TODO: According to the docs, destroying a world destroys everything inside of it (safely?)
-    So it may not be necessary to call all the destructors manually and tear it down myself. Investigate later.
-    If this is true, we can replace level:destroy() with world:destroy(); world =newWorld()
-  ]]--
-
-  local levelNum = level.floorNum
+  local lvlNum = level.floorNum
+  local dstNum = level.floorNum+1
+  saveLevel()
 
   level:destroy()
 
   world = love.physics.newWorld(0, 0, true)
-  level = Level:new(nil, world, levelNum+1)
+  world:setCallbacks(beginContact, endContact)
+
+  if levelTable[dstNum] == nil then
+    level = Level:new(nil, world, dstNum)
+    table.insert(levelTable, level)
+    --levelTable[dstNum] = level
+  else
+    level = Level:restore(nil, world, levelTable[dstNum])
+  end
+
   local playerInitPos = level.map.upstairs
   player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
   camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
@@ -83,7 +105,23 @@ function nextLevel()
 end
 
 function prevLevel()
+  local lvlNum = level.floorNum
+  local dstNum = level.floorNum-1
+  saveLevel()
 
+  if lvlNum > 1 then
+    levelTable[lvlNum] = level:getLevelSaveData()
+
+    level:destroy()
+
+    world = love.physics.newWorld(0, 0, true)
+    world:setCallbacks(beginContact, endContact)
+
+    level = Level:restore(nil, world, levelTable[dstNum])
+    local playerInitPos = level.map.downstairs
+    player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
+    camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
+  end
 end
 
 function love.update(dt)
