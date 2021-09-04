@@ -9,6 +9,8 @@ function Item:new(o, world, x, y, char, colour, collectCallback)
   self.__index = self
 
   o.collectCallback = collectCallback
+  o.x = x -- tile coordinates, not pixel coords
+  o.y = y
   o.colour = colour
   o.char = char
   o.body = love.physics.newBody(world, x, y, "dynamic")
@@ -58,6 +60,10 @@ function Item:draw()
   end
 end
 
+function Item:getInternalItemName()
+  return self._name
+end
+
 -------------------------------------------------------------------
 --  Creates and callbacks                                        --
 -------------------------------------------------------------------
@@ -65,7 +71,8 @@ end
 function createMapObject(world, x, y)
 
   local result = Item:new(nil, world, x, y, 'm', colours.yellow, collectMap)
-  result.itemName = "Map"
+  result._name = "map" -- Used to identify type of item for serialization
+  result.itemName = "Map" -- Display name
   result.acquireString = "Explored area is permanently illuminated"
   return result
 
@@ -73,13 +80,15 @@ end
 
 function createCoinsObject(world, x, y)
   local result = Item:new(nil, world, x, y, '$', colours.yellow, badCallback)
-  result.itemName = "Coins"
+  result._name = "coins" -- Used to identify type of item for serialization
+  result.itemName = "Coins" -- Display name
   return result
 end
 
 function createXRayGlassesObject(world, x, y)
   local result = Item:new(nil, world, x, y, 'x', colours.yellow, collectXRay)
-  result.itemName = "X Ray Glasses"
+  result._name = "xray" -- Used to identify type of item for serialization
+  result.itemName = "X Ray Glasses" -- Display name
   result.acquireString = "You can now see through walls"
   return result
 end

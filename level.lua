@@ -47,6 +47,16 @@ function Level:getLevelSaveData()
     floorNum = self.floorNum,
     items = {},
   }
+
+  for i=1, #self.items do
+    local saveItem = {
+      x = self.items[i].x,
+      y = self.items[i].y,
+      itemName = self.items[i]:getInternalItemName()
+    }
+    table.insert(result.items, saveItem)
+  end
+
   return result
 end
 
@@ -64,8 +74,11 @@ function Level:restore(o, world, data)
   self.pixelWidth = self.tileWidth * screen.tileSize
   self.pixelHeight = self.tileHeight * screen.tileSize
 
-  --items = reconstructItems(data.items)
   self.items = {}
+  for i=1, #data.items do
+    local itemObj = data.items[i]
+    self:placeItemInLevel(world, itemObj.itemName, itemObj.x, itemObj.y )
+  end
 
   self.floorNum = data.floorNum
   self:makePhysicsBody()
@@ -90,7 +103,7 @@ function Level:destroy()
 end
 
 function Level:placeItemInLevel(world, itemName, x, y)
-  if not x or y then
+  if not x or not y then
     x, y = self.map:getRandomEmptyTile()
   end
 
@@ -106,7 +119,6 @@ function Level:placeItemInLevel(world, itemName, x, y)
   elseif itemName == 'coins' then
     item = createCoinsObject(world, x, y)
   end
-  -- Add 0.5 offset, to put the item in the middle of the cell
   self:addItemToLevel(item)
 end
 
@@ -329,7 +341,6 @@ end
 
 function Level:addItemToLevel(itemPtr)
   table.insert(self.items, itemPtr)
-  --self.items[#self.items] = itemPtr
 end
 
 function Level:removeItemFromLevel(itemPtr)
