@@ -8,11 +8,14 @@ Player = {
   shape = {},
   body = {},
   size = 22,
-  moveSpeed = 100,
+  moveSpeed = 20,  -- 30 is good for upgraded, 25 for not
   isSwinging = false,
   swordObject = {},
   facing = NORTH,
-  swingDuration = 0.75
+  swingDuration = 0.75,
+  linearDamping = 7,
+  maxHP = 24,
+  HP = 24,
 }
 
 -- Used to prevent multiple key pressed on hold for keys where that matters
@@ -22,8 +25,9 @@ function Player:new(o, world, x, y)
   setmetatable(o, self)
   self.__index = self
   self.body = love.physics.newBody(world, x, y, "dynamic")
-  self.body:setMass(5000)
+  --self.body:setMass(5)
   self.body:setFixedRotation(true)
+  self.body:setLinearDamping(self.linearDamping)
   self.shape = love.physics.newRectangleShape(-5, 5, self.size, self.size)
   self.fixture = love.physics.newFixture(self.body, self.shape)
   self.fixture:setCategory(collisionCategories.player)
@@ -63,7 +67,6 @@ function Player:draw()
     end
     love.graphics.setColor(1, 1, 1, 1)
   end
-
 end
 
 function Player:update(dt)
@@ -96,8 +99,24 @@ function Player:update(dt)
     self.facing = EAST
   end
 
+  -- Normalize speed on diagonal
+  if normalizeDiagonalSpeed then
+    local sqrt2 = math.sqrt(2)
+    if dx ~= 0 and dy ~=0 then
+      dx = dx/sqrt2
+      dy = dy/sqrt2
+    end
+  end
+
   if keyboard.x and not self.isSwinging then
     self:swingSword()
+  end
+
+  if keyboard.z then
+    if hasBombs then
+      local bomb = Bomb:throwBomb(world, px, py, 1.5*dx, 1.5*dy)
+      level:addProjectileToLevel(bomb)
+    end
   end
 
   if keyboard.q then
@@ -128,16 +147,7 @@ function Player:update(dt)
     debugString = ''
   end
 
-  -- Normalize speed on diagonal
-  if normalizeDiagonalSpeed then
-    local sqrt2 = math.sqrt(2)
-    if dx ~= 0 and dy ~=0 then
-      dx = dx/sqrt2
-      dy = dy/sqrt2
-    end
-  end
-
-  self.body:setLinearVelocity(dx,dy)
+  self.body:applyForce(self.moveSpeed * dx, self.moveSpeed * dy)
 
   if self.isSwinging then
     self.swordObject.timeElapsed = self.swordObject.timeElapsed + dt
