@@ -5,7 +5,7 @@ adventure game!
 # Devlog
 
 ## Weekend 7
-![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/7.mov)
+![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/7.gif)
 - Introduced bombs, destructable terrain, health/damage
 - Introduced some new bugs
 - Fixed some bugs
