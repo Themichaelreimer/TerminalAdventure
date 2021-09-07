@@ -20,6 +20,7 @@ require("player")
 require("camera")
 require("colours")
 require("items")
+require("weapons")
 
 colours = japanesque
 
@@ -33,8 +34,9 @@ collisionCategories = {
 blockingText = nil
 
 -- TODO - Put upgrades and equipment into a table
-hasMap = true
+hasMap = false
 hasXRay = false
+hasBombs = true
 
 WINDOW_TITLES = {
   "It's a Game About Nothing",
@@ -58,7 +60,7 @@ function love.load()
   screen.width = screen.tileSize * 40 -- viewport width
   screen.height = screen.tileSize * 30 -- viewport height
   screen.settings = {
-    resizable=false,
+    resizable=true,
   }
 
   level = Level:new(nil, world, 1)
@@ -170,9 +172,9 @@ function love.draw()
   love.graphics.print("Jerry the Destroyer", margin, lineHeight)
   love.graphics.print("Dungeon: L"..level:getFloorNum(), margin + halfWidth, lineHeight)
 
-  love.graphics.print("Health: 24/24", margin, 2*lineHeight)
+  love.graphics.print("Health: " .. player.HP .. "/"..player.maxHP, margin, 2*lineHeight)
   love.graphics.setColor(colours.green)
-  love.graphics.print("[==========]", 216, 2*lineHeight)
+  love.graphics.print(getAsciiBar(player.HP, player.maxHP), 216, 2*lineHeight)
   love.graphics.setColor(colours.white)
   love.graphics.print("Magic: 10/10", margin + halfWidth, 2*lineHeight)
   love.graphics.setColor(colours.blue)
@@ -180,7 +182,7 @@ function love.draw()
 
   love.graphics.setColor(colours.white)
   love.graphics.print("X: Sword", margin, 3*lineHeight)
-  love.graphics.print("Z:", margin + halfWidth, 3*lineHeight)
+  love.graphics.print("Z: Bombs", margin + halfWidth, 3*lineHeight)
   love.graphics.print(debugString, margin, 4*lineHeight)
 
   love.graphics.translate(0, -4*uiSize) -- Transform into UI screen space
@@ -189,6 +191,19 @@ function love.draw()
     displayBlockingText()
   end
 
+end
+
+function getAsciiBar(val, max)
+  local result = "["
+  local numBars = 10 * (val / max)
+  for i=1, numBars do
+    result = result .. "="
+  end
+  for i=numBars, 9 do
+    result = result .. " "
+  end
+  result = result .."]"
+  return result
 end
 
 function love.resize(width, height)

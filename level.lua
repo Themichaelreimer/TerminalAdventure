@@ -24,6 +24,8 @@ function Level:new(o, world, floorNum)
   self.traversedTiles = {} -- Set of visited tiles, formatted as strings like "x;y". Maps to lightness level
   self.mustUpdateCanvas = true
   self.floorNum = floorNum
+  self.projectiles = {}
+  self.colliders = {}
 
   self:makePhysicsBody()
   self:resetCanvas() -- Sets the initial value of self.canvas
@@ -80,6 +82,9 @@ function Level:restore(o, world, data)
     self:placeItemInLevel(world, itemObj.itemName, itemObj.x, itemObj.y )
   end
 
+  self.projectiles = {}
+  self.colliders = {}
+
   self.floorNum = data.floorNum
   self:makePhysicsBody()
   self:resetCanvas()
@@ -133,6 +138,10 @@ function Level:update(dt)
     self.mustUpdateCanvas = true
   end
 
+  for iProj=1, #self.projectiles do
+    self.projectiles[iProj]:update(dt)
+  end
+
 end
 
 function Level:draw(dt)
@@ -142,6 +151,10 @@ function Level:draw(dt)
 
   for iItem=1, #self.items do
     self.items[iItem]:draw()
+  end
+
+  for iProj=1, #self.projectiles do
+    self.projectiles[iProj]:draw()
   end
 
 end
@@ -204,6 +217,7 @@ function Level:redrawCell(x, y, alpha)
 
   local tileSize = screen.tileSize
   local colour = colours.lightGray
+  alpha = alpha or self.map.lightMap[y][x]
 
   --Blank out cell. Looks more weird if we don't do this
   love.graphics.setColor(colours.black)
@@ -303,25 +317,53 @@ end
 
 -- PHYSICS CONSTRUCTION
 
-function Level:makePhysicsBody()
-  self.body = love.physics.newBody(self.world, 0, 0, "static")
+function Level:makeCollider(x, y)
   local tSize = screen.tileSize
+  local tarX = (x + 0.3) * tSize
+  local tarY= (y + 0.6) * tSize
+  local body = love.physics.newBody(self.world, 0, 0, "static")
+  local shape = love.physics.newRectangleShape(tarX, tarY, tSize, tSize)
+  local fixture = love.physics.newFixture(body, shape)
+  self.colliders[getTileKey(x,y)] = fixture
+end
+
+function Level:makePhysicsBody()
   for y=0, #self.map.map do
     for x=0, #self.map.map[y] do
       if self:spaceNeedsCollider(x, y) then
-        local tarX = (x + 0.3) * tSize
-        local tarY= (y + 0.6) * tSize
-        local shape = love.physics.newRectangleShape(tarX, tarY, tSize, tSize)
-        local fixture = love.physics.newFixture(self.body, shape)
+        self:makeCollider(x, y)
       end
     end
   end
 end
 
+function Level:recalculateWallColliders(startX, startY, endX, endY)
+  for y=startY, endY do
+    for x=startX, endX do
+      if self:spaceNeedsCollider(x, y) and self.colliders[getTileKey(x,y)] == nil then
+        self:makeCollider(x, y)
+      elseif self.colliders[getTileKey(x,y)] ~= nil and not self:spaceNeedsCollider(x, y) then
+        self:destroyCollider(x, y)
+      end
+    end
+  end
+end
+
+function Level:destroyCollider(x, y)
+  local fixture = self.colliders[getTileKey(x, y)]
+  local shape = fixture:getShape()
+  local body = fixture:getBody()
+  fixture:destroy()
+  shape:release()
+  body:destroy()
+
+  self.colliders[getTileKey(x, y)] = nil
+end
+
 function Level:spaceNeedsCollider(x, y)
   -- Determines whether this space needs a collider
   -- Decided via being a solid space, adjacent to a not-solid space
-  if not self.map.map[y][x].solid then
+  if self.map.map[y][x] == nil or not self.map.map[y][x].solid then
     return false
   end
 
@@ -334,9 +376,19 @@ function Level:spaceNeedsCollider(x, y)
   elseif x < #self.map.map[y]-1 and not self.map.map[y][x+1].solid then
     return true
   end
-
   return false
+end
 
+function Level:addProjectileToLevel(projectile)
+  table.insert(self.projectiles, projectile)
+end
+
+function Level:removeProjectileFromLevel(projectilePtr)
+  for i=1, #self.projectiles do
+    if self.projectiles[i] == projectilePtr then
+      table.remove(self.projectiles, i)
+    end
+  end
 end
 
 function Level:addItemToLevel(itemPtr)
