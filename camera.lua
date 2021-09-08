@@ -15,11 +15,11 @@ function moveCamera(camera, dt)
   local halfTile = screen.tileSize/2
 
   local tx = math.max(player.body:getX(), halfWidth - halfTile)
-  tx = math.min(tx, level.pixelWidth - halfWidth)
+  tx = math.min(tx, level.pixelWidth - halfWidth + screen.tileSize)
   local dx = tx - camera:getX() - halfWidth
 
   local ty = math.max(player.body:getY(), halfHeight - halfTile)
-  ty = math.min(ty, level.pixelHeight - halfHeight )
+  ty = math.min(ty, level.pixelHeight - screen.height/5 + screen.tileSize )
   local dy = ty - camera:getY() - halfHeight
 
   local dist2 = dx*dx + dy*dy
