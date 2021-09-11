@@ -47,7 +47,6 @@ function Item:draw()
   local size = screen.tileSize
 
   love.graphics.setColor(colours.black)
-  --love.graphics.rectangle("fill", x-size, y, size, size)
   love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
 
   local c1,c2,c3,c4 = alphaBlendColour(self.colour, level:getLightnessAtTile(math.floor(x/size), math.floor(y/size)))

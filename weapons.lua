@@ -15,6 +15,7 @@ function Bomb:throwBomb(world, ox, oy, vx, vy)
   self.__index = self
   self.colour = colours.darkGray
   self.t = 0
+  self.deleted = false
 
   -- boiler plate physics setup
   o.body = love.physics.newBody(world, ox, oy, "dynamic")
@@ -42,7 +43,8 @@ function Bomb:explode()
       if math.abs(i) + math.abs(j) < self.explosionSize-1 then
         local x = bx + j
         local y = by + i
-        if level.map.map[y][x] == tiles.wall then
+        local tile = level:getTileAtCoordinates(x, y)
+        if tile == tiles.wall then
           level.map.map[y][x] = tiles.floor
           level:redrawCell(x, y)
         end
@@ -76,14 +78,10 @@ function Bomb:explode()
 
     player.body:applyLinearImpulse(fx, fy)
   end
-  --
-  --player.body:applyLinearImpulse(self.explosionForce / (dx*dx), self.explosionForce / (dy*dy))
-  --end
 
 end
 
 function Bomb:destroy()
-  level:removeProjectileFromLevel(self)
   self.fixture:destroy()
   self.shape:release()
   self.body:destroy()
@@ -122,7 +120,9 @@ function Bomb:update(dt)
     else self.colour = colours.yellow end
 
     if self.t > self.explosionTime then
-      self:destroy()
+      -- Causes self to be removed from the projectiles set, and have destructor called
+      -- on the next level update
+      self.deleted = true
     end
 
   end

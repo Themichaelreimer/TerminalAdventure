@@ -28,6 +28,7 @@ function Level:new(o, world, floorNum)
   self.colliders = {}
 
   self:makePhysicsBody()
+  self:makeLevelBoundaryCollider()
   self:resetCanvas() -- Sets the initial value of self.canvas
 
   self:placeItemInLevel(world, "map")
@@ -37,6 +38,21 @@ function Level:new(o, world, floorNum)
   self:placeItemInLevel(world, "coins")
 
   return o
+end
+
+function Level:makeLevelBoundaryCollider()
+  -- Makes 4 edges for the level boundary. Cleaned up when the world is deleted on floor transitions
+  local half = screen.tileSize/2
+  local body = love.physics.newBody(self.world, 0, 0, "static")
+  local top = love.physics.newEdgeShape(0-half,0-half,self.pixelWidth+half,0-half)
+  local right = love.physics.newEdgeShape(self.pixelWidth+half, 0-half, self.pixelWidth+half, self.pixelHeight+half)
+  local bottom = love.physics.newEdgeShape(self.pixelWidth+half, self.pixelHeight-half, self.pixelWidth+half, 0-half)
+  local left = love.physics.newEdgeShape(0-half, self.pixelHeight+half, 0-half, 0-half)
+  love.physics.newFixture(body, top, 1)
+  love.physics.newFixture(body, bottom, 1)
+  love.physics.newFixture(body, left, 1)
+  love.physics.newFixture(body, right, 1)
+
 end
 
 function Level:getFloorNum()
@@ -137,6 +153,8 @@ function Level:update(dt)
     self:updateCanvasLighting(playerX, playerY, 3)
     self.mustUpdateCanvas = true
   end
+
+  self:cleanupProjectiles()
 
   for iProj=1, #self.projectiles do
     self.projectiles[iProj]:update(dt)
@@ -363,7 +381,7 @@ end
 function Level:spaceNeedsCollider(x, y)
   -- Determines whether this space needs a collider
   -- Decided via being a solid space, adjacent to a not-solid space
-  if self.map.map[y][x] == nil or not self.map.map[y][x].solid then
+  if not self:tileInLevel(x, y) or not self.map.map[y][x].solid then
     return false
   end
 
@@ -384,11 +402,21 @@ function Level:addProjectileToLevel(projectile)
 end
 
 function Level:removeProjectileFromLevel(projectilePtr)
+  -- This function can probably be deleted
+  projectilePtr.deleted = true
+end
+
+function Level:cleanupProjectiles()
+  local newProjectiles = {}
   for i=1, #self.projectiles do
-    if self.projectiles[i] == projectilePtr then
-      table.remove(self.projectiles, i)
+    local item = self.projectiles[i]
+    if item.deleted then
+      item:destroy()
+     else
+       table.insert(newProjectiles, item)
     end
   end
+  self.projectiles = newProjectiles
 end
 
 function Level:addItemToLevel(itemPtr)
@@ -403,11 +431,20 @@ function Level:removeItemFromLevel(itemPtr)
   end
 end
 
+function Level:tileInLevel(x, y)
+  if (0 <= y and y < #self.map.map) then
+    return (0 <= x and x < #self.map.map[0])
+  end
+  return false
+end
+
 function Level:getLightnessAtTile(x, y)
+  if not self:tileInLevel(x, y) then return 0 end
   return self.map.lightMap[y][x]
 end
 
 function Level:getTileAtCoordinates(x, y)
   -- TODO: Probably better if we can check if x,y are ints already. For now, it's fine to just assume float and round
+  if not self:tileInLevel(x, y) then return nil end
   return self.map.map[math.floor(y)][math.floor(x)]
 end

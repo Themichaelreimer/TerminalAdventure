@@ -43,7 +43,6 @@ function Player:draw()
   local swordBody = self.swordObject.body
 
   love.graphics.setColor(colours.black)
-  --love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
 
   love.graphics.setColor(colours.green) -- nord green
   love.graphics.print("@", px-tSize/2, py-tSize/2 + playerStep, self.body:getAngle())
@@ -79,22 +78,22 @@ function Player:update(dt)
   local py = self.body:getY()
   displayedTileHintThisFrame = false
 
-  if love.keyboard.isDown("down") and py < level.pixelHeight - halfTile then
+  if love.keyboard.isDown("down") then
     dy = self.moveSpeed
     self.facing = SOUTH
   end
 
-  if love.keyboard.isDown("up") and py > halfTile then
+  if love.keyboard.isDown("up") then
     dy = -self.moveSpeed
     self.facing = NORTH
   end
 
-  if love.keyboard.isDown("left") and px > 0 then
+  if love.keyboard.isDown("left") then
     dx = -self.moveSpeed
     self.facing = WEST
   end
 
-  if love.keyboard.isDown("right") and px < level.pixelWidth then
+  if love.keyboard.isDown("right") then
     dx = self.moveSpeed
     self.facing = EAST
   end
