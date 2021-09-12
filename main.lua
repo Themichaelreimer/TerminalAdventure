@@ -9,7 +9,13 @@ font = {}
 world = {}  -- Physics world
 camera = {}
 player = {}
+playerSaveData = {}
 debugString = ""
+
+NORTH = 0
+EAST = 1
+SOUTH = 2
+WEST = 3
 
 debugRender = false
 normalizeDiagonalSpeed = true
@@ -19,11 +25,12 @@ require("helpers")
 require("controller")
 require("map")
 require("level")
-require("player")
+--require("player")
+Player = require("src.entities.player")
 require("camera")
 require("colours")
-require("items")
-require("weapons")
+require("items")  -- This will be deletable soon
+require("weapons") -- This will be deletable soon
 
 require("src.ecs")
 
@@ -71,7 +78,11 @@ function love.load()
   level = Level:new(nil, world, 1)
   local playerInitPos = level.map.upstairs
 
-  player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
+  --player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
+  player = Player(playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
+  ecsWorld:add(player)
+  assert(player ~= nil)
+
   camera = makeCamera(world, playerInitPos.x * screen.tileSize, playerInitPos.y* screen.tileSize)
 
   font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
@@ -84,6 +95,9 @@ end
 function saveLevel()
   local lvlNum = level.floorNum
   levelTable[lvlNum] = level:getLevelSaveData()
+  playerSaveData = player:getSaveData()
+  player:destroy()
+  player=nil
 end
 
 function nextLevel()
@@ -106,7 +120,9 @@ function nextLevel()
   end
 
   local playerInitPos = level.map.upstairs
-  player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
+  --player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
+  player = Player(playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile, playerSaveData)
+  ecsWorld:add(player)
   camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
 
 end
@@ -126,7 +142,9 @@ function prevLevel()
 
     level = Level:restore(nil, world, levelTable[dstNum])
     local playerInitPos = level.map.downstairs
-    player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
+    --player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
+    player = Player(playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile, playerSaveData)
+    ecsWorld:add(player)
     camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
   end
 end
@@ -137,7 +155,7 @@ function love.update(dt)
 
   if blockingText == nil then
     moveCamera(camera, dt)
-    player:update(dt)
+    --player:update(dt)
     level:update(dt)
     world:update(dt)
   else
@@ -151,29 +169,36 @@ end
 
 function love.draw()
 
-  local uiSize = screen.height/5
-  local halfWidth = screen.width/2
-  local margin = 12
-  local lineHeight = 24
-
   level:updateLevelCanvas()
 
   -- CAMERA SPACE
   love.graphics.translate(-camera:getX(), -camera:getY())
 
   level:draw()
-  player:draw()
-  -- Updates the ECS section. This happens here because
-  -- ECS contains a drawing system that won't work otherwise
+
+  -- Updates the ECS world. This happens here because
+  -- ECS contains a drawing system that can only draw inside of love.draw
   local dt = love.timer.getDelta()
   ecsWorld:update(dt)
 
-  love.graphics.setColor(colours.white) -- nord white
-
-  -- SCREEN SPACE
+  -- / CAMERA SPACE
   love.graphics.translate(camera:getX(), camera:getY())
 
+  if player then drawUI() end
 
+  if blockingText ~= nil then
+    displayBlockingText()
+  end
+
+end
+
+function drawUI()
+  local uiSize = screen.height/5
+  local halfWidth = screen.width/2
+  local margin = 12
+  local lineHeight = 24
+
+  love.graphics.setColor(colours.white)
 
   -- DRAW GUI
   love.graphics.translate(0, 4*uiSize) -- Transform into UI screen space
@@ -198,11 +223,6 @@ function love.draw()
   love.graphics.print(debugString, margin, 4*lineHeight)
 
   love.graphics.translate(0, -4*uiSize) -- Transform into UI screen space
-
-  if blockingText ~= nil then
-    displayBlockingText()
-  end
-
 end
 
 function getAsciiBar(val, max)

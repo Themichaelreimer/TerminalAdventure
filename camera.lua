@@ -9,25 +9,26 @@ function makeCamera(world, xPixel, yPixel)
 end
 
 function moveCamera(camera, dt)
-  local uiSize = screen.height/5
-  local halfWidth = screen.width/2
-  local halfHeight = (screen.height + uiSize)/2
-  local halfTile = screen.tileSize/2
+  if player then
+    local uiSize = screen.height/5
+    local halfWidth = screen.width/2
+    local halfHeight = (screen.height + uiSize)/2
+    local halfTile = screen.tileSize/2
 
-  local tx = math.max(player.body:getX(), halfWidth - halfTile)
-  tx = math.min(tx, level.pixelWidth - halfWidth + screen.tileSize)
-  local dx = tx - camera:getX() - halfWidth
+    local tx = math.max(player.body:getX(), halfWidth - halfTile)
+    tx = math.min(tx, level.pixelWidth - halfWidth + screen.tileSize)
+    local dx = tx - camera:getX() - halfWidth
 
-  local ty = math.max(player.body:getY(), halfHeight - halfTile)
-  ty = math.min(ty, level.pixelHeight - screen.height/5 + screen.tileSize )
-  local dy = ty - camera:getY() - halfHeight
+    local ty = math.max(player.body:getY(), halfHeight - halfTile)
+    ty = math.min(ty, level.pixelHeight - screen.height/5 + screen.tileSize )
+    local dy = ty - camera:getY() - halfHeight
 
-  local dist2 = dx*dx + dy*dy
+    local dist2 = dx*dx + dy*dy
 
-  if dist2 > 0.1 then
-    camera:setLinearVelocity(dx * dist2 * dt / 16, dy * dist2 * dt / 16)
-  else
-    camera:setLinearVelocity(0, 0)
+    if dist2 > 0.1 then
+      camera:setLinearVelocity(dx * dist2 * dt / 16, dy * dist2 * dt / 16)
+    else
+      camera:setLinearVelocity(0, 0)
+    end
   end
-
 end

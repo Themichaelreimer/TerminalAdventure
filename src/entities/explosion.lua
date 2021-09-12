@@ -2,13 +2,15 @@ local Explosion = class("Explosion")
 
 Explosion.char = '*'
 Explosion.time = 0.5  -- duration
-Explosion.force = 10000000
-Explosion.baseDamage = 24
+Explosion.force = 5000000
+Explosion.maxForce = 10000
+Explosion.baseDamage = 100
 Explosion.className = "Explosion" -- Used for contact callback
 
 function Explosion:init(x, y, size, maxDamage)
   self.lifetime = self.time
   self.size = size
+  self.r2 = (size * screen.tileSize) * ( size * screen.tileSize)
   self.colour = colours.yellow
   self.deleted = false
 
@@ -87,21 +89,24 @@ function Explosion:applyExplosionToBodies()
       local dx = body:getX() - self.x
       local dy = body:getY() - self.y
       local dist2 = dx*dx + dy*dy
-      if object.physicsable then self:applyForce(body, dx, dy, dist2) end
-      if object.takeDamage then self:applyDamage(object, dx, dy, dist2) end
+      if dist2 < self.r2 then
+        if object.physicsable then self:applyForce(body, dx, dy, dist2) end
+        if object.takeDamage then self:applyDamage(object, dx, dy, dist2) end
+      end
     end
   end
 end
 
 function Explosion:applyForce(body, dx, dy, dist2)
   local f = self.force / (1 + dist2)
+  if f > self.maxForce then f = self.maxForce end
   body:applyLinearImpulse(f * dx / dist2, f * dy / dist2)
 end
 
 function Explosion:applyDamage(entity, dx, dy, dist2)
   if entity == nil then return nil end
   local dmg = self.damage / (1 + dist2)
-  object:takeDamage(dmg)
+  entity:takeDamage(dmg)
 end
 
 return Explosion

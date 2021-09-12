@@ -3,7 +3,12 @@ local updateSystem = tiny.processingSystem(class "updateSystem")
 updateSystem.filter = tiny.requireAll("update")
 
 function updateSystem:process(entity, dt)
-  if entity.update then entity:update(dt) end
+  -- Do not run update methods while the game should be "paused", which is true if
+  -- We have blocking text or an open menu (not implemented yet)
+  if not blockingText then
+    if entity.update and not entity.deleted then entity:update(dt) end
+    self:cleanupGameObjects()
+  end
 end
 
 -- Updates the table of references to accessible game objects

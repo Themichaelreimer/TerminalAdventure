@@ -144,22 +144,23 @@ function Level:placeItemInLevel(world, itemName, x, y)
 end
 
 function Level:update(dt)
-  local playerX, playerY = player:getMapCoordinates()
-  local tileKey = getTileKey(playerX, playerY)
+  if player then
+    local playerX, playerY = player:getMapCoordinates()
+    local tileKey = getTileKey(playerX, playerY)
 
-  --debugString = tileKey
-  if self.traversedTiles[tileKey] == nil or true then
-    self.traversedTiles[tileKey] = true
-    self:updateCanvasLighting(playerX, playerY, 3)
-    self.mustUpdateCanvas = true
+    --debugString = tileKey
+    if self.traversedTiles[tileKey] == nil or true then
+      self.traversedTiles[tileKey] = true
+      self:updateCanvasLighting(playerX, playerY, 3)
+      self.mustUpdateCanvas = true
+    end
+
+    self:cleanupProjectiles()
+
+    for iProj=1, #self.projectiles do
+      self.projectiles[iProj]:update(dt)
+    end
   end
-
-  self:cleanupProjectiles()
-
-  for iProj=1, #self.projectiles do
-    self.projectiles[iProj]:update(dt)
-  end
-
 end
 
 function Level:draw(dt)
@@ -183,7 +184,7 @@ end
 
 function Level:updateLevelCanvas()
   -- MUST HAPPEN IN love.draw(), otherwise changes won't stick
-  if self.mustUpdateCanvas then
+  if player and self.mustUpdateCanvas then
     local playerX, playerY = player:getMapCoordinates()
     self:updateCanvasLighting(playerX, playerY, 10)
     self.mustUpdateCanvas = false
@@ -274,8 +275,13 @@ function Level:traceRay(x, y, angle, maxDistance)
     local tileY = math.floor(y + dy)
 
     -- Stop the raycast if we go off the map. Return previous results
-    if tileY < 0 or tileY > self.tileHeight then return results end
-    if tileX < 0 or tileX > self.tileWidth then return results end
+    if tileY < 0 or tileY > self.tileHeight or not tileY then return results end
+    if tileX < 0 or tileX > self.tileWidth or not tileX then return results end
+
+    assert(tileY >= 0, "tileY = " .. tileY)
+    assert(tileY < #self.map.map, "tileY = " .. tileY)
+    assert(tileX >= 0, "tileX = " .. tileX)
+    assert(tileX < #self.map.map[tileY], "tileX = " .. tileX)
 
     local tile = self.map.map[tileY][tileX]
 
