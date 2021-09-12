@@ -18,6 +18,8 @@ Player = {
   HP = 24,
 }
 
+Bomb = require("src.entities.bomb")
+
 -- Used to prevent multiple key pressed on hold for keys where that matters
 
 function Player:new(o, world, x, y)
@@ -113,8 +115,10 @@ function Player:update(dt)
 
   if keyboard.z then
     if hasBombs then
-      local bomb = Bomb:throwBomb(world, px, py, 1.5*dx, 1.5*dy)
-      level:addProjectileToLevel(bomb)
+      -- Old method of creating bombs
+      --local bomb = Bomb:throwBomb(world, px, py, 1.5*dx, 1.5*dy)
+      --level:addProjectileToLevel(bomb)
+      ecsWorld:add(Bomb(px, py, dx, dy))
     end
   end
 

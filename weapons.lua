@@ -1,5 +1,11 @@
+-- This file provides the pre-ECS implementation
+-- of bombs and explosions. Writing this file
+-- showed just how unsustainable that strategy is
+-- though. Keeping this file short term for historical purposes
+
+-- see src/entities/bomb.lua for the new implementation
 ----------------------------------------------------------------------------------
-Bomb = {
+OldBomb = {
   char = 'b',
   explodeChar = '*',
   fuseTime = 2.0,
@@ -9,7 +15,7 @@ Bomb = {
   ld = 5,
 }
 
-function Bomb:throwBomb(world, ox, oy, vx, vy)
+function OldBomb:throwOldBomb(world, ox, oy, vx, vy)
   local o = {}
   setmetatable(o, self)
   self.__index = self
@@ -32,7 +38,7 @@ function Bomb:throwBomb(world, ox, oy, vx, vy)
 
 end
 
-function Bomb:explode()
+function OldBomb:explode()
 
   local bx = math.floor(self.body:getX() / screen.tileSize)
   local by = math.floor(self.body:getY() / screen.tileSize)
@@ -81,14 +87,14 @@ function Bomb:explode()
 
 end
 
-function Bomb:destroy()
+function OldBomb:destroy()
   self.fixture:destroy()
   self.shape:release()
   self.body:destroy()
 end
 
 
-function Bomb:update(dt)
+function OldBomb:update(dt)
   self.t = self.t + dt
   local theta = self.t * 2 * math.pi
 
@@ -102,7 +108,7 @@ function Bomb:update(dt)
       self:explode()
     end
 
-    -- Update bomb colour
+    -- Update OldBomb colour
     local c = math.sin(-theta)
     if c > 0.5 then self.colour = colours.white
     elseif c > -0.5 then self.colour = colours.darkGray
@@ -128,7 +134,7 @@ function Bomb:update(dt)
   end
 end
 
-function Bomb:draw()
+function OldBomb:draw()
   local x = self.body:getX()
   local y = self.body:getY()
   local size = screen.tileSize/2

@@ -1,8 +1,12 @@
+-- Import external libraries
+class = require("lib.30log")
+tiny = require("lib.tiny")
+
 screen = {}
 level = {}
 levelTable = {}
 font = {}
-world = {}
+world = {}  -- Physics world
 camera = {}
 player = {}
 debugString = ""
@@ -11,7 +15,6 @@ debugRender = false
 normalizeDiagonalSpeed = true
 seed = love.math.random()*10000,
 
---require("lib/")
 require("helpers")
 require("controller")
 require("map")
@@ -21,6 +24,8 @@ require("camera")
 require("colours")
 require("items")
 require("weapons")
+
+require("src.ecs")
 
 colours = japanesque
 
@@ -158,10 +163,17 @@ function love.draw()
 
   level:draw()
   player:draw()
+  -- Updates the ECS section. This happens here because
+  -- ECS contains a drawing system that won't work otherwise
+  local dt = love.timer.getDelta()
+  ecsWorld:update(dt)
+
   love.graphics.setColor(colours.white) -- nord white
 
   -- SCREEN SPACE
   love.graphics.translate(camera:getX(), camera:getY())
+
+
 
   -- DRAW GUI
   love.graphics.translate(0, 4*uiSize) -- Transform into UI screen space
