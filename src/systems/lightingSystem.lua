@@ -1,7 +1,7 @@
 local lightingSystem = tiny.processingSystem(class "lightingSystem")
 
 lightingSystem.filter = tiny.requireAll("lightDistance", "body")
-lightingSystem.NUM_RAYS = 80
+lightingSystem.NUM_RAYS = 90
 lightingSystem.previousLevel = nil
 
 -- The entities in this system represent light sources

@@ -75,6 +75,10 @@ function love.load()
   screen.settings = {
     resizable=true,
   }
+  -- Pre-calculated useful values
+  screen.uiSize = screen.height/5
+  screen.halfWidth = screen.width/2
+
 
   level = Level:new(nil, world, 1)
   local playerInitPos = level.map.upstairs
@@ -82,7 +86,6 @@ function love.load()
   --player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
   player = Player(playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
   ecsWorld:add(player)
-  assert(player ~= nil)
 
   camera = makeCamera(world, playerInitPos.x * screen.tileSize, playerInitPos.y* screen.tileSize)
 
@@ -108,6 +111,7 @@ function nextLevel()
   saveLevel()
 
   level:destroy()
+  ecsWorld:clearEntities()
 
   world = love.physics.newWorld(0, 0, true)
   world:setCallbacks(beginContact, endContact)
@@ -137,6 +141,8 @@ function prevLevel()
     levelTable[lvlNum] = level:getLevelSaveData()
 
     level:destroy()
+    ecsWorld:clearEntities()
+
 
     world = love.physics.newWorld(0, 0, true)
     world:setCallbacks(beginContact, endContact)
