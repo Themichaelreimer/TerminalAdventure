@@ -3,3 +3,7 @@ function randomElement(arr)
   local index = love.math.random(1, #arr)
   return arr[index]
 end
+
+function round(x)
+  return math.floor(0.5 + x)
+end

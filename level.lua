@@ -103,8 +103,8 @@ function Level:restore(o, world, data)
 
   self.floorNum = data.floorNum
   self:makePhysicsBody()
-  self:resetCanvas()
-  self:renderEntireCanvas()
+  --self:resetCanvas()
+  --self:renderEntireCanvas()
 
   return o
 end
@@ -149,11 +149,13 @@ function Level:update(dt)
     local tileKey = getTileKey(playerX, playerY)
 
     --debugString = tileKey
+    --[[
     if self.traversedTiles[tileKey] == nil or true then
       self.traversedTiles[tileKey] = true
       self:updateCanvasLighting(playerX, playerY, 3)
       self.mustUpdateCanvas = true
     end
+    ]]--
 
     self:cleanupProjectiles()
 
@@ -164,9 +166,9 @@ function Level:update(dt)
 end
 
 function Level:draw(dt)
-  love.graphics.setBackgroundColor(colours.black) -- nord black
-  love.graphics.setColor(1,1,1)
-  love.graphics.draw(self.canvas)
+  --love.graphics.setBackgroundColor(colours.black) -- nord black
+  --love.graphics.setColor(1,1,1)
+  --love.graphics.draw(self.canvas)
 
   for iItem=1, #self.items do
     self.items[iItem]:draw()
@@ -191,10 +193,12 @@ function Level:updateLevelCanvas()
   end
 end
 
+-- Delete me
 function Level:resetCanvas()
   self.canvas = love.graphics.newCanvas(self.pixelWidth, self.pixelHeight)
 end
 
+-- DELETE ME
 function Level:updateCanvasLighting(x, y, dist)
   local tileSize = screen.tileSize
   love.graphics.setCanvas(self.canvas)
@@ -232,6 +236,7 @@ function Level:updateCanvasLighting(x, y, dist)
   love.graphics.setCanvas()
 end
 
+-- Delete me
 function Level:redrawCell(x, y, alpha)
 
   local tileSize = screen.tileSize
@@ -248,6 +253,7 @@ function Level:redrawCell(x, y, alpha)
 
 end
 
+-- DELETE ME
 function Level:rayTrace(x, y, numRays)
   local maxdist = 10
   local results = {}
@@ -258,6 +264,7 @@ function Level:rayTrace(x, y, numRays)
   return results
 end
 
+-- Delete me
 function Level:traceRay(x, y, angle, maxDistance)
   local results = {}
   local angleX = math.cos(angle) -- Contribution of the angle to dx / dy
@@ -299,6 +306,7 @@ function Level:traceRay(x, y, angle, maxDistance)
   return results
 end
 
+-- Delete me
 function Level:renderEntireCanvas()
   local tileSize = screen.tileSize
   love.graphics.setColor(colours.lightGray) -- nord white
@@ -306,7 +314,6 @@ function Level:renderEntireCanvas()
 
   for y=0, #self.map.map do
     for x=0, #self.map.map[y] do
-      --love.graphics.print(self.map.map[y][x].char, x*tileSize, y*tileSize)
       self:redrawCell(x, y, self.map.lightMap[y][x])
     end
   end

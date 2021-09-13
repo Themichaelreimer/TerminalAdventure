@@ -3,6 +3,7 @@ class = require("lib.30log")
 tiny = require("lib.tiny")
 
 screen = {}
+levelCanvas = love.graphics.newCanvas()
 level = {}
 levelTable = {}
 font = {}
@@ -155,7 +156,8 @@ function love.update(dt)
 
   if blockingText == nil then
     moveCamera(camera, dt)
-    --player:update(dt)
+
+    -- Update the Box2D physics world (as opposed to the ECS world)
     level:update(dt)
     world:update(dt)
   else
@@ -169,12 +171,17 @@ end
 
 function love.draw()
 
-  level:updateLevelCanvas()
+
+
+  -- Draw level canvas
+  if levelCanvas then
+    love.graphics.setBackgroundColor(colours.black)
+    love.graphics.setColor(1,1,1)
+    love.graphics.draw(levelCanvas)
+  end
 
   -- CAMERA SPACE
   love.graphics.translate(-camera:getX(), -camera:getY())
-
-  level:draw()
 
   -- Updates the ECS world. This happens here because
   -- ECS contains a drawing system that can only draw inside of love.draw
@@ -201,6 +208,7 @@ function drawUI()
   love.graphics.setColor(colours.white)
 
   -- DRAW GUI
+  -- FUTURE OPTIMIZATION - could draw this to canvas on updates instead of re-rendering every screen
   love.graphics.translate(0, 4*uiSize) -- Transform into UI screen space
   love.graphics.setColor(colours.black)
   love.graphics.rectangle('fill', 0, 0, screen.width, uiSize)

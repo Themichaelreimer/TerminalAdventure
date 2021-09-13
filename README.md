@@ -4,6 +4,10 @@ adventure game!
 
 # Devlog
 
+## Weekend 8
+  - Introduced an Entity-Component-System architecture and ported player, items, weapons, and lighting to ECS
+  - Fixed lots of bugs, and improved performance
+
 ## Weekend 7
 ![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/7.gif)
 - Introduced bombs, destructable terrain, health/damage
