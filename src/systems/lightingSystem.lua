@@ -7,12 +7,12 @@ lightingSystem.previousLevel = nil
 -- The entities in this system represent light sources
 function lightingSystem:process(entity, dt)
 
+  love.graphics.setCanvas(levelCanvas)
+
   if not self.previousLevel == level then
     self:resetCanvas()
   end
   self.previousLevel = level
-
-  love.graphics.setCanvas(levelCanvas)
 
   if level and player then
     if not hasMap then
@@ -24,6 +24,7 @@ function lightingSystem:process(entity, dt)
   end
 
   love.graphics.setCanvas()
+
 end
 
 function lightingSystem:updateCanvasLighting(x, y, dist, numRays)
@@ -59,7 +60,7 @@ function lightingSystem:redrawCell(x, y, alpha)
 
   local tileSize = screen.tileSize
   local colour = colours.lightGray
-  alpha = alpha or self.map.lightMap[y][x]
+  alpha = alpha or level.map.lightMap[y][x]
 
   --Blank out cell. Looks more weird if we don't do this
   love.graphics.setColor(colours.black)
@@ -134,6 +135,32 @@ function lightingSystem:resetMapLightness()
       level.map.lightMap[y][x] = 0.0
     end
   end
+end
+
+function lightingSystem:renderEntireCanvas()
+  local tileSize = screen.tileSize
+  love.graphics.setColor(colours.lightGray) -- nord white
+  love.graphics.setCanvas(self.canvas)
+
+  for y=0, #self.map.map do
+    for x=0, #self.map.map[y] do
+      self:redrawCell(x, y, self.map.lightMap[y][x])
+    end
+  end
+
+  -- DEBUG REGION
+  -- Draw bounding boxes for physics; can be deleted once physics works
+  if debugRender then
+    love.graphics.setColor(0.5, 0.1, 0.1,0.5)
+    bodies = world:getBodies()
+    body = bodies[1]
+    for k,v in pairs(body:getFixtures()) do
+      love.graphics.polygon("fill", body:getWorldPoints(v:getShape():getPoints()))
+    end
+    love.graphics.setColor(1, 1, 1, 1)
+  end
+  -- / DEBUG REGION
+  love.graphics.setCanvas()
 end
 
 return lightingSystem

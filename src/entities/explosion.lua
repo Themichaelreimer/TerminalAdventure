@@ -67,7 +67,7 @@ function Explosion:damageWalls(tileX, tileY)
         local tile = level:getTileAtCoordinates(x, y)
         if tile == tiles.wall then
           level.map.map[y][x] = tiles.floor
-          level:redrawCell(x, y)
+          lightingSystem:redrawCell(x, y)
         end
       end
     end

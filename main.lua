@@ -125,7 +125,7 @@ function nextLevel()
   end
 
   local playerInitPos = level.map.upstairs
-  --player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
+
   player = Player(playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile, playerSaveData)
   ecsWorld:add(player)
   camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
@@ -143,13 +143,12 @@ function prevLevel()
     level:destroy()
     resetEntities()
 
-
     world = love.physics.newWorld(0, 0, true)
     world:setCallbacks(beginContact, endContact)
 
     level = Level:restore(nil, world, levelTable[dstNum])
     local playerInitPos = level.map.downstairs
-    --player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
+
     player = Player(playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile, playerSaveData)
     ecsWorld:add(player)
     camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
@@ -176,8 +175,6 @@ function love.update(dt)
 end
 
 function love.draw()
-
-
 
   -- Draw level canvas
   if levelCanvas then
