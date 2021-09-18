@@ -19,13 +19,14 @@ function moveCamera(camera, dt)
     tx = math.min(tx, level.pixelWidth - halfWidth + screen.tileSize)
     local dx = tx - camera:getX() - halfWidth
 
-    local ty = math.max(player.body:getY(), halfHeight - halfTile)
-    ty = math.min(ty, level.pixelHeight + screen.tileSize )
-    local dy = ty - camera:getY() - halfHeight + screen.uiSize
+    --local ty = math.max(player.body:getY(), halfHeight - halfTile)
+    local ty = math.max(player.body:getY() + uiSize, halfHeight - halfTile) -- hard to say if 2*half is better, or half
+    ty = math.min(ty, level.pixelHeight + screen.tileSize - uiSize)
+    local dy = ty - camera:getY() - halfHeight
 
     local dist2 = dx*dx + dy*dy
 
-    if dist2 > 0.1 then
+    if dist2 > 0.001 then
       camera:setLinearVelocity(dx * dist2 * dt / 16, dy * dist2 * dt / 16)
     else
       camera:setLinearVelocity(0, 0)

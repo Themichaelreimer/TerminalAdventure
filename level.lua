@@ -26,7 +26,7 @@ function Level:new(o, world, floorNum)
   self.floorNum = floorNum
   self.projectiles = {}
   self.colliders = {}
-  levelCanvas = love.graphics.newCanvas(self.pixelWidth*2, self.pixelHeight*2)
+  levelCanvas = love.graphics.newCanvas(self.pixelWidth, self.pixelHeight)
 
   self:makePhysicsBody()
   self:makeLevelBoundaryCollider()
@@ -44,10 +44,10 @@ function Level:makeLevelBoundaryCollider()
   -- Makes 4 edges for the level boundary. Cleaned up when the world is deleted on floor transitions
   local half = screen.tileSize/2
   local body = love.physics.newBody(self.world, 0, 0, "static")
-  local top = love.physics.newEdgeShape(0-half,0-half,self.pixelWidth+half,0-half)
-  local right = love.physics.newEdgeShape(self.pixelWidth+half, 0-half, self.pixelWidth+half, self.pixelHeight+half)
-  local bottom = love.physics.newEdgeShape(self.pixelWidth+half, self.pixelHeight-half, self.pixelWidth+half, 0-half)
-  local left = love.physics.newEdgeShape(0-half, self.pixelHeight+half, 0-half, 0-half)
+  local top = love.physics.newEdgeShape(0-half,0-half,self.pixelWidth+half*2,0-half)
+  local right = love.physics.newEdgeShape(self.pixelWidth+half*2, 0-half*2, self.pixelWidth+half*2, self.pixelHeight+half*2)
+  local bottom = love.physics.newEdgeShape(self.pixelWidth+half*2, self.pixelHeight+half*2, 0-half, self.pixelHeight+half*2)
+  local left = love.physics.newEdgeShape(0-half, self.pixelHeight+half*2, 0-half, 0-half)
   love.physics.newFixture(body, top, 1)
   love.physics.newFixture(body, bottom, 1)
   love.physics.newFixture(body, left, 1)
@@ -221,11 +221,11 @@ function Level:spaceNeedsCollider(x, y)
 
   if y > 0 and not self.map.map[y-1][x].solid then
     return true
-  elseif y < #self.map.map-1 and not self.map.map[y+1][x].solid then
+  elseif y < #self.map.map and not self.map.map[y+1][x].solid then
     return true
   elseif x > 0 and not self.map.map[y][x-1].solid then
     return true
-  elseif x < #self.map.map[y]-1 and not self.map.map[y][x+1].solid then
+  elseif x < #self.map.map[y] and not self.map.map[y][x+1].solid then
     return true
   end
   return false
@@ -246,8 +246,8 @@ function Level:removeItemFromLevel(itemPtr)
 end
 
 function Level:tileInLevel(x, y)
-  if (0 <= y and y < #self.map.map) then
-    return (0 <= x and x < #self.map.map[0])
+  if (0 <= y and y <= #self.map.map) then
+    return (0 <= x and x <= #self.map.map[0])
   end
   return false
 end
