@@ -18,6 +18,8 @@ function Bomb:init(x, y, vx, vy)
 
   self.body:setLinearVelocity(3*vx, 3*vy)
   self.body:setLinearDamping(self.ld)
+  self.body:setFixedRotation(true)
+
   self.fixture:setRestitution(0.1)
   self.fixture:setMask(collisionCategories.player)
   table.insert(gameObjects, self)

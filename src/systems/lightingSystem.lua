@@ -1,7 +1,7 @@
 local lightingSystem = tiny.processingSystem(class "lightingSystem")
 
 lightingSystem.filter = tiny.requireAll("lightDistance", "body")
-lightingSystem.NUM_RAYS = 90
+lightingSystem.NUM_RAYS = 80
 lightingSystem.previousLevel = nil
 
 -- The entities in this system represent light sources
@@ -98,11 +98,6 @@ function lightingSystem:traceRay(x, y, angle, maxDistance)
     -- Stop the raycast if we go off the map. Return previous results
     if tileY < 0 or tileY > level.tileHeight or not tileY then return results end
     if tileX < 0 or tileX > level.tileWidth or not tileX then return results end
-
-    --assert(tileY >= 0, "tileY = " .. tileY)
-    --assert(tileY < #self.map.map, "tileY = " .. tileY)
-    --assert(tileX >= 0, "tileX = " .. tileX)
-    --assert(tileX < #self.map.map[tileY], "tileX = " .. tileX)
 
     local tile = level.map.map[tileY][tileX]
 

@@ -111,7 +111,7 @@ function nextLevel()
   saveLevel()
 
   level:destroy()
-  ecsWorld:clearEntities()
+  resetEntities()
 
   world = love.physics.newWorld(0, 0, true)
   world:setCallbacks(beginContact, endContact)
@@ -135,13 +135,13 @@ end
 function prevLevel()
   local lvlNum = level.floorNum
   local dstNum = level.floorNum-1
-  saveLevel()
 
   if lvlNum > 1 then
+    saveLevel()
     levelTable[lvlNum] = level:getLevelSaveData()
 
     level:destroy()
-    ecsWorld:clearEntities()
+    resetEntities()
 
 
     world = love.physics.newWorld(0, 0, true)
@@ -316,4 +316,9 @@ end
 
 function endContact(fixture1, fixture2, contact)
   debugString = ""
+end
+
+function resetEntities()
+  ecsWorld:clearEntities()
+  gameObjects = {}
 end
