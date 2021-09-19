@@ -20,7 +20,8 @@ WEST = 3
 
 debugRender = false
 normalizeDiagonalSpeed = true
-seed = love.math.random()*10000,
+seed = love.math.random()*10000
+playerName = ""
 
 require("colours")
 require("helpers")
@@ -59,6 +60,13 @@ WINDOW_TITLES = {
   "What's the Deal with ASCII?",
 }
 
+CHARACTER_NAMES = {
+  "Jerry the Destroyer",
+  "George the King",
+  "Elaine the Graceful",
+  "Cosmo the Magician"
+}
+
 function love.load()
   -- Init physics and world
   world = love.physics.newWorld(0, 0, true)
@@ -92,6 +100,7 @@ function love.load()
   font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
   love.graphics.setFont(font)
   love.window.setTitle(randomElement(WINDOW_TITLES))
+  playerName = randomElement(CHARACTER_NAMES)
   love.window.updateMode(screen.width, screen.height, screen.settings)
 
 end
@@ -217,7 +226,7 @@ function drawUI()
   love.graphics.rectangle('fill', 0, 0, screen.width, uiSize)
   love.graphics.setColor(colours.white)
 
-  love.graphics.print("Jerry the Destroyer", margin, lineHeight)
+  love.graphics.print(playerName, margin, lineHeight)
   love.graphics.print("Dungeon: L"..level:getFloorNum(), margin + halfWidth, lineHeight)
 
   love.graphics.print("Health: " .. player.HP .. "/"..player.maxHP, margin, 2*lineHeight)
@@ -278,8 +287,9 @@ function setBlockingText(text, subtext, time)
   }
 end
 
--- ONLY WORKS IF BOTH ITEMS AREN'T THE SAME CLASS
+-- These functions are most likely deprecated, for an ECS system that handles the kinds of collisions
 function findObjectOfClassInFixtures(obj1, obj2, className)
+  -- ONLY WORKS IF BOTH ITEMS AREN'T THE SAME CLASS
   local result = nil
   if obj1.className == className then
     result = obj1
@@ -314,6 +324,7 @@ end
 function endContact(fixture1, fixture2, contact)
   debugString = ""
 end
+-- END DEPRECATED BLOCK
 
 function resetEntities()
   ecsWorld:clearEntities()
