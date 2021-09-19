@@ -22,6 +22,7 @@ debugRender = false
 normalizeDiagonalSpeed = true
 seed = love.math.random()*10000,
 
+require("colours")
 require("helpers")
 require("controller")
 require("map")
@@ -29,7 +30,6 @@ require("level")
 --require("player")
 Player = require("src.entities.player")
 require("camera")
-require("colours")
 require("items")  -- This will be deletable soon
 require("weapons") -- This will be deletable soon
 

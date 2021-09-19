@@ -1,4 +1,5 @@
 Bomb = require("src.entities.bomb")
+Sword = require("src.entities.sword")
 
 local Player = class("Player")
 
@@ -13,6 +14,7 @@ function Player:init(x, y, initParams)
     initParams = initParams or {}
     self.deleted = false
     self.physicsable = true
+    self.isSwinging = false
 
     self.body = love.physics.newBody(world, x, y, "dynamic")
     self.shape = love.physics.newRectangleShape(-5, 5, self.size, self.size)
@@ -89,7 +91,8 @@ function Player:update(dt)
   end
 
   if keyboard.x and not self.isSwinging then
-    --self:swingSword()
+    debugString = "Swing?"
+    ecsWorld:add(Sword(self))
   end
 
   if keyboard.z then
@@ -145,13 +148,6 @@ function Player:draw()
   if debugRender then
     love.graphics.setColor(0.1, 0.1, 0.5, 0.5)
     love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
-    if self.isSwinging then
-      love.graphics.setColor(0,0,1,0.6)
-      love.graphics.polygon("fill", self.swordObject.body:getWorldPoints(self.swordObject.shape:getPoints()))
-      local itemX, itemY = self:getItemPosition()
-
-      love.graphics.circle("fill", itemX, itemY, 4)
-    end
     love.graphics.setColor(1, 1, 1, 1)
   end
 

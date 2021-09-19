@@ -1,0 +1,7 @@
+-- TODO:
+-- Implement system to draw entities that have the following components:
+--    - body
+--    - colour
+--    - char
+--    - bouncy (optional: boolean)
+--    - angle (optional: number)
