@@ -19,9 +19,9 @@ function Player:init(x, y, initParams)
     self.body = love.physics.newBody(world, x, y, "dynamic")
     self.shape = love.physics.newRectangleShape(-5, 5, self.size, self.size)
     self.fixture = love.physics.newFixture(self.body, self.shape)
+    self.fixture:setUserData(self)
 
     self.fixture:setCategory(collisionCategories.player)
-    self.fixture:setUserData(o)
     self.body:setFixedRotation(true)
     self.body:setLinearDamping(self.ld)
 
@@ -90,8 +90,8 @@ function Player:update(dt)
     end
   end
 
+  -- TODO: Replace isSwinging with flags that let you use x and z
   if keyboard.x and not self.isSwinging then
-    debugString = "Swing?"
     ecsWorld:add(Sword(self))
   end
 

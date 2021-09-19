@@ -4,7 +4,7 @@ local Bomb = class("Bomb")
 
 Bomb.char = 'b'
 Bomb.time = 2
-Bomb.ld = 5
+Bomb.ld = 50
 
 function Bomb:init(x, y, vx, vy)
   self.lifetime = self.time
@@ -22,6 +22,7 @@ function Bomb:init(x, y, vx, vy)
 
   self.fixture:setRestitution(0.1)
   self.fixture:setMask(collisionCategories.player)
+  self.fixture:setUserData(self)
   table.insert(gameObjects, self)
 end
 
