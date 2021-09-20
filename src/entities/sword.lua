@@ -3,7 +3,7 @@ local Sword = class("Sword")
 Sword.char = 'l'
 Sword.expireTime = 0.30
 Sword.arcAngle = 7 * math.pi / 8
-Sword.force = 100
+Sword.force = 200
 Sword.damage = 10
 Sword.width = 8
 Sword.height = 24
@@ -69,10 +69,11 @@ function Sword:dealHit(otherEntity)
 end
 
 function Sword:applyForce(body)
-  dx = body:getX() - self.parent.body:getX()
-  dy = body:getY() - self.parent.body:getY()
-  r = math.sqrt(dx * dx + dy * dy)
-  body:applyLinearImpulse(self.force * dx/r, self.force * dy/r)
+  --local dx = body:getX() - self.parent.body:getX()
+  --local dy = body:getY() - self.parent.body:getY()
+  --r = math.sqrt(dx * dx + dy * dy)
+  local vx, vy = getDirectionVector(self.parent.body, body, true)
+  body:applyLinearImpulse(self.force * vx, self.force *  vy)
 end
 
 return Sword

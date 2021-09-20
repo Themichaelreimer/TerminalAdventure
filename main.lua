@@ -12,29 +12,27 @@ camera = {}
 player = {}
 playerSaveData = {}
 debugString = ""
-
-NORTH = 0
-EAST = 1
-SOUTH = 2
-WEST = 3
-
 debugRender = false
+
 normalizeDiagonalSpeed = true
 seed = love.math.random()*10000
 playerName = ""
 
-require("colours")
-require("helpers")
-require("controller")
+require("src.constants")
+require("src.colours")
+require("src.helpers")
+require("src.enemies")
+require("src.ecs")
+
 require("map")
 require("level")
---require("player")
+require("controller")
+
 Player = require("src.entities.player")
 require("camera")
 require("items")  -- This will be deletable soon
 require("weapons") -- This will be deletable soon
 
-require("src.ecs")
 
 colours = japanesque
 
@@ -299,9 +297,25 @@ function findObjectOfClassInFixtures(obj1, obj2, className)
   return result
 end
 
+function handlePossibleHit(giver, receiver)
+  -- Note: receiver is the userData on a fixture
+  -- By convention, I will only set this value on the
+  -- fixtures of game objects. (Therefore, non-null implies ECS gameobject)
+  if receiver == nil then return nil end
+  if giver.dealHit then giver:dealHit(receiver) end
+end
+
 function beginContact(fixture1, fixture2, contact)
   local obj1 = fixture1:getUserData()
   local obj2 = fixture2:getUserData()
+
+  if obj1 ~= nil and obj2 ~= nil then
+    if obj1.dealHit then obj1:dealHit(obj2) end
+    if obj2.dealHit then obj2:dealHit(obj1) end
+  end
+
+  -- The following implements some pre ECS features. I'd like to replace it
+  -- with duck-typing "can respond to function calls" type code like the above
 
   -- The only interactions we have to care about in this callback
   -- are ones involving custom classes. If userData isn't set,

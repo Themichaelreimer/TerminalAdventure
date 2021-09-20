@@ -31,6 +31,10 @@ function Level:new(o, world, floorNum)
   self:makePhysicsBody()
   self:makeLevelBoundaryCollider()
 
+  for i=0, 10 do
+    self:placeEnemyInLevel("Snake")
+  end
+
   self:placeItemInLevel(world, "map")
   self:placeItemInLevel(world, "xray")
   self:placeItemInLevel(world, "coins")
@@ -52,7 +56,6 @@ function Level:makeLevelBoundaryCollider()
   love.physics.newFixture(body, bottom, 1)
   love.physics.newFixture(body, left, 1)
   love.physics.newFixture(body, right, 1)
-
 end
 
 function Level:getFloorNum()
@@ -122,6 +125,15 @@ function Level:destroy()
 
   self.world:destroy()
 
+end
+
+function Level:placeEnemyInLevel(name, x, y)
+  if not x or not y then
+    x, y = self.map:getRandomEmptyTile()
+  end
+  if name == "Snake" then
+    makeSnake(x, y)
+  end
 end
 
 function Level:placeItemInLevel(world, itemName, x, y)

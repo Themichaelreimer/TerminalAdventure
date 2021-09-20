@@ -4,7 +4,7 @@ local Bomb = class("Bomb")
 
 Bomb.char = 'b'
 Bomb.time = 2
-Bomb.ld = 50
+Bomb.ld = 5
 
 function Bomb:init(x, y, vx, vy)
   self.lifetime = self.time
@@ -55,6 +55,12 @@ function Bomb:draw()
   local size = screen.tileSize/2
   love.graphics.setColor(self.colour)
   love.graphics.print(self.char, x - size, y - size)
+
+  if debugRender then
+    love.graphics.setColor(0.1, 0.1, 0.5, 0.5)
+    love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+    love.graphics.setColor(1, 1, 1, 1)
+  end
 end
 
 return Bomb

@@ -1,6 +1,8 @@
 -- This system deals damage and applies force to entities
 -- on collision with a fixture
 
+-- THIS SYSTEM IS LIKELY DEPRECATED IN FAVOUR OF BOX2D EVENT HANDLING
+
 local collisionDamageSystem = tiny.processingSystem(class "CollisionDamageSystem")
 collisionDamageSystem.filter = tiny.requireAll("dealHit", "body")
 
