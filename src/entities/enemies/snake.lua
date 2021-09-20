@@ -48,12 +48,6 @@ function Snake:takeDamage(damage)
   if self.HP < 1 then self:destroy() end
 end
 
-function Snake:draw()
-  local x = self.body:getX()
-  local y = self.body:getY()
-  local size = screen.tileSize/2
-  love.graphics.setColor(self.colour)
-  love.graphics.print(self.char, x - size, y - size)
-end
+-- draw handled by asciiDrawSystem
 
 return Snake

@@ -60,7 +60,7 @@ WINDOW_TITLES = {
 
 CHARACTER_NAMES = {
   "Jerry the Destroyer",
-  "George the King",
+  "George the Mariner",
   "Elaine the Graceful",
   "Cosmo the Magician"
 }

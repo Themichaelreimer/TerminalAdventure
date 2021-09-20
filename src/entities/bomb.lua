@@ -49,18 +49,4 @@ function Bomb:update(dt)
   else self.colour = colours.red end
 end
 
-function Bomb:draw()
-  local x = self.body:getX()
-  local y = self.body:getY()
-  local size = screen.tileSize/2
-  love.graphics.setColor(self.colour)
-  love.graphics.print(self.char, x - size, y - size)
-
-  if debugRender then
-    love.graphics.setColor(0.1, 0.1, 0.5, 0.5)
-    love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
-    love.graphics.setColor(1, 1, 1, 1)
-  end
-end
-
 return Bomb
