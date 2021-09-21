@@ -9,12 +9,14 @@ Player.speed = 20
 Player.ld = 7
 Player.baseHP = 24
 Player.lightDistance = 10
+Player.bouncyStep = true -- Enables bouncy step in asciiDrawSystem
 
 function Player:init(x, y, initParams)
     initParams = initParams or {}
     self.deleted = false
     self.physicsable = true
     self.isSwinging = false
+    self.colour = colours.green
 
     self.body = love.physics.newBody(world, x, y, "dynamic")
     self.shape = love.physics.newRectangleShape(-5, 5, self.size, self.size)
@@ -131,24 +133,6 @@ function Player:update(dt)
 
   if not self.deleted then
     self.body:applyForce(self.speed * dx, self.speed * dy)
-  end
-
-end
-
-function Player:draw()
-  local px = self.body:getX()
-  local py = self.body:getY()
-  local playerStep = 2*math.sin((px + py)/4)
-  local tSize = screen.tileSize
-
-  love.graphics.setColor(colours.green) -- nord green
-  love.graphics.print(self.char, px-tSize/2, py-tSize/2 + playerStep, self.body:getAngle())
-
-    -- DEBUG
-  if debugRender then
-    love.graphics.setColor(0.1, 0.1, 0.5, 0.5)
-    love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
-    love.graphics.setColor(1, 1, 1, 1)
   end
 
 end

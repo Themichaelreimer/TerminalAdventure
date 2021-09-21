@@ -126,7 +126,6 @@ function nextLevel()
   if levelTable[dstNum] == nil then
     level = Level:new(nil, world, dstNum)
     table.insert(levelTable, level)
-    --levelTable[dstNum] = level
   else
     level = Level:restore(nil, world, levelTable[dstNum])
   end
@@ -338,7 +337,6 @@ end
 function endContact(fixture1, fixture2, contact)
   debugString = ""
 end
--- END DEPRECATED BLOCK
 
 function resetEntities()
   ecsWorld:clearEntities()
