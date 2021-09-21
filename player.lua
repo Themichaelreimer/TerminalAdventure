@@ -1,3 +1,5 @@
+-- THIS IS THE DEPRECATED PLAYER FILE
+
 Player = {
   className = "Player",
   shape = {},

@@ -69,9 +69,6 @@ function Sword:dealHit(otherEntity)
 end
 
 function Sword:applyForce(body)
-  --local dx = body:getX() - self.parent.body:getX()
-  --local dy = body:getY() - self.parent.body:getY()
-  --r = math.sqrt(dx * dx + dy * dy)
   local vx, vy = getDirectionVector(self.parent.body, body, true)
   body:applyLinearImpulse(self.force * vx, self.force *  vy)
 end

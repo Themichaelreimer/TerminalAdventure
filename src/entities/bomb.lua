@@ -5,6 +5,7 @@ local Bomb = class("Bomb")
 Bomb.char = 'b'
 Bomb.time = 2
 Bomb.ld = 5
+Bomb.bouncyStep = true
 
 function Bomb:init(x, y, vx, vy)
   self.lifetime = self.time

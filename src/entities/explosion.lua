@@ -4,7 +4,7 @@ Explosion.char = '*'
 Explosion.time = 0.5  -- duration
 Explosion.force = 5000000
 Explosion.maxForce = 10000
-Explosion.baseDamage = 100
+Explosion.baseDamage = 24
 Explosion.className = "Explosion" -- Used for contact callback
 
 function Explosion:init(x, y, size, maxDamage)
@@ -90,7 +90,7 @@ function Explosion:applyExplosionToBodies()
       local dy = body:getY() - self.y
       local dist2 = dx*dx + dy*dy
       if dist2 < self.r2 then
-        if object.physicsable then self:applyForce(body, dx, dy, dist2) end
+        if object.body then self:applyForce(body, dx, dy, dist2) end
         if object.takeDamage then self:applyDamage(object, dx, dy, dist2) end
       end
     end
@@ -105,7 +105,7 @@ end
 
 function Explosion:applyDamage(entity, dx, dy, dist2)
   if entity == nil then return nil end
-  local dmg = self.damage / (1 + dist2)
+  local dmg = self.damage / (0.1 + math.sqrt(dist2)/screen.tileSize)
   entity:takeDamage(dmg)
 end
 
