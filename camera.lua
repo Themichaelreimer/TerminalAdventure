@@ -26,10 +26,23 @@ function moveCamera(camera, dt)
 
     local dist2 = dx*dx + dy*dy
 
+    if player.invulnTime and player.invulnTime > 0 then
+      local ddx, ddy = getRandomVector(1000)
+      dx = dx + ddx
+      dy = dy + ddy
+    end
+
     if dist2 > 0.001 then
       camera:setLinearVelocity(dx * dist2 * dt / 16, dy * dist2 * dt / 16)
     else
       camera:setLinearVelocity(0, 0)
     end
   end
+end
+
+function getRandomVector(magnitude)
+
+  local angle = 2 * math.pi * math.random()
+  return magnitude * math.cos(angle), magnitude * math.sin(angle)
+
 end

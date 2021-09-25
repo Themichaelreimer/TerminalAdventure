@@ -46,6 +46,7 @@ end
 function Snake:takeDamage(damage)
   self.HP = self.HP - damage
   if self.HP < 1 then self:destroy() end
+  self.invulnTime = 0.3
 end
 
 -- draw handled by asciiDrawSystem

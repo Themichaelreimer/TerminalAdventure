@@ -145,6 +145,7 @@ function Player:takeDamage(dmg)
   local roundedDmg = math.floor(dmg + 0.5)
   self.HP = self.HP - roundedDmg
   if self.HP < 0 then self.HP = 0 end
+  self.invulnTime = 0.2
 end
 
 return Player

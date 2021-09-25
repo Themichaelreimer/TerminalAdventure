@@ -30,7 +30,15 @@ function getDirectionVector(body1, body2, normalized)
 end
 
 function getDistanceBetweenBodies(body1, body2)
-  dx = body2.getX() - body1.getX()
-  dy = body2.getY() - body1.getY()
+  dx = body2:getX() - body1:getX()
+  dy = body2:getY() - body1:getY()
   return math.sqrt(dx*dx + dy*dy)
+end
+
+function pixelsToTiles(x, y)
+  local result = {
+    x = math.floor(x/screen.tileSize),
+    y = math.floor(y/screen.tileSize)
+  }
+  return result
 end

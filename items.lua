@@ -1,3 +1,5 @@
+-- THIS FILE IS DEPRECATED AND MARKED FOR DELETION
+
 Item = {
   className = "Item",
   minTextTime = 2.0,

@@ -24,6 +24,7 @@ function Explosion:init(x, y, size, maxDamage)
   self.damage = maxDamage or self.baseDamage -- Allow damage to be overridable
 
   self:damageWalls(self.tx, self.ty)
+  self:scrambleFloor(self.tx, self.ty)
   self:applyExplosionToBodies()
 
   table.insert(gameObjects, self)
@@ -42,6 +43,31 @@ function Explosion:update(dt)
   else self.colour = colours.yellow end
 end
 
+function Explosion:scrambleFloor(tx, ty)
+  for i=-self.size, self.size do
+    for j=-self.size, self.size do
+      if math.abs(i) + math.abs(j) < self.size then
+        local x = tx + j
+        local y = ty + i
+        local rand = math.random()
+        if level.map.map[y][x] and level.map.map[y][x] == tiles.floor and rand < 0.15 then
+
+          local tile
+          if rand < 0.05 then
+            tile = tiles.floor1
+          elseif rand < 0.1 then
+            tile = tiles.floor2
+          else
+            tile = tiles.floor3
+          end
+
+          level.map.map[y][x] = tile
+          lightingSystem:redrawCell(x, y)
+        end
+      end
+    end
+  end
+end
 function Explosion:draw()
   love.graphics.setColor(self.colour)
   for i=-self.size, self.size do

@@ -1,6 +1,7 @@
 -- Import external libraries
 class = require("lib.30log")
 tiny = require("lib.tiny")
+star = require("lib.lua-star")
 
 screen = {}
 levelCanvas = love.graphics.newCanvas()
