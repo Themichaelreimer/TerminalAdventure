@@ -195,6 +195,9 @@ function module:find(width, height, start, goal, positionIsOpenFunc, useCache, e
     local node = listItem(closed, closed[#closed])
     local path = { }
 
+    local cost = closed[#closed].score
+    debugString = "Distance: " .. cost
+
     while node do
 
         table.insert(path, 1, { x = node.x, y = node.y } )

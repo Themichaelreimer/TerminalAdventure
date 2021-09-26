@@ -8,7 +8,7 @@ Player.size = 20
 Player.speed = 20
 Player.ld = 7
 Player.baseHP = 24
-Player.lightDistance = 10
+Player.lightDistance = 8
 Player.bouncyStep = true -- Enables bouncy step in asciiDrawSystem
 
 function Player:init(x, y, initParams)
