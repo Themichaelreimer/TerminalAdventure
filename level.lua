@@ -9,6 +9,7 @@ itemFactory = {
 }
 
 MapItem = require("src.entities.collectables.mapItem")
+XRayItem = require("src.entities.collectables.xrayItem")
 
 -- Generates an entirely new level
 function Level:new(o, world, floorNum)
@@ -33,9 +34,12 @@ function Level:new(o, world, floorNum)
   self:makePhysicsBody()
   self:makeLevelBoundaryCollider()
 
-  for i=0, 10 do
+  for i=0, 5 do
     self:placeEnemyInLevel("Snake")
-    self:placeItemInLevel(world, "map")
+  end
+
+  for i=0, 10 do
+    self:placeEnemyInLevel("Jackal")
   end
 
   self:placeItemInLevel(world, "map")
@@ -136,6 +140,8 @@ function Level:placeEnemyInLevel(name, x, y)
   end
   if name == "Snake" then
     makeSnake(x, y)
+  elseif name == "Jackal" then
+    makeJackal(x, y)
   end
 end
 
@@ -150,10 +156,9 @@ function Level:placeItemInLevel(world, itemName, x, y)
 
   local item
   if itemName == "map" then
-    --item = createMapObject(world, x, y)
     ecsWorld:add(MapItem(x, y))
   elseif itemName == 'xray' then
-    item = createXRayGlassesObject(world, x, y)
+    ecsWorld:add(XRayItem(x, y))
   elseif itemName == 'coins' then
     item = createCoinsObject(world, x, y)
   end

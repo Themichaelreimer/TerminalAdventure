@@ -1,5 +1,3 @@
-SmokePuff = require("src.entities.SmokePuff")
-
 local Snake = class("Snake")
 
 Snake.char = 's'
@@ -15,11 +13,12 @@ Snake.behaviour = "idle" -- Enables AI system
 Snake.IDLE_TIME = 1.10
 Snake.MOVE_TIME = 0.20
 Snake.maxRange = 30
+Snake.colourName = "red"
 
 function Snake:init(x,y)
   self.deleted = false
   self.dead = false
-  self.colour = colours.red
+  self.colour = colours[self.colourName]
 
   self.body = love.physics.newBody(world, x, y, "dynamic")
   self.shape = love.physics.newRectangleShape(-5, 5, self.size, self.size)
@@ -39,9 +38,6 @@ function Snake:init(x,y)
 end
 
 function Snake:destroy()
-
-  --ecsWorld:add(SmokePuff(self.body:getX(), self.body:getY(), colours.lightGray))
-
   -- Clean up resources to prevent leaks
   self.deleted = true
   self.fixture:destroy()
@@ -85,8 +81,6 @@ function Snake:die()
 end
 
 function Snake:dash()
-  --local dx = player.body:getX() - self.body:getX()
-  --local dy = player.body:getY() - self.body:getY()
   local dx, dy = getDirectionVector(self.body, player.body, true)
   self.body:setLinearVelocity(dx * self.dashSpeed, dy * self.dashSpeed)
 
