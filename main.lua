@@ -24,6 +24,7 @@ require("src.colours")
 require("src.helpers")
 require("src.enemies")
 require("src.ecs")
+require("src.pathfinding")
 
 require("map")
 require("level")

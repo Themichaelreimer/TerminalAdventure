@@ -4,6 +4,11 @@ function randomElement(arr)
   return arr[index]
 end
 
+function chance(x)
+  assert(0 <= x and x <= 1)
+  return love.math.random() <= x
+end
+
 function round(x)
   return math.floor(0.5 + x)
 end

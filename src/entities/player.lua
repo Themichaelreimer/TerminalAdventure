@@ -10,6 +10,7 @@ Player.ld = 7
 Player.baseHP = 24
 Player.lightDistance = 8
 Player.bouncyStep = true -- Enables bouncy step in asciiDrawSystem
+Player.isPlayer = true -- Used in collision handling with enemies
 
 function Player:init(x, y, initParams)
     initParams = initParams or {}

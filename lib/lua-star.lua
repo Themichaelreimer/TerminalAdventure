@@ -196,7 +196,6 @@ function module:find(width, height, start, goal, positionIsOpenFunc, useCache, e
     local path = { }
 
     local cost = closed[#closed].score
-    debugString = "Distance: " .. cost
 
     while node do
 
