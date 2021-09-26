@@ -4,6 +4,12 @@ adventure game!
 
 # Devlog
 
+## Weekend 9/10
+  - Introduced Enemies, AI, and a combat system
+  - Added 2 new enemies: Snakes and Jackals
+  - Re-introduced collectables with the Map, and X-ray glasses collectables
+  - Fixed crashes and added screen-shakes on damage
+
 ## Weekend 8
   - Introduced an Entity-Component-System architecture and ported player, items, weapons, and lighting to ECS
   - Fixed lots of bugs, and improved performance
