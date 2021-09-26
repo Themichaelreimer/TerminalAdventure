@@ -8,6 +8,7 @@ lightingSystem.previousLevel = nil
 function lightingSystem:process(entity, dt)
 
   love.graphics.setCanvas(levelCanvas)
+  love.graphics.translate(camera:getX(), camera:getY())
 
   if not self.previousLevel == level then
     self:resetCanvas()
@@ -24,7 +25,7 @@ function lightingSystem:process(entity, dt)
   end
 
   love.graphics.setCanvas()
-
+  love.graphics.translate(-camera:getX(), -camera:getY())
 end
 
 function lightingSystem:updateCanvasLighting(x, y, dist, numRays)

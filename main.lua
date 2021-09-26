@@ -183,7 +183,7 @@ function love.update(dt)
 end
 
 function love.draw()
-
+  love.graphics.translate(-camera:getX(), -camera:getY())
   -- Draw level canvas
   if levelCanvas then
     love.graphics.setBackgroundColor(colours.black)
@@ -192,7 +192,7 @@ function love.draw()
   end
 
   -- CAMERA SPACE
-  love.graphics.translate(-camera:getX(), -camera:getY())
+
 
   -- Updates the ECS world. This happens here because
   -- ECS contains a drawing system that can only draw inside of love.draw
