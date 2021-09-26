@@ -1,3 +1,7 @@
+-- This entity is an experiment with particle emitters
+-- As of right now, I think they just don't look good with my art style
+-- and it's unlikely to be used in the future
+
 local SmokePuff = class("SmokePuff")
 
 SmokePuff.char = '*'

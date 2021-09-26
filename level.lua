@@ -8,6 +8,8 @@ itemFactory = {
   xray = createXRayGlassesObject,
 }
 
+MapItem = require("src.entities.collectables.mapItem")
+
 -- Generates an entirely new level
 function Level:new(o, world, floorNum)
   o = o or {}
@@ -33,6 +35,7 @@ function Level:new(o, world, floorNum)
 
   for i=0, 10 do
     self:placeEnemyInLevel("Snake")
+    self:placeItemInLevel(world, "map")
   end
 
   self:placeItemInLevel(world, "map")
@@ -147,7 +150,8 @@ function Level:placeItemInLevel(world, itemName, x, y)
 
   local item
   if itemName == "map" then
-    item = createMapObject(world, x, y)
+    --item = createMapObject(world, x, y)
+    ecsWorld:add(MapItem(x, y))
   elseif itemName == 'xray' then
     item = createXRayGlassesObject(world, x, y)
   elseif itemName == 'coins' then

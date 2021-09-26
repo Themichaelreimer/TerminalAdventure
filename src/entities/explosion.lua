@@ -49,20 +49,22 @@ function Explosion:scrambleFloor(tx, ty)
       if math.abs(i) + math.abs(j) < self.size then
         local x = tx + j
         local y = ty + i
-        local rand = math.random()
-        if level.map.map[y][x] and level.map.map[y][x] == tiles.floor and rand < 0.15 then
+        if level:tileInLevel(x,y) then
+          local rand = love.math.random()
+          if level.map.map[y][x] and level.map.map[y][x] == tiles.floor and rand < 0.15 then
 
-          local tile
-          if rand < 0.05 then
-            tile = tiles.floor1
-          elseif rand < 0.1 then
-            tile = tiles.floor2
-          else
-            tile = tiles.floor3
+            local tile
+            if rand < 0.05 then
+              tile = tiles.floor1
+            elseif rand < 0.1 then
+              tile = tiles.floor2
+            else
+              tile = tiles.floor3
+            end
+
+            level.map.map[y][x] = tile
+            lightingSystem:redrawCell(x, y)
           end
-
-          level.map.map[y][x] = tile
-          lightingSystem:redrawCell(x, y)
         end
       end
     end

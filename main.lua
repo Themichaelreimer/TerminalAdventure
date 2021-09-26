@@ -342,5 +342,6 @@ end
 
 function resetEntities()
   ecsWorld:clearEntities()
+  ecsWorld:refresh()
   gameObjects = {}
 end
