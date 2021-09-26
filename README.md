@@ -5,6 +5,7 @@ adventure game!
 # Devlog
 
 ## Weekend 9/10
+![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/8.gif)
   - Introduced Enemies, AI, and a combat system
   - Added 2 new enemies: Snakes and Jackals
   - Re-introduced collectables with the Map, and X-ray glasses collectables
