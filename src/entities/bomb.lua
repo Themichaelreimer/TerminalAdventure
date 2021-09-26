@@ -1,4 +1,5 @@
 Explosion = require("src.entities.explosion")
+SmokePuff = require("src.entities.SmokePuff")
 
 local Bomb = class("Bomb")
 
@@ -28,6 +29,8 @@ function Bomb:init(x, y, vx, vy)
 end
 
 function Bomb:destroy()
+
+
   -- Clean up resources to prevent leaks
   self.deleted = true
   self.fixture:destroy()

@@ -20,7 +20,8 @@ function asciiDrawSystem:process(e, dt)
 
     -- Actual render block
     local c1, c2, c3, c4 = self:determineColour(e, lightness)
-    love.graphics.setColor(c1,c2,c3,c4)
+    if e.alpha then c4 = c4 * e.alpha end
+    love.graphics.setColor(c1, c2, c3, c4)
     love.graphics.print(e.char, x - halfsize, y - halfsize)
 
     -- Update invuln time if the property exists

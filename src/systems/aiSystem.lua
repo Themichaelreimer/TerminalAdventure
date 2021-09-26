@@ -6,7 +6,7 @@ aiSystem.maxRange = 30  -- 30 tiles
 
 function aiSystem:process(e, dt)
 
-  if not e.deleted then
+  if not e.deleted and not e.lifetime then
     local map = level.map
     if not map then return end
 

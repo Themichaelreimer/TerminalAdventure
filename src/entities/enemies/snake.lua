@@ -1,3 +1,5 @@
+SmokePuff = require("src.entities.SmokePuff")
+
 local Snake = class("Snake")
 
 Snake.char = 's'
@@ -28,27 +30,49 @@ function Snake:init(x,y)
 end
 
 function Snake:destroy()
+
+  --ecsWorld:add(SmokePuff(self.body:getX(), self.body:getY(), colours.lightGray))
+
   -- Clean up resources to prevent leaks
   self.deleted = true
   self.fixture:destroy()
   self.shape:release()
   self.body:destroy()
+
 end
 
 function Snake:dealHit(otherEntity)
-  if otherEntity == self or not otherEntity.takeDamage then return nil end
-  otherEntity:takeDamage(self.damage)
+  if not self.lifetime then
+    if otherEntity == self or not otherEntity.takeDamage then return nil end
+    otherEntity:takeDamage(self.damage)
 
-  local vx, vy = getDirectionVector(self.body, otherEntity.body, true)
-  otherEntity.body:applyLinearImpulse(self.force * vx, self.force *  vy)
+    local vx, vy = getDirectionVector(self.body, otherEntity.body, true)
+    otherEntity.body:applyLinearImpulse(self.force * vx, self.force *  vy)
+  end
 end
 
 function Snake:takeDamage(damage)
-  self.HP = self.HP - damage
-  if self.HP < 1 then self:destroy() end
-  self.invulnTime = 0.3
+  if not self.lifetime then
+    self.HP = self.HP - damage
+    if self.HP < 1 then self:die() end
+    self.invulnTime = 0.3
+  end
 end
 
 -- draw handled by asciiDrawSystem
+
+function Snake:update()
+  if self.lifetime then
+    self.alpha = 0.5 * (1 - math.cos(self.lifetime * self.lifetime * 4 * math.pi))
+    debugString = "Snake LifeTime:" .. self.lifetime
+  end
+end
+
+
+function Snake:die()
+  self.colour = colours.white
+  self.lifetime = 1  -- Sets the snake to auto delete in 1 second
+  ecsWorld:add(self)  -- Needed to refresh what systems snek is part of
+end
 
 return Snake
