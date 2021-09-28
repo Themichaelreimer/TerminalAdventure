@@ -38,8 +38,12 @@ function Level:new(o, world, floorNum)
     self:placeEnemyInLevel("Snake")
   end
 
-  for i=0, 10 do
+  for i=0, 5 do
     self:placeEnemyInLevel("Jackal")
+  end
+
+  for i=0, 5 do
+    self:placeEnemyInLevel("Plush")
   end
 
   self:placeItemInLevel(world, "map")
@@ -142,6 +146,8 @@ function Level:placeEnemyInLevel(name, x, y)
     makeSnake(x, y)
   elseif name == "Jackal" then
     makeJackal(x, y)
+  elseif name == "Plush" then
+    makePlush(x, y)
   end
 end
 
@@ -170,9 +176,6 @@ function Level:update(dt)
 end
 
 function Level:draw(dt)
-  --love.graphics.setBackgroundColor(colours.black) -- nord black
-  --love.graphics.setColor(1,1,1)
-  --love.graphics.draw(self.canvas)
 
   for iItem=1, #self.items do
     self.items[iItem]:draw()
