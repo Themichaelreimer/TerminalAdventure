@@ -34,15 +34,15 @@ function Level:new(o, world, floorNum)
   self:makePhysicsBody()
   self:makeLevelBoundaryCollider()
 
-  for i=0, 5 do
+  for i=0, 1 do
     self:placeEnemyInLevel("Snake")
   end
 
-  for i=0, 5 do
+  for i=0, 1 do
     self:placeEnemyInLevel("Jackal")
   end
 
-  for i=0, 5 do
+  for i=0, 15 do
     self:placeEnemyInLevel("Plush")
   end
 
