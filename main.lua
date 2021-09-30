@@ -22,6 +22,7 @@ playerName = ""
 require("src.constants")
 require("src.colours")
 require("src.helpers")
+require("src.sfx")
 require("src.enemies")
 require("src.ecs")
 require("src.pathfinding")

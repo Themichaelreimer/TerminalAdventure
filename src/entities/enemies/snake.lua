@@ -59,7 +59,12 @@ end
 function Snake:takeDamage(damage)
   if not self.lifetime then
     self.HP = self.HP - damage
-    if self.HP < 1 then self:die() end
+    if self.HP < 1 then
+      sfx.death2:play()
+      self:die()
+    else
+      sfx.hit3:play()
+    end
     self.invulnTime = 0.3
   end
 end

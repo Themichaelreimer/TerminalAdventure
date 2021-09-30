@@ -147,6 +147,7 @@ function Player:takeDamage(dmg)
   self.HP = self.HP - roundedDmg
   if self.HP < 0 then self.HP = 0 end
   self.invulnTime = 0.2
+  sfx.hit2:play()
 end
 
 return Player
