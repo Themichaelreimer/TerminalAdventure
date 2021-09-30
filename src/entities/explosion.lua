@@ -26,6 +26,11 @@ function Explosion:init(x, y, size, maxDamage)
   self:damageWalls(self.tx, self.ty)
   self:scrambleFloor(self.tx, self.ty)
   self:applyExplosionToBodies()
+  if chance(0.5) then
+    sfx.explosion1:play()
+  else
+    sfx.explosion2:play()
+  end
 
   table.insert(gameObjects, self)
 end
