@@ -10,8 +10,10 @@ function lightingSystem:process(entity, dt)
   love.graphics.setCanvas(levelCanvas)
   love.graphics.translate(camera:getX(), camera:getY())
 
+  -- Check if the level has changed over the last frame
   if not self.previousLevel == level then
     self:resetCanvas()
+    self:renderEntireCanvas()
   end
   self.previousLevel = level
 
@@ -30,6 +32,10 @@ end
 
 function lightingSystem:updateCanvasLighting(x, y, dist, numRays)
   local tileSize = screen.tileSize
+
+  -- Ensures the player's current cell is seen, which is otherwise not guarenteed
+  level.map.lightMap[y][x] = 1
+  self:redrawCell(x, y, 1)
 
   -- Idea: Cast out rays in equally spaced angles from (x, y)
   -- For each ray cast, and for each space each ray touches, if the lightMap at the space is darker
@@ -85,8 +91,8 @@ function lightingSystem:traceRay(x, y, angle, maxDistance)
   local results = {}
   local angleX = math.cos(angle) -- Contribution of the angle to dx / dy
   local angleY = math.sin(angle)
-  local dx = 0 -- Stores the change in x/y from the movement of the ray
-  local dy = 0
+  local dx = 0.5 -- Stores the change in x/y from the movement of the ray
+  local dy = 0.5
   for i=0, maxDistance do
     dx = dx + angleX
     dy = dy + angleY
@@ -98,9 +104,10 @@ function lightingSystem:traceRay(x, y, angle, maxDistance)
     local tileY = math.floor(y + dy)
 
     -- Stop the raycast if we go off the map. Return previous results
-    if tileY < 0 or tileY > level.tileHeight or not tileY then return results end
-    if tileX < 0 or tileX > level.tileWidth or not tileX then return results end
+    --if tileY < 0 or tileY > level.tileHeight or not tileY then return results end
+    --if tileX < 0 or tileX > level.tileWidth or not tileX then return results end
 
+    if not level:tileInLevel(tileX, tileY) then return results end
     local tile = level.map.map[tileY][tileX]
 
     local result = {
@@ -150,7 +157,6 @@ function lightingSystem:renderEntireCanvas()
   end
 
   -- DEBUG REGION
-  -- Draw bounding boxes for physics; can be deleted once physics works
   if debugRender then
     love.graphics.setColor(0.5, 0.1, 0.1,0.5)
     bodies = world:getBodies()

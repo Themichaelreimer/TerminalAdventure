@@ -118,8 +118,6 @@ function Level:restore(o, world, data)
 
   self.floorNum = data.floorNum
   self:makePhysicsBody()
-  --self:resetCanvas()
-  --self:renderEntireCanvas()
 
   return o
 end
@@ -176,14 +174,6 @@ function Level:update(dt)
 end
 
 function Level:draw(dt)
-
-  for iItem=1, #self.items do
-    self.items[iItem]:draw()
-  end
-
-  for iProj=1, #self.projectiles do
-    self.projectiles[iProj]:draw()
-  end
 
 end
 

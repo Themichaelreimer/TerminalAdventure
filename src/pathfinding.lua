@@ -19,7 +19,7 @@ end
 function positionIsOpen(x,y)
   -- TODO: Factor passable obstacles into this, and it can be used for
   -- Level generation
-  return not level.map.map[y][x].solid
+  return level:tileInLevel(x,y) and not level.map.map[y][x].solid
 end
 
 function moveToTarget(e, pathCell)
