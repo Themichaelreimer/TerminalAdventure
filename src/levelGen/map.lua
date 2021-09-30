@@ -1,20 +1,6 @@
-Map = {
-  className = "Map"
-  -- Lightmap
-  -- tileMap
-}
+local Map = class("Map")
 
-MapManager = {
-  maps = {}
-}
-
-function Map:new(o)
-  o = o or {}
-  setmetatable(o, self)
-  self.__index = self
-
-  -- TODO: Use RNG to determine which algorithm to use
-  -- Also TODO: Implement more than one algorithm
+function Map:init()
 
   local params = generateSimplexGenParams()
   self.width = params.width
@@ -123,3 +109,5 @@ function determineTile(x, y, genParams)
   end
   return tiles.floor
 end
+
+return Map

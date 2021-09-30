@@ -11,6 +11,9 @@ itemFactory = {
 MapItem = require("src.entities.collectables.mapItem")
 XRayItem = require("src.entities.collectables.xrayItem")
 
+
+Map = require("src.levelGen.map")
+
 -- Generates an entirely new level
 function Level:new(o, world, floorNum)
   o = o or {}
@@ -18,7 +21,7 @@ function Level:new(o, world, floorNum)
   self.__index = self
 
   self.world = world
-  self.map = Map:new()
+  self.map = Map()
   self.tileWidth = #self.map.map[0]
   self.tileHeight = #self.map.map
   self.pixelWidth = self.tileWidth * screen.tileSize

@@ -27,7 +27,6 @@ require("src.enemies")
 require("src.ecs")
 require("src.pathfinding")
 
-require("map")
 require("level")
 require("controller")
 
