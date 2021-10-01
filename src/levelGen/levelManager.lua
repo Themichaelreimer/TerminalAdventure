@@ -1,11 +1,40 @@
 level = nil
 levels = {}
+savedEntities = {}
 
+require('src.enemies')
 Level = require("src.levelGen.level")
 
--- This function populates the inital map objects
+entityFunctions = {
+  snake = makeSnake,
+  jackal = makeJackal,
+  plush = makePlush,
+  map = makeMap,
+  xray = makeXRay
+}
+
+-- This function popullates the inital map objects
 function planGame()
 
+end
+
+function getSavedEntities(lvlNum)
+  savedEntities[lvlNum] = {}
+  for _, v in ipairs(gameObjects) do
+    if v.getSaveData then
+      table.insert(savedEntities, v:getSaveData())
+    end
+  end
+end
+
+function loadSavedEntities(lvlNum)
+  local loadEntities = savedEntities[lvlNum]
+  for _, v in ipairs(loadEntities) do
+    local name = v.name
+    local x = v.x
+    local y = v.y
+    entityFunctions[name](x,y,v)  -- Calls the constructor for the entity, at (x, y) and the saveData table from it's save function
+   end
 end
 
 function saveLevel()

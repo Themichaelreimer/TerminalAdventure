@@ -19,6 +19,14 @@ function Item:init(x, y)
   self.fixture:setUserData(self)
 end
 
+function Item:getSaveData()
+  return {
+    name = self.class.name,
+    x = self.body:getX(),
+    y = self.body:getY()
+  }
+end
+
 -- OVERRIDE ME
 function Item:payload()
 end

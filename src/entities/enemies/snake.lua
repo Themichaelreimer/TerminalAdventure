@@ -15,7 +15,7 @@ Snake.MOVE_TIME = 0.20
 Snake.maxRange = 30
 Snake.colourName = "red"
 
-function Snake:init(x,y)
+function Snake:init(x, y, saveData)
   self.deleted = false
   self.dead = false
   self.colour = colours[self.colourName]
@@ -34,7 +34,18 @@ function Snake:init(x,y)
   self.moveTimer = 1
   self.idleTimer = 1
 
-  table.insert(gameObjects, self)
+  if saveData then
+    if saveData.HP then self.HP = saveData.HP end
+  end
+end
+
+function Snake:getSaveData()
+  return {
+    name = self.class.name,
+    hp = self.HP,
+    x = self.body:getX(),
+    y = self.body:getY()
+  }
 end
 
 function Snake:destroy()
@@ -57,6 +68,7 @@ function Snake:dealHit(otherEntity)
 end
 
 function Snake:takeDamage(damage)
+
   if not self.lifetime then
     self.HP = self.HP - damage
     if self.HP < 1 then

@@ -2,14 +2,20 @@ Snake = require('src.entities.enemies.snake')
 Jackal = require('src.entities.enemies.jackal')
 Plush = require('src.entities.enemies.plush')
 
-function makeSnake(tileX, tileY)
-  ecsWorld:add(Snake(tileX * screen.tileSize, tileY * screen.tileSize))
+function makeSnake(tileX, tileY, saveData)
+  local item = Snake(tileX * screen.tileSize, tileY * screen.tileSize, saveData)
+  ecsWorld:add(item)
+  table.insert(gameObjects, item)
 end
 
-function makeJackal(tileX, tileY)
-  ecsWorld:add(Jackal(tileX * screen.tileSize, tileY * screen.tileSize))
+function makeJackal(tileX, tileY, saveData)
+  local item = Jackal(tileX * screen.tileSize, tileY * screen.tileSize, saveData)
+  ecsWorld:add(item)
+  table.insert(gameObjects, item)
 end
 
-function makePlush(tileX, tileY)
-  ecsWorld:add(Plush(tileX * screen.tileSize, tileY * screen.tileSize))
+function makePlush(tileX, tileY, saveData)
+  local item = Plush(tileX * screen.tileSize, tileY * screen.tileSize, saveData)
+  ecsWorld:add(item)
+  table.insert(gameObjects, item)
 end

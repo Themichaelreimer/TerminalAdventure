@@ -1,8 +1,6 @@
 local Level = class("Level")
 
-MapItem = require("src.entities.collectables.mapItem")
-XRayItem = require("src.entities.collectables.xrayItem")
-
+require('src.entities.items')
 Map = require("src.levelGen.map")
 
 -- Generates an entirely new level
@@ -26,6 +24,9 @@ function Level:init(floorNum, data)
 
     self:makePhysicsBody()
     self:makeLevelBoundaryCollider()
+
+    self:placeItemInLevel("map")
+    self:placeItemInLevel("xray")
 
     for i=0, 3 do
       self:placeEnemyInLevel("Snake")
@@ -132,20 +133,17 @@ function Level:placeItemInLevel(itemName, x, y)
   if not x or not y then
     x, y = self.map:getRandomEmptyTile()
   end
-
-  -- Convert x and y from tile coords to pixel coords; offset into middle of tile
-  x = (x + 0.5)*screen.tileSize
-  y = (y + 0.5)*screen.tileSize
+  x = (x+0.5)*screen.tileSize
+  y = (y+0.5)*screen.tileSize
 
   local item
   if itemName == "map" then
-    ecsWorld:add(MapItem(x, y))
+    makeMap(x, y, true)
   elseif itemName == 'xray' then
-    ecsWorld:add(XRayItem(x, y))
+    makeXRay(x, y, true)
   elseif itemName == 'coins' then
     -- Add coins if I ever put them back in
   end
-  self:addItemToLevel(item)
 end
 
 function Level:update(dt)
@@ -165,7 +163,7 @@ end
 function Level:makeCollider(x, y)
   local tSize = screen.tileSize
   local tarX = (x + 0.3) * tSize
-  local tarY= (y + 0.6) * tSize
+  local tarY = (y + 0.6) * tSize
   local body = love.physics.newBody(world, 0, 0, "static")
   local shape = love.physics.newRectangleShape(tarX, tarY, tSize, tSize)
   local fixture = love.physics.newFixture(body, shape)
@@ -222,20 +220,6 @@ function Level:spaceNeedsCollider(x, y)
     return true
   end
   return false
-end
-
--- TODO - Delete after ECS Items
-function Level:addItemToLevel(itemPtr)
-  table.insert(self.items, itemPtr)
-end
-
--- TODO - Delete after ECS Items
-function Level:removeItemFromLevel(itemPtr)
-  for i=1, #self.items do
-    if self.items[i] == itemPtr then
-      table.remove(self.items, i)
-    end
-  end
 end
 
 function Level:tileInLevel(x, y)
