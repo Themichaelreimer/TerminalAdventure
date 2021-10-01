@@ -3,6 +3,7 @@ local lightingSystem = tiny.processingSystem(class "lightingSystem")
 lightingSystem.filter = tiny.requireAll("lightDistance", "body")
 lightingSystem.NUM_RAYS = 80
 lightingSystem.previousLevel = nil
+lightingSystem.updateTiles = {}
 
 -- The entities in this system represent light sources
 function lightingSystem:process(entity, dt)
@@ -34,8 +35,17 @@ function lightingSystem:updateCanvasLighting(x, y, dist, numRays)
   local tileSize = screen.tileSize
 
   -- Ensures the player's current cell is seen, which is otherwise not guarenteed
-  level.map.lightMap[y][x] = 1
-  self:redrawCell(x, y, 1)
+  if level:tileInLevel(x,y) then
+    level.map.lightMap[y][x] = 1
+    self:redrawCell(x, y, 1)
+  end
+
+  -- Update tiles modified by external entities/systems
+  -- updateTiles is populated by self.queueRedrawCell
+  for _, v in ipairs(self.updateTiles) do
+    self:redrawCell(v.x, v.y)
+  end
+  self.updateTiles = {}
 
   -- Idea: Cast out rays in equally spaced angles from (x, y)
   -- For each ray cast, and for each space each ray touches, if the lightMap at the space is darker
@@ -63,6 +73,11 @@ function lightingSystem:updateCanvasLighting(x, y, dist, numRays)
   end
 end
 
+function lightingSystem:queueRedrawCell(x, y)
+  local cell = {x = x, y = y}
+  table.insert(self.updateTiles, cell)
+end
+
 function lightingSystem:redrawCell(x, y, alpha)
 
   local tileSize = screen.tileSize
@@ -75,7 +90,7 @@ function lightingSystem:redrawCell(x, y, alpha)
 
   --Draw
   love.graphics.setColor(colour[1], colour[2], colour[3], alpha)
-  love.graphics.print(level.map.map[y][x].char, x*screen.tileSize, y*screen.tileSize)
+  love.graphics.print(level.map.map[y][x].char, x*screen.tileSize, y*screen.tileSize )
 end
 
 function lightingSystem:rayTrace(x, y, dist, numRays)

@@ -27,7 +27,7 @@ require("src.enemies")
 require("src.ecs")
 require("src.pathfinding")
 
-require("level")
+require("src.levelGen.levelManager")
 require("controller")
 
 Player = require("src.entities.player")
@@ -48,7 +48,7 @@ collisionCategories = {
 blockingText = nil
 
 -- TODO - Put upgrades and equipment into a table
-hasMap = false
+hasMap = true
 hasXRay = false
 hasBombs = true
 
@@ -88,7 +88,7 @@ function love.load()
   screen.halfWidth = screen.width/2
 
 
-  level = Level:new(nil, world, 1)
+  level = Level(1)
   local playerInitPos = level.map.upstairs
 
   --player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
@@ -103,64 +103,6 @@ function love.load()
   playerName = randomElement(CHARACTER_NAMES)
   love.window.updateMode(screen.width, screen.height, screen.settings)
 
-end
-
-function saveLevel()
-  local lvlNum = level.floorNum
-  levelTable[lvlNum] = level:getLevelSaveData()
-  playerSaveData = player:getSaveData()
-  player:destroy()
-  player=nil
-end
-
-function nextLevel()
-
-  local lvlNum = level.floorNum
-  local dstNum = level.floorNum+1
-  saveLevel()
-
-  level:destroy()
-  resetEntities()
-
-  world = love.physics.newWorld(0, 0, true)
-  world:setCallbacks(beginContact, endContact)
-
-  if levelTable[dstNum] == nil then
-    level = Level:new(nil, world, dstNum)
-    table.insert(levelTable, level)
-  else
-    level = Level:restore(nil, world, levelTable[dstNum])
-  end
-
-  local playerInitPos = level.map.upstairs
-
-  player = Player(playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile, playerSaveData)
-  ecsWorld:add(player)
-  camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
-
-end
-
-function prevLevel()
-  local lvlNum = level.floorNum
-  local dstNum = level.floorNum-1
-
-  if lvlNum > 1 then
-    saveLevel()
-    levelTable[lvlNum] = level:getLevelSaveData()
-
-    level:destroy()
-    resetEntities()
-
-    world = love.physics.newWorld(0, 0, true)
-    world:setCallbacks(beginContact, endContact)
-
-    level = Level:restore(nil, world, levelTable[dstNum])
-    local playerInitPos = level.map.downstairs
-
-    player = Player(playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile, playerSaveData)
-    ecsWorld:add(player)
-    camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
-  end
 end
 
 function love.update(dt)

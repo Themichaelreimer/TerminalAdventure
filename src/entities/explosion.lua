@@ -68,7 +68,7 @@ function Explosion:scrambleFloor(tx, ty)
             end
 
             level.map.map[y][x] = tile
-            lightingSystem:redrawCell(x, y)
+            lightingSystem:queueRedrawCell(x, y)
           end
         end
       end
@@ -100,7 +100,7 @@ function Explosion:damageWalls(tileX, tileY)
         local tile = level:getTileAtCoordinates(x, y)
         if tile == tiles.wall then
           level.map.map[y][x] = tiles.floor
-          lightingSystem:redrawCell(x, y)
+          lightingSystem:queueRedrawCell(x, y)
         end
       end
     end

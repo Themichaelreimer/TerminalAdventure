@@ -1,19 +1,24 @@
 local Map = class("Map")
 
-function Map:init()
+function Map:init(data)
+  if data then
+    self.upstairs = data.upstairs
+    self.downstairs = data.downstairs
+    self.map = data.tileMap
+    self.lightMap = data.lightMap
+  else
+    local params = generateSimplexGenParams()
+    self.width = params.width
+    self.height = params.height
+    self.map, self.lightMap = makeSimplexCave(params)  -- Lightmap isn't really a function of map, but it's faster this way
 
-  local params = generateSimplexGenParams()
-  self.width = params.width
-  self.height = params.height
-  self.map, self.lightMap = makeSimplexCave(params)  -- Lightmap isn't really a function of map, but it's faster this way
-
-  local stairs = self:placeStairs()
-  self.upstairs = stairs.up
-  self.downstairs = stairs.down
-  -- Generates nil error somehow
-  self.map[self.upstairs.y][self.upstairs.x] = tiles.upstairs
-  self.map[self.downstairs.y][self.downstairs.x] = tiles.downstairs
-  return o
+    local stairs = self:placeStairs()
+    self.upstairs = stairs.up
+    self.downstairs = stairs.down
+    -- Generates nil error somehow
+    self.map[self.upstairs.y][self.upstairs.x] = tiles.upstairs
+    self.map[self.downstairs.y][self.downstairs.x] = tiles.downstairs
+  end
 end
 
 function Map:getSaveData()
