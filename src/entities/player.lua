@@ -112,6 +112,10 @@ function Player:update(dt)
     nextLevel()
   end
 
+  if keyboard.a then
+    lightingSystem:renderEntireCanvas()
+  end
+
   if level:getTileAtCoordinates(px/tileSize, py/tileSize) == tiles.downstairs then
     debugString = "Stairs leading downwards. Press 'a' to go down a floor."
     if keyboard.a then

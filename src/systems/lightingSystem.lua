@@ -4,17 +4,20 @@ lightingSystem.filter = tiny.requireAll("lightDistance", "body")
 lightingSystem.NUM_RAYS = 80
 lightingSystem.previousLevel = nil
 lightingSystem.updateTiles = {}
+lightingSystem.mustRefreshCanvas = false
 
 -- The entities in this system represent light sources
 function lightingSystem:process(entity, dt)
 
+  local firstFrameOnFloor = false
   love.graphics.setCanvas(levelCanvas)
   love.graphics.translate(camera:getX(), camera:getY())
 
   -- Check if the level has changed over the last frame
   if not self.previousLevel == level then
     self:resetCanvas()
-    self:renderEntireCanvas()
+    love.graphics.setCanvas(levelCanvas)
+    firstFrameOnFloor = true
   end
   self.previousLevel = level
 
@@ -27,6 +30,7 @@ function lightingSystem:process(entity, dt)
     self:updateCanvasLighting(x, y, entity.lightDistance, self.NUM_RAYS)
   end
 
+  if firstFrameOnFloor or self.mustRefreshCanvas then self:renderEntireCanvas() end
   love.graphics.setCanvas()
   love.graphics.translate(-camera:getX(), -camera:getY())
 end
@@ -163,11 +167,10 @@ end
 function lightingSystem:renderEntireCanvas()
   local tileSize = screen.tileSize
   love.graphics.setColor(colours.lightGray) -- nord white
-  love.graphics.setCanvas(self.canvas)
 
-  for y=0, #self.map.map do
-    for x=0, #self.map.map[y] do
-      self:redrawCell(x, y, self.map.lightMap[y][x])
+  for y=0, #level.map.map do
+    for x=0, #level.map.map[y] do
+      self:redrawCell(x, y, level.map.lightMap[y][x])
     end
   end
 
@@ -182,7 +185,6 @@ function lightingSystem:renderEntireCanvas()
     love.graphics.setColor(1, 1, 1, 1)
   end
   -- / DEBUG REGION
-  love.graphics.setCanvas()
 end
 
 return lightingSystem

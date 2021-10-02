@@ -14,7 +14,6 @@ function Level:init(floorNum, data)
     self.tileHeight = #self.map.map
     self.pixelWidth = self.tileWidth * screen.tileSize
     self.pixelHeight = self.tileHeight * screen.tileSize
-    self.items = {}
     self.traversedTiles = {} -- Set of visited tiles, formatted as strings like "x;y". Maps to lightness level
     self.mustUpdateCanvas = true
     self.floorNum = floorNum
@@ -64,18 +63,7 @@ function Level:getLevelSaveData()
   local result = {
     mapData = self.map:getSaveData(),
     floorNum = self.floorNum,
-    items = {},
   }
-
-  for i=1, #self.items do
-    local saveItem = {
-      x = self.items[i].x,
-      y = self.items[i].y,
-      itemName = self.items[i]:getInternalItemName()
-    }
-    table.insert(result.items, saveItem)
-  end
-
   return result
 end
 
@@ -87,39 +75,28 @@ function Level:restore(data)
   self.tileHeight = #self.map.map
   self.pixelWidth = self.tileWidth * screen.tileSize
   self.pixelHeight = self.tileHeight * screen.tileSize
-  levelCanvas = love.graphics.newCanvas(pixelWidth, pixelHeight)
-
-  self.items = {}
-  for i=1, #data.items do
-    local itemObj = data.items[i]
-    self:placeItemInLevel(itemObj.itemName, itemObj.x, itemObj.y )
-  end
+  levelCanvas = love.graphics.newCanvas(self.pixelWidth, self.pixelHeight)
 
   self.projectiles = {}
   self.colliders = {}
 
   self.floorNum = data.floorNum
   self:makePhysicsBody()
+  self:makeLevelBoundaryCollider()
+  lightingSystem:renderEntireCanvas()
 end
 
 function Level:destroy()
-
-  -- Free items
-  for i=1, #self.items do
-    if self.items[i] ~= nil then
-      self.items[i]:tearDown()
-    end
-    self.items = {}
-  end
-
   world:destroy()
-
 end
 
 function Level:placeEnemyInLevel(name, x, y)
   if not x or not y then
     x, y = self.map:getRandomEmptyTile()
   end
+  x = (x+0.5)*screen.tileSize
+  y = (y+0.5)*screen.tileSize
+
   if name == "Snake" then
     makeSnake(x, y)
   elseif name == "Jackal" then

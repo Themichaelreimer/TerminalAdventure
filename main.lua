@@ -281,9 +281,3 @@ end
 function endContact(fixture1, fixture2, contact)
   debugString = ""
 end
-
-function resetEntities()
-  ecsWorld:clearEntities()
-  ecsWorld:refresh()
-  gameObjects = {}
-end

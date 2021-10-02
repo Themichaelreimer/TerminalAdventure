@@ -49,4 +49,8 @@ function Item:dealHit(other)
   if other.isPlayer then self:collect() end
 end
 
+function Item:toString()
+  return self.class.name .. ": (".. self.body:getX() .. "," .. self.body:getY() .. ")"
+end
+
 return Item

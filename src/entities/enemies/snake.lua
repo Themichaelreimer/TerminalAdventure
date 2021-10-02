@@ -133,4 +133,8 @@ function Snake:handleAI(dt)
   end
 end
 
+function Snake:toString()
+  return self.class.name .. ": ".. self.HP.. "- (".. self.body:getX() .. "," .. self.body:getY() .. ")"
+end
+
 return Snake

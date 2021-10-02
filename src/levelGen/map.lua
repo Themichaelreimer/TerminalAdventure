@@ -6,6 +6,8 @@ function Map:init(data)
     self.downstairs = data.downstairs
     self.map = data.tileMap
     self.lightMap = data.lightMap
+    self.width = #self.map[0]
+    self.height = #self.map
   else
     local params = generateSimplexGenParams()
     self.width = params.width
@@ -28,19 +30,6 @@ function Map:getSaveData()
     upstairs = self.upstairs,
     downstairs = self.downstairs,
   }
-end
-
-function Map:restore(o, data)
-  o = o or {}
-  setmetatable(o, self)
-  self.__index = self
-
-  self.upstairs = data.upstairs
-  self.downstairs = data.downstairs
-  self.map = data.tileMap
-  self.lightMap = data.lightMap
-
-  return o
 end
 
 function Map:placeStairs()
