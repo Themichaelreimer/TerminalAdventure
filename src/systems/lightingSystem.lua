@@ -85,7 +85,7 @@ end
 function lightingSystem:redrawCell(x, y, alpha)
 
   local tileSize = screen.tileSize
-  local colour = colours.lightGray
+  local colour = colours[level.map.map[y][x].colour]
   alpha = alpha or level.map.lightMap[y][x]
 
   --Blank out cell. Looks more weird if we don't do this
@@ -138,7 +138,7 @@ function lightingSystem:traceRay(x, y, angle, maxDistance)
     table.insert(results, result)
 
     -- Terminate the ray if we hit something solid
-    if tile.solid and not hasXRay then return results end
+    if tile == tiles.wall and not hasXRay then return results end
   end
   return results
 end

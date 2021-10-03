@@ -11,6 +11,7 @@ Player.baseHP = 24
 Player.lightDistance = 8
 Player.bouncyStep = true -- Enables bouncy step in asciiDrawSystem
 Player.isPlayer = true -- Used in collision handling with enemies
+Player.waterPenalty = 4
 
 function Player:init(x, y, initParams)
     initParams = initParams or {}
@@ -93,6 +94,11 @@ function Player:update(dt)
     end
   end
 
+  if self.waterTime then
+    dx = dx / self.waterPenalty
+    dy = dy / self.waterPenalty
+  end
+
   -- TODO: Replace isSwinging with flags that let you use x and z
   if keyboard.x and not self.isSwinging then
     ecsWorld:add(Sword(self))
@@ -116,7 +122,8 @@ function Player:update(dt)
     lightingSystem:renderEntireCanvas()
   end
 
-  if level:getTileAtCoordinates(px/tileSize, py/tileSize) == tiles.downstairs then
+  local myTile = level:getTileAtCoordinates(px/tileSize, py/tileSize)
+  if myTile == tiles.downstairs then
     debugString = "Stairs leading downwards. Press 'a' to go down a floor."
     if keyboard.a then
       nextLevel()
@@ -124,7 +131,7 @@ function Player:update(dt)
     displayedTileHintThisFrame = true
   end
 
-  if level:getTileAtCoordinates(px/tileSize, py/tileSize) == tiles.upstairs then
+  if myTile == tiles.upstairs then
     debugString = "Stairs leading upwards. Press 'a' to go up a floor."
     if keyboard.a then
       prevLevel()
@@ -132,9 +139,10 @@ function Player:update(dt)
     displayedTileHintThisFrame = true
   end
 
-  if not displayedTileHintThisFrame then
-    debugString = ''
+  if myTile == tiles.floor then
+    self.lastSafeTile = {x = round(px/tileSize), y = round(py/tileSize)}
   end
+
 
   if not self.deleted then
     self.body:applyForce(self.speed * dx, self.speed * dy)

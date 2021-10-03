@@ -4,12 +4,12 @@ SOUTH = 2
 WEST = 3
 
 tiles={
-  floor = {char='.', solid=false, color='white'},
-  floor1 = {char=',', solid=false, color='white'},
-  floor2 = {char="'", solid=false, color='white'},
-  floor3 = {char='`', solid=false, color='white'},
-  wall = {char='#', solid=true, color='white'},
-  water = {char='~', solid=true, color='blue'},
-  upstairs = {char='<', solid=false, color='white'},
-  downstairs = {char='>', solid=false, color='white'},
+  floor = {char='.', solid=false, colour='lightGray', aiAvoid=false},
+  floor1 = {char=',', solid=false, colour='lightGray', aiAvoid=false},
+  floor2 = {char="'", solid=false, colour='lightGray', aiAvoid=false},
+  floor3 = {char='`', solid=false, colour='lightGray', aiAvoid=false},
+  wall = {char='#', solid=true, colour='lightGray', aiAvoid=true},
+  water = {char='~', solid=false, colour='blue', aiAvoid=true},
+  upstairs = {char='<', solid=false, colour='lightGray', aiAvoid=false},
+  downstairs = {char='>', solid=false, colour='lightGray', aiAvoid=false},
 }

@@ -1,15 +1,15 @@
 local Level = class("Level")
 
 require('src.entities.items')
-Map = require("src.levelGen.map")
 
 -- Generates an entirely new level
-function Level:init(floorNum, data)
+function Level:init(floorNum, map, data)
 
   if data then
     self:restore(data)
   else
-    self.map = Map()
+    assert(map ~= nil)
+    self.map = map
     self.tileWidth = #self.map.map[0]
     self.tileHeight = #self.map.map
     self.pixelWidth = self.tileWidth * screen.tileSize
@@ -27,15 +27,15 @@ function Level:init(floorNum, data)
     self:placeItemInLevel("map")
     self:placeItemInLevel("xray")
 
-    for i=0, 3 do
+    for i=0, 4 do
       self:placeEnemyInLevel("Snake")
     end
 
-    for i=0, 3 do
+    for i=0, 4 do
       self:placeEnemyInLevel("Jackal")
     end
 
-    for i=0, 3 do
+    for i=0, 1 do
       self:placeEnemyInLevel("Plush")
     end
   end
@@ -213,7 +213,7 @@ end
 
 function Level:getTileAtCoordinates(x, y)
   if not self:tileInLevel(x, y) then return nil end
-  return self.map.map[math.floor(y)][math.floor(x)]
+  return self.map.map[round(y)][round(x)]
 end
 
 return Level

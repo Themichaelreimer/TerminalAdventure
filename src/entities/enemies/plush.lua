@@ -12,5 +12,6 @@ Plush.IDLE_TIME = 0.01
 Plush.MOVE_TIME = 1.0
 Plush.dashChance = 0.1
 Plush.baseHP = 8
+Jackal.waterPenalty = 16
 
 return Plush

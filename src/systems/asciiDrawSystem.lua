@@ -38,6 +38,10 @@ end
 
 function asciiDrawSystem:determineColour(e, lightness)
 
+  if e.waterTime and e.waterTime > 0 then
+    return alphaBlendColour(colours.blue, lightness)
+  end
+
   if not e.invulnTime or e.invulnTime < 0 then
     return alphaBlendColour(e.colour, lightness)
   end

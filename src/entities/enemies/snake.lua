@@ -14,6 +14,7 @@ Snake.IDLE_TIME = 1.10
 Snake.MOVE_TIME = 0.20
 Snake.maxRange = 30
 Snake.colourName = "red"
+Snake.waterPenalty = 2
 
 function Snake:init(x, y, saveData)
   self.deleted = false
@@ -99,6 +100,10 @@ end
 
 function Snake:dash()
   local dx, dy = getDirectionVector(self.body, player.body, true)
+  if self.waterTime then
+    dx = dx / self.waterPenalty
+    dy = dy / self.waterPenalty
+  end
   self.body:setLinearVelocity(dx * self.dashSpeed, dy * self.dashSpeed)
 
   self.moveTimer = 0

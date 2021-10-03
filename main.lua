@@ -88,7 +88,7 @@ function love.load()
   screen.halfWidth = screen.width/2
 
 
-  level = Level(1)
+  level = makeNewLevel(1)
   local playerInitPos = level.map.upstairs
 
   --player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
@@ -257,24 +257,7 @@ function beginContact(fixture1, fixture2, contact)
     if obj2.dealHit then obj2:dealHit(obj1) end
   end
 
-  -- The following implements some pre ECS features. I'd like to replace it
-  -- with duck-typing "can respond to function calls" type code like the above
-
-  -- The only interactions we have to care about in this callback
-  -- are ones involving custom classes. If userData isn't set,
-  -- then one or more objects isn't from a custom class
   if obj1 == nil or obj2 == nil then return nil end
-
-  local playerObj = findObjectOfClassInFixtures(obj1, obj2, "Player")
-  local itemObj = findObjectOfClassInFixtures(obj1, obj2, "Item")
-
-  if playerObj ~=nil and itemObj ~=nil then
-    if itemObj.itemName ~= "Coins" then
-      itemObj:collect()
-    else
-      debugString = "5 gold. Too bad you don't have your wallet!"
-    end
-  end
 
 end
 

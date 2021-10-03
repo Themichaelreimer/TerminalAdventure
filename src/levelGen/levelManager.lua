@@ -5,6 +5,9 @@ savedEntities = {}
 require('src.enemies')
 Level = require("src.levelGen.level")
 
+SimplexCave = require('src.levelGen.maps.SimplexCave')
+WetCave = require('src.levelGen.maps.wetCave')
+
 entityFunctions = {
   Snake = makeSnake,
   Jackal = makeJackal,
@@ -81,10 +84,10 @@ function nextLevel()
   world:setCallbacks(beginContact, endContact)
 
   if levels[dstNum] == nil then
-    level = Level(dstNum)
+    level = makeNewLevel(dstNum)
     table.insert(levels, level)
   else
-    level = Level(dstNum, levels[dstNum])
+    level = Level(dstNum, nil, levels[dstNum])
   end
 
   local playerInitPos = level.map.upstairs
@@ -110,7 +113,7 @@ function prevLevel()
     world = love.physics.newWorld(0, 0, true)
     world:setCallbacks(beginContact, endContact)
 
-    level = Level(dstNum, levels[dstNum])
+    level = Level(dstNum, nil, levels[dstNum])
     local playerInitPos = level.map.downstairs
 
 
@@ -126,4 +129,10 @@ function resetEntities()
   ecsWorld:clearEntities()
   ecsWorld:refresh()
   gameObjects = {}
+end
+
+function makeNewLevel(dstNum)
+  local MapType = randomElement({SimplexCave, WetCave})
+  local map = MapType()
+  return Level(dstNum, map)
 end
