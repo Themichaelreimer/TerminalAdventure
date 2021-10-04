@@ -7,12 +7,12 @@ adventure game!
 ## Weekend 11
 ![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/10.gif)
 ![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/9.gif)
-    - Added Sound effects
-    - Added alternate level generation algorithms, and the first variation: Flooded Caves
-    - Added Water and Drowning for player and Enemies
-    - Added inventory and inventory menu
-    - Added a "Pink Plush" enemy
-    - Added Life Jacket and LifeUp collectables
+  - Added Sound effects
+  - Added alternate level generation algorithms, and the first variation: Flooded Caves
+  - Added Water and Drowning for player and Enemies
+  - Added inventory and inventory menu
+  - Added a "Pink Plush" enemy
+  - Added Life Jacket and LifeUp collectables
 
 
 ## Weekend 9/10
