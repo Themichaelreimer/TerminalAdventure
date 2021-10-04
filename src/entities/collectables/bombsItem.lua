@@ -6,7 +6,8 @@ BombsItem.itemName = "Bombs" -- Display name
 BombsItem.acquireString = "Blow up walls and creatures"
 
 function BombsItem:payload()
-  hasBombs = true
+  hasBombs = true  -- Probably deprecated now. Delete once I confirm
+  table.insert(inventory, makeBombAdapter())
 end
 
 return BombsItem

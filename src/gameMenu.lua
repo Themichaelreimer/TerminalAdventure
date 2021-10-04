@@ -5,15 +5,15 @@ menuIndex = 1
 menuClosedThisFrame = false
 
 ------------------------------------
-hasMap = true
-hasXRay = true
+hasMap = false
+hasXRay = false
 hasBombs = false
-hasLifeJacket = true
+hasLifeJacket = false
 ------------------------------------
 
-inventory = {makeSwordAdapter(), makeBombAdapter()}
+inventory = {makeSwordAdapter()}
 activeInventory = {
-  x = nil,
+  x = inventory[1],
   z = nil,
 }
 

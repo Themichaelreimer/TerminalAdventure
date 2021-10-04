@@ -1,3 +1,6 @@
+-- This file defines the general behaviour of adapters
+-- This is probably not the file to edit for adding content. See src/adapters.lua
+
 local Adapter = class("adapter")
 
 Adapter.baseCoolTime = 0.5

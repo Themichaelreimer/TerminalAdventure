@@ -1,3 +1,6 @@
+-- This file defines specific adapters, and functions for the adapters to run
+-- This is probably the file you want to edit for adding active inventory
+
 Adapter = require('src.itemadapter')
 
 function useSword()
