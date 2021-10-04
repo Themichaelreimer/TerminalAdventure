@@ -68,7 +68,7 @@ end
 function Map:getRandomEmptyTile()
   local x = math.random(0, self.width)
   local y = math.random(0, self.height)
-  while self.map[y][x].solid do
+  while self.map[y][x].solid or self.map[y][x].aiAvoid do
     x = math.random(0, self.width)
     y = math.random(0, self.height)
   end

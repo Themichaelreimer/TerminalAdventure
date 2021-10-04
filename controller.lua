@@ -1,5 +1,5 @@
 function _getEmptyKeyboardState()
-  return {
+  r = {
     up = false,
     down = false,
     right = false,
@@ -7,10 +7,11 @@ function _getEmptyKeyboardState()
     a = false,
     x = false,
     z = false,
-    -- Used for debug commands
     q = false,
-    w = false
+    w = false,
   }
+  r["return"] = false
+  return r
 end
 
 -- Use this to know whether to respond to a keypress
@@ -31,6 +32,12 @@ function keyboardUpdate(dt)
   updateKeyDown("a", nextPreviousState)
   updateKeyDown("q", nextPreviousState)
   updateKeyDown("w", nextPreviousState)
+  updateKeyDown("up", nextPreviousState)
+  updateKeyDown("down", nextPreviousState)
+  updateKeyDown("left", nextPreviousState)
+  updateKeyDown("right", nextPreviousState)
+  updateKeyDown("return", nextPreviousState)
+
 
   -- TODO: When in menu, we want direction keys to behave like keyDown.
   -- TODO: When in game, we want direction keys to fire every frame

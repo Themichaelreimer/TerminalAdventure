@@ -13,7 +13,10 @@ entityFunctions = {
   Jackal = makeJackal,
   Plush = makePlush,
   MapItem = makeMap,
-  XRayItem = makeXRay
+  XRayItem = makeXRay,
+  BombsItem = makeBombs,
+  LifeJacketItem = makeLifeJacket,
+  LifeUpItem = makeLifeUp,
 }
 
 -- This function popullates the inital map objects

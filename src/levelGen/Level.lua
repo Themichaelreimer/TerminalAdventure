@@ -1,6 +1,7 @@
 local Level = class("Level")
 
 require('src.entities.items')
+Map = require('src.levelGen.map')
 
 -- Generates an entirely new level
 function Level:init(floorNum, map, data)
@@ -26,6 +27,9 @@ function Level:init(floorNum, map, data)
 
     self:placeItemInLevel("map")
     self:placeItemInLevel("xray")
+    self:placeItemInLevel("bombs")
+    self:placeItemInLevel("lifejacket")
+    self:placeItemInLevel("lifeup")
 
     for i=0, 4 do
       self:placeEnemyInLevel("Snake")
@@ -115,11 +119,15 @@ function Level:placeItemInLevel(itemName, x, y)
 
   local item
   if itemName == "map" then
-    makeMap(x, y, true)
+    makeMap(x, y)
   elseif itemName == 'xray' then
-    makeXRay(x, y, true)
-  elseif itemName == 'coins' then
-    -- Add coins if I ever put them back in
+    makeXRay(x, y)
+  elseif itemName == 'lifejacket' then
+    makeLifeJacket(x, y)
+  elseif itemName == 'bombs' then
+    makeBombs(x, y)
+  elseif itemName == 'lifeup' then
+    makeLifeUp(x, y)
   end
 end
 

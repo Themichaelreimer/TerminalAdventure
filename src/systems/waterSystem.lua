@@ -8,8 +8,8 @@ function WaterSystem:process(entity, dt)
   if not entity.deleted then
     local tileX = math.floor((entity.body:getX() + 0.5) / screen.tileSize)
     local tileY = math.floor((entity.body:getY() + 0.5) / screen.tileSize)
-    if level and level.map.map[tileY][tileX] == tiles.water then
-      if not entity.waterTime then
+    if level and level:tileInLevel(tileX,tileY) and level.map.map[tileY][tileX] == tiles.water then
+      if not entity.waterTime or (entity == player and hasLifeJacket) then
         entity.waterTime = self.drownTime
       else
         entity.waterTime = entity.waterTime - dt

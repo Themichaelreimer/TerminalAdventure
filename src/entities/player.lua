@@ -100,14 +100,18 @@ function Player:update(dt)
   end
 
   -- TODO: Replace isSwinging with flags that let you use x and z
-  if keyboard.x and not self.isSwinging then
-    ecsWorld:add(Sword(self))
+  if activeInventory.x then
+    if keyboard.x then
+      activeInventory.x:use()
+    end
+    activeInventory.x:update(dt)
   end
 
-  if keyboard.z then
-    if hasBombs then
-      ecsWorld:add(Bomb(px, py, dx, dy))
+  if activeInventory.z then
+    if keyboard.z then
+      activeInventory.z:use()
     end
+    activeInventory.z:update(dt)
   end
 
   if keyboard.q then
@@ -118,8 +122,8 @@ function Player:update(dt)
     nextLevel()
   end
 
-  if keyboard.a then
-    lightingSystem:renderEntireCanvas()
+  if keyboard['return'] and not menuClosedThisFrame then
+    menuOpen = true
   end
 
   local myTile = level:getTileAtCoordinates(px/tileSize, py/tileSize)

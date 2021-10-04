@@ -26,6 +26,7 @@ require("src.sfx")
 require("src.enemies")
 require("src.ecs")
 require("src.pathfinding")
+require("src.gameMenu")
 
 require("src.levelGen.levelManager")
 require("controller")
@@ -46,11 +47,6 @@ collisionCategories = {
 }
 
 blockingText = nil
-
--- TODO - Put upgrades and equipment into a table
-hasMap = true
-hasXRay = false
-hasBombs = true
 
 WINDOW_TITLES = {
   "It's a Game About Nothing",
@@ -108,20 +104,24 @@ end
 function love.update(dt)
 
   keyboardUpdate(dt)
+  menuClosedThisFrame = false
 
-  if blockingText == nil then
-    moveCamera(camera, dt)
-
-    -- Update the Box2D physics world (as opposed to the ECS world)
-    level:update(dt)
-    world:update(dt)
+  if menuOpen then
+    menuUpdate(dt)
   else
-    if blockingText ~= nil then
-      blockingText.time = blockingText.time - dt
-      if blockingText.time < 0 then blockingText = nil end
+    if blockingText == nil then
+      moveCamera(camera, dt)
+
+      -- Update the Box2D physics world (as opposed to the ECS world)
+      level:update(dt)
+      world:update(dt)
+    else
+      if blockingText ~= nil then
+        blockingText.time = blockingText.time - dt
+        if blockingText.time < 0 then blockingText = nil end
+      end
     end
   end
-
 end
 
 function love.draw()
@@ -133,13 +133,12 @@ function love.draw()
     love.graphics.draw(levelCanvas)
   end
 
-  -- CAMERA SPACE
-
-
   -- Updates the ECS world. This happens here because
   -- ECS contains a drawing system that can only draw inside of love.draw
   local dt = love.timer.getDelta()
-  ecsWorld:update(dt)
+  if not blockingText and not menuOpen then
+    ecsWorld:update(dt)
+  end
 
   -- / CAMERA SPACE
   love.graphics.translate(camera:getX(), camera:getY())
@@ -150,6 +149,10 @@ function love.draw()
     displayBlockingText()
   end
 
+  if menuOpen then
+    menuDraw()
+  end
+
 end
 
 function drawUI()
@@ -157,6 +160,7 @@ function drawUI()
   local halfWidth = screen.width/2
   local margin = 12
   local lineHeight = 24
+  local itemStr = ""
 
   love.graphics.setColor(colours.white)
 
@@ -179,8 +183,11 @@ function drawUI()
   love.graphics.print("[==========]", 216 + halfWidth, 2*lineHeight)
 
   love.graphics.setColor(colours.white)
-  love.graphics.print("X: Sword", margin, 3*lineHeight)
-  love.graphics.print("Z: Bombs", margin + halfWidth, 3*lineHeight)
+
+  if activeInventory.z then itemStr = activeInventory.z.name end
+  love.graphics.print("Z:" .. itemStr, margin, 3*lineHeight)
+  if activeInventory.x then itemStr = activeInventory.x.name else itemStr = "" end
+  love.graphics.print("X:" .. itemStr, margin + halfWidth, 3*lineHeight)
   love.graphics.print(debugString, margin, 4*lineHeight)
 
   love.graphics.translate(0, -4*uiSize) -- Transform into UI screen space
