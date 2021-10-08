@@ -12,6 +12,7 @@ Player.lightDistance = 8
 Player.bouncyStep = true -- Enables bouncy step in asciiDrawSystem
 Player.isPlayer = true -- Used in collision handling with enemies
 Player.waterPenalty = 4
+Player.HPVelocity = 12
 
 function Player:init(x, y, initParams)
     initParams = initParams or {}
@@ -35,6 +36,7 @@ function Player:init(x, y, initParams)
     self.facing = initParams.facing or SOUTH
     self.HP = hp
     self.maxHP = maxhp
+    self._HP = hp
 
     table.insert(gameObjects, self)
 end
@@ -54,7 +56,17 @@ function Player:destroy()
   self.deleted = true
 end
 
+function Player:updateRollingHP(dt)
+  if self.HP - self._HP < self.HPVelocity * dt then
+    self.HP = self._HP
+  else
+    self.HP = self.HP - self.HPVelocity * dt
+  end
+end
+
 function Player:update(dt)
+
+  self:updateRollingHP(dt)
 
   local tileSize = screen.tileSize
   local halfTile = tileSize/2
@@ -160,8 +172,8 @@ end
 
 function Player:takeDamage(dmg)
   local roundedDmg = math.floor(dmg + 0.5)
-  self.HP = self.HP - roundedDmg
-  if self.HP < 0 then self.HP = 0 end
+  self._HP = self._HP - roundedDmg
+  if self._HP < 0 then self._HP = 0 end
   self.invulnTime = 0.2
   sfx.hit2:play()
 end

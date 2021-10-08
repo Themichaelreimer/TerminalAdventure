@@ -174,7 +174,7 @@ function drawUI()
   love.graphics.print(playerName, margin, lineHeight)
   love.graphics.print("Dungeon: L"..level:getFloorNum(), margin + halfWidth, lineHeight)
 
-  love.graphics.print("Health: " .. player.HP .. "/"..player.maxHP, margin, 2*lineHeight)
+  love.graphics.print("Health: " .. round(player.HP) .. "/"..player.maxHP, margin, 2*lineHeight)
   love.graphics.setColor(colours.green)
   love.graphics.print(getAsciiBar(player.HP, player.maxHP), 216, 2*lineHeight)
   love.graphics.setColor(colours.white)
@@ -195,7 +195,7 @@ end
 
 function getAsciiBar(val, max)
   local result = "["
-  local numBars = 10 * (val / max)
+  local numBars = round(10 * (val / max))
   for i=1, numBars do
     result = result .. "="
   end

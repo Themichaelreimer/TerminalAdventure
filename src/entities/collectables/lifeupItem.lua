@@ -8,7 +8,7 @@ LifeUpItem.acquireString = "You are more resiliant"
 function LifeUpItem:payload()
   local hpGained = round(player.maxHP * 0.2)
   player.maxHP = player.maxHP + hpGained
-  player.HP = player.HP + hpGained
+  player._HP = player._HP + hpGained
 end
 
 return LifeUpItem
