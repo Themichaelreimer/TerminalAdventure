@@ -13,6 +13,7 @@ Player.bouncyStep = true -- Enables bouncy step in asciiDrawSystem
 Player.isPlayer = true -- Used in collision handling with enemies
 Player.waterPenalty = 4
 Player.HPVelocity = 12
+Player.reboundForce = 200
 
 function Player:init(x, y, initParams)
     initParams = initParams or {}
@@ -176,6 +177,13 @@ function Player:takeDamage(dmg)
   if self._HP < 0 then self._HP = 0 end
   self.invulnTime = 0.2
   sfx.hit2:play()
+end
+
+function Player:dealHit(otherEntity)
+-- This callback is normally used to deal contact damage to the player from an enemy
+-- But on the player, this will be used to apply a rebound force to the enemy attacking the player
+  local vx, vy = getDirectionVector(self.body, otherEntity.body, true)
+  otherEntity.body:applyLinearImpulse(self.reboundForce * vx, self.reboundForce *  vy)
 end
 
 return Player

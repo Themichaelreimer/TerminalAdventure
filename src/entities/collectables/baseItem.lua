@@ -4,8 +4,7 @@ local Item = class("Item")
 Item.char = 'i'
 Item.itemName = "item" -- Display name
 Item.acquireString = "[Base Item does nothing]"
-
-
+Item.ignorePhysics = true
 Item.minTextTime = 2.0
 
 function Item:init(x, y)

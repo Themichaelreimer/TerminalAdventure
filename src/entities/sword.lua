@@ -3,7 +3,7 @@ local Sword = class("Sword")
 Sword.char = 'l'
 Sword.expireTime = 0.30
 Sword.arcAngle = 7 * math.pi / 8
-Sword.force = 200
+Sword.force = 100
 Sword.damage = 10
 Sword.width = 8
 Sword.height = 24
@@ -65,7 +65,10 @@ function Sword:dealHit(otherEntity)
   -- Can't hit self
   if otherEntity == self.parent then return nil end
   if otherEntity.takeDamage then otherEntity:takeDamage(self.damage) end
-  self:applyForce(otherEntity.body)
+  if otherEntity.ignorePhysics and otherEntity.ignorePhysics == true then
+  else
+    self:applyForce(otherEntity.body)
+  end
 end
 
 function Sword:applyForce(body)

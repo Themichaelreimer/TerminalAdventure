@@ -10,6 +10,7 @@ Snake.force = 200
 Snake.ld = 7
 Snake.baseHP = 25
 Snake.behaviour = "idle" -- Enables AI system
+Snake.stunTime = 0.2
 Snake.IDLE_TIME = 1.10
 Snake.MOVE_TIME = 0.20
 Snake.maxRange = 30
@@ -79,6 +80,7 @@ function Snake:takeDamage(damage)
       sfx.hit3:play()
     end
     self.invulnTime = 0.3
+    self:idle(self.stunTime)  -- This defaults to IDLE_TIME, but can be overridden for shorter stun times
   end
 end
 
@@ -106,8 +108,14 @@ function Snake:dash()
   end
   self.body:setLinearVelocity(dx * self.dashSpeed, dy * self.dashSpeed)
 
+  self:idle()
+end
+
+function Snake:idle(time)
+  -- Snake will idle for time if given, or IDLE_TIME if none is given
+  local t = time or self.IDLE_TIME
   self.moveTimer = 0
-  self.idleTimer = self.IDLE_TIME
+  self.idleTimer = t
 end
 
 function Snake:handleAI(dt)
