@@ -14,6 +14,8 @@ player = {}
 playerSaveData = {}
 debugString = ""
 debugRender = false
+title = {}
+titleScreen = true
 
 normalizeDiagonalSpeed = true
 seed = love.math.random()*10000
@@ -33,6 +35,7 @@ require("controller")
 
 Player = require("src.entities.player")
 require("camera")
+require("titles")
 --require("items")  -- This will be deletable soon
 --require("weapons") -- This will be deletable soon
 
@@ -49,11 +52,11 @@ collisionCategories = {
 blockingText = nil
 
 WINDOW_TITLES = {
-  "It's a Game About Nothing",
-  "He's a Close-Attacker",
-  "The Caves of Nothing",
-  "Wallet Quest",
-  "What's the Deal with ASCII?",
+  { "A Game About Nothing", title1, "green" },
+  { "He's a Close-Attacker", title2, "red" },
+  { "The Caves of Nichevo", title3, "blue" },
+  { "Wallet Quest", title4, "yellow" },
+  { "What's the Deal with ASCII?", title5, "purple" },
 }
 
 CHARACTER_NAMES = {
@@ -94,7 +97,8 @@ function love.load()
 
   font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
   love.graphics.setFont(font)
-  love.window.setTitle(randomElement(WINDOW_TITLES))
+  title = randomElement(WINDOW_TITLES)
+  love.window.setTitle(title[1])
   playerName = randomElement(CHARACTER_NAMES)
   love.window.updateMode(screen.width, screen.height, screen.settings)
 
@@ -104,6 +108,8 @@ function love.update(dt)
 
   keyboardUpdate(dt)
   menuClosedThisFrame = false
+
+  if titleScreen then return end
 
   if menuOpen then
     menuUpdate(dt)
@@ -124,6 +130,9 @@ function love.update(dt)
 end
 
 function love.draw()
+
+  if titleScreen then displayTitleScreen() return end
+
   love.graphics.translate(-camera:getX(), -camera:getY())
   -- Draw level canvas
   if levelCanvas then
@@ -224,6 +233,21 @@ function displayBlockingText()
   love.graphics.printf(blockingText.subtext, 0, screen.height/2, screen.width, "center")
 
   if blockingText.time < 0 then blockingText = nil end
+end
+
+function displayTitleScreen()
+  -- Transparent background
+  love.graphics.setColor(colours.black[1], colours.black[2], colours.black[3])
+  love.graphics.rectangle("fill", 0, 0, screen.width, screen.height)
+
+  -- Text
+  love.graphics.setColor(colours[title[3]])
+  font = love.graphics.newFont("VeraMono.ttf", 4*screen.tileSize)
+  love.graphics.printf(title[1], 0, screen.height/2 - 2*screen.tileSize, screen.width, "center")
+  font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
+  love.graphics.printf("Press x, z, or enter to continue", 0, screen.height/2, screen.width, "center")
+
+  if keyboard.x or keyboard.Z or keyboard['return'] then titleScreen = false end
 end
 
 function setBlockingText(text, subtext, time)
