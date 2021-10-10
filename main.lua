@@ -13,13 +13,13 @@ camera = {}
 player = {}
 playerSaveData = {}
 debugString = ""
-debugRender = false
 title = {}
 titleScreen = true
 
 normalizeDiagonalSpeed = true
 seed = love.math.random()*10000
 playerName = ""
+deathTime = 0
 
 require("src.constants")
 require("src.colours")
@@ -65,6 +65,9 @@ CHARACTER_NAMES = {
   "Elaine the Graceful",
   "Cosmo the Magician"
 }
+
+debugRender = false -- Whether or not to draw bounding boxes
+canDie = true  -- Whether or not the game ends
 
 function love.load()
   -- Init physics and world
@@ -132,33 +135,40 @@ end
 function love.draw()
 
   if titleScreen then displayTitleScreen() return end
-
-  love.graphics.translate(-camera:getX(), -camera:getY())
-  -- Draw level canvas
-  if levelCanvas then
-    love.graphics.setBackgroundColor(colours.black)
-    love.graphics.setColor(1,1,1)
-    love.graphics.draw(levelCanvas)
-  end
-
-  -- Updates the ECS world. This happens here because
-  -- ECS contains a drawing system that can only draw inside of love.draw
   local dt = love.timer.getDelta()
-  if not blockingText and not menuOpen then
-    ecsWorld:update(dt)
+
+
+  if deathTime < 4 then
+    love.graphics.translate(-camera:getX(), -camera:getY())
+    -- Draw level canvas
+    if levelCanvas then
+      love.graphics.setBackgroundColor(colours.black)
+      love.graphics.setColor(1,1,1)
+      love.graphics.draw(levelCanvas)
+    end
+
+    -- Updates the ECS world. This happens here because
+    -- ECS contains a drawing system that can only draw inside of love.draw
+    if not blockingText and not menuOpen then
+      ecsWorld:update(dt)
+    end
+
+    -- / CAMERA SPACE
+    love.graphics.translate(camera:getX(), camera:getY())
+
+    if player then drawUI() end
+
+    if blockingText ~= nil then
+      displayBlockingText()
+    end
+
+    if menuOpen then
+      menuDraw()
+    end
   end
 
-  -- / CAMERA SPACE
-  love.graphics.translate(camera:getX(), camera:getY())
-
-  if player then drawUI() end
-
-  if blockingText ~= nil then
-    displayBlockingText()
-  end
-
-  if menuOpen then
-    menuDraw()
+  if player.HP <= 0  then
+    displayDeathScreen(dt)
   end
 
 end
@@ -235,6 +245,7 @@ function displayBlockingText()
   if blockingText.time < 0 then blockingText = nil end
 end
 
+-- TODO: Split different 'screens' into different files, perhaps managed by files
 function displayTitleScreen()
   -- Transparent background
   love.graphics.setColor(colours.black[1], colours.black[2], colours.black[3])
@@ -247,7 +258,34 @@ function displayTitleScreen()
   font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
   love.graphics.printf("Press x, z, or enter to continue", 0, screen.height/2, screen.width, "center")
 
-  if keyboard.x or keyboard.Z or keyboard['return'] then titleScreen = false end
+  if keyboard.x or keyboard.z or keyboard['return'] then titleScreen = false end
+end
+
+function displayDeathScreen(dt)
+  -- Transparent background
+  deathTime  = deathTime + dt
+
+  if deathTime < 2 then
+    local alpha = deathTime/2
+    love.graphics.setColor(colours.black[1], colours.black[2], colours.black[3], alpha)
+    love.graphics.rectangle("fill", 0, 0, screen.width, screen.height)
+
+  else
+    love.graphics.setColor(colours.black)
+    love.graphics.rectangle("fill", 0, 0, screen.width, screen.height)
+    local alpha = (deathTime - 2) / 2
+
+    -- Text
+    love.graphics.setColor(colours.red[1], colours.red[2], colours.red[3], alpha)
+    font = love.graphics.newFont("VeraMono.ttf", 4*screen.tileSize)
+    love.graphics.printf("You died...", 0, screen.height/2 - 2*screen.tileSize, screen.width, "center")
+    font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
+    love.graphics.printf("Press x, z, or enter to exit", 0, screen.height/2, screen.width, "center")
+  end
+
+  if deathTime > 4 then
+    if keyboard.x or keyboard.z or keyboard['return'] then love.event.quit() end
+  end
 end
 
 function setBlockingText(text, subtext, time)

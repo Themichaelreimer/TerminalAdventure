@@ -69,6 +69,7 @@ end
 function Player:update(dt)
 
   self:updateRollingHP(dt)
+  if deathTime > 0 then self.colour = colours.white return end
 
   local tileSize = screen.tileSize
   local halfTile = tileSize/2
