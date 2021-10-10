@@ -15,6 +15,8 @@ function asciiDrawSystem:process(e, dt)
 
     local tileSize = screen.tileSize
     local halfsize = screen.tileSize/2
+    local xScale = e.xScale or 1
+    local yScale = e.yScale or 1
 
     local lightness = level:getLightnessAtTile(math.floor(x/tileSize), math.floor(y/tileSize))
 
@@ -22,7 +24,7 @@ function asciiDrawSystem:process(e, dt)
     local c1, c2, c3, c4 = self:determineColour(e, lightness)
     if e.alpha then c4 = c4 * e.alpha end
     love.graphics.setColor(c1, c2, c3, c4)
-    love.graphics.print(e.char, x - halfsize, y - halfsize)
+    love.graphics.print(e.char, x - halfsize, y - halfsize, 0, xScale, yScale)
 
     -- Update invuln time if the property exists
     -- It's probably better to make a new invulnTime system, but ehh
@@ -30,7 +32,7 @@ function asciiDrawSystem:process(e, dt)
 
     if debugRender and e.shape then
       love.graphics.setColor(0.1, 0.1, 0.5, 0.5)
-      love.graphics.polygon("fill", e:getWorldPoints(e.shape:getPoints()))
+      love.graphics.polygon("fill", e.body:getWorldPoints(e.shape:getPoints()))
       love.graphics.setColor(1, 1, 1, 1)
     end
   end

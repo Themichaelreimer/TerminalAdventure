@@ -33,8 +33,8 @@ require("controller")
 
 Player = require("src.entities.player")
 require("camera")
-require("items")  -- This will be deletable soon
-require("weapons") -- This will be deletable soon
+--require("items")  -- This will be deletable soon
+--require("weapons") -- This will be deletable soon
 
 
 colours = japanesque
@@ -87,7 +87,6 @@ function love.load()
   level = makeNewLevel(1)
   local playerInitPos = level.map.upstairs
 
-  --player = Player:new(nil, world, playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
   player = Player(playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
   ecsWorld:add(player)
 

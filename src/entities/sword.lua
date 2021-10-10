@@ -7,6 +7,9 @@ Sword.force = 100
 Sword.damage = 10
 Sword.width = 8
 Sword.height = 24
+Sword.xScale = 0.1
+Sword.yScale = 0.05
+Sword.colourName = 'gray'
 
 function Sword:init(parentEntity)
   self.body = love.physics.newBody(world, x, y, "dynamic")
@@ -15,7 +18,7 @@ function Sword:init(parentEntity)
   self.fixture:setSensor(true)
   self.fixture:setUserData(self)
 
-  self.colour = colours.gray
+  self.colour = colours[self.colourName]
 
   self.parent = parentEntity
   self.parent.isSwinging = true
@@ -45,7 +48,7 @@ end
 
 function Sword:draw()
   love.graphics.setColor(self.colour)
-  love.graphics.print(self.char, self.body:getX(), self.body:getY(), self.angle+math.pi/2, 1, 1, self.width/2, self.height/2)
+  love.graphics.print(self.char, self.body:getX(), self.body:getY(), self.angle+math.pi/2, self.width*self.xScale, self.height*self.yScale, self.width/2, self.height/2)
   if debugRender then
     love.graphics.setColor(0,0,1,0.6)
     love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))

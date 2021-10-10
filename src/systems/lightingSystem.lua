@@ -30,6 +30,19 @@ function lightingSystem:process(entity, dt)
     self:updateCanvasLighting(x, y, entity.lightDistance, self.NUM_RAYS)
   end
 
+  -- DEBUG REGION
+  if debugRender then
+    love.graphics.setColor(0.5, 0.1, 0.1,0.5)
+    --bodies = world:getBodies()
+    --body = bodies[1]
+    --for k,v in pairs(body:getFixtures()) do
+    for k,v in pairs(level.colliders) do
+      love.graphics.polygon("fill", v:getBody():getWorldPoints(v:getShape():getPoints()))
+    end
+    love.graphics.setColor(1, 1, 1, 1)
+  end
+  -- / DEBUG REGION
+
   if firstFrameOnFloor or self.mustRefreshCanvas then self:renderEntireCanvas() end
   love.graphics.setCanvas()
   love.graphics.translate(-camera:getX(), -camera:getY())
@@ -177,10 +190,11 @@ function lightingSystem:renderEntireCanvas()
   -- DEBUG REGION
   if debugRender then
     love.graphics.setColor(0.5, 0.1, 0.1,0.5)
-    bodies = world:getBodies()
-    body = bodies[1]
-    for k,v in pairs(body:getFixtures()) do
-      love.graphics.polygon("fill", body:getWorldPoints(v:getShape():getPoints()))
+    --bodies = world:getBodies()
+    --body = bodies[1]
+    --for k,v in pairs(body:getFixtures()) do
+    for k,v in pairs(level.colliders) do
+      love.graphics.polygon("fill", v:getBody():getWorldPoints(v:getShape():getPoints()))
     end
     love.graphics.setColor(1, 1, 1, 1)
   end

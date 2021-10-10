@@ -1,5 +1,6 @@
 Bomb = require("src.entities.bomb")
 Sword = require("src.entities.sword")
+HeroSword = require("src.entities.heroSword")
 
 local Player = class("Player")
 

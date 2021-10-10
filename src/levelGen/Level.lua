@@ -20,7 +20,7 @@ function Level:init(floorNum, map, data)
     self.floorNum = floorNum
     self.projectiles = {}
     self.colliders = {}
-    levelCanvas = love.graphics.newCanvas(self.pixelWidth, self.pixelHeight)
+    levelCanvas = love.graphics.newCanvas(self.pixelWidth + screen.tileSize, self.pixelHeight + screen.tileSize)
 
     self:makePhysicsBody()
     self:makeLevelBoundaryCollider()
@@ -30,6 +30,7 @@ function Level:init(floorNum, map, data)
     self:placeItemInLevel("bombs")
     self:placeItemInLevel("lifejacket")
     self:placeItemInLevel("lifeup")
+    self:placeItemInLevel("HSword")
 
     for i=0, 4 do
       self:placeEnemyInLevel("Snake")
@@ -79,7 +80,7 @@ function Level:restore(data)
   self.tileHeight = #self.map.map
   self.pixelWidth = self.tileWidth * screen.tileSize
   self.pixelHeight = self.tileHeight * screen.tileSize
-  levelCanvas = love.graphics.newCanvas(self.pixelWidth, self.pixelHeight)
+  levelCanvas = love.graphics.newCanvas(self.pixelWidth + screen.tileSize, self.pixelHeight + screen.tileSize)
 
   self.projectiles = {}
   self.colliders = {}
@@ -128,6 +129,8 @@ function Level:placeItemInLevel(itemName, x, y)
     makeBombs(x, y)
   elseif itemName == 'lifeup' then
     makeLifeUp(x, y)
+  elseif itemName == 'HSword' then
+    makeHSword(x, y)
   end
 end
 

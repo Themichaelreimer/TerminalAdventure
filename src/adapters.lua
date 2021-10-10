@@ -13,6 +13,16 @@ function makeSwordAdapter()
   return Adapter("Sword", useSword, 0.1)
 end
 
+function useHeroSword()
+  if not player.isSwinging then
+    ecsWorld:add(HeroSword(player))
+  end
+end
+
+function makeHSwordAdapter()
+  return Adapter("HeroSword", useHeroSword, 0.1)
+end
+
 function useBomb()
   local px = player.body:getX()
   local py = player.body:getY()

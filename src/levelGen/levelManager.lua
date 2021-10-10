@@ -17,6 +17,7 @@ entityFunctions = {
   BombsItem = makeBombs,
   LifeJacketItem = makeLifeJacket,
   LifeUpItem = makeLifeUp,
+  HSwordItem = makeHSword,
 }
 
 -- This function popullates the inital map objects
@@ -39,9 +40,9 @@ end
 function checkSavedEntitiesState()
   for i, entities in ipairs(savedEntities) do
     for _, entityData in ipairs(entities[i]) do
-      --assert(entityData.x ~= nil)
-      --assert(entityData.y ~= nil)
-      --assert(entityData.name ~= nil)
+      assert(entityData.x ~= nil)
+      assert(entityData.y ~= nil)
+      assert(entityData.name ~= nil)
     end
   end
 end
