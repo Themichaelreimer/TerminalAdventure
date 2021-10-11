@@ -1,12 +1,14 @@
 local LavaSystem =  tiny.processingSystem(class "LavaSystem")
 
-LavaSystem.filter = tiny.requireAll("speed", "body")
+LavaSystem.filter = tiny.filter("speed&body&!flying")
 LavaSystem.drownTime = 0.5
 LavaSystem.drownDamage = 4
 LavaSystem.fireTime = 4.0
 
 function LavaSystem:process(entity, dt)
   if not entity.deleted then
+    if entity == player and hasArmour then return end
+
     local tileX = math.floor((entity.body:getX() + 0.5) / screen.tileSize)
     local tileY = math.floor((entity.body:getY() + 0.5) / screen.tileSize)
     local addEntityToFireSystem = false

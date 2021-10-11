@@ -6,7 +6,7 @@ AmuletItem.itemName = "Amulet of Recovery" -- Display name
 AmuletItem.acquireString = "You now passively recover health"
 
 function AmuletItem:payload()
-  hasAmuletOfRecovery = true
+  hasAmulet = true
 end
 
 return AmuletItem

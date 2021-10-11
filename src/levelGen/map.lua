@@ -55,14 +55,14 @@ function Map:placeEntities(floorItems, floorNum, start)
       table.insert(result, entry)
     end
 
-    for i=1, self.numHealthUpgradesPerLevel do
-      local spotX, spotY = self:getRandomEmptyTile()
-      entry = {name="LifeUpItem"}
-      entry.x = spotX*screen.tileSize + halfTile
-      entry.y = spotY*screen.tileSize + halfTile
-      table.insert(result, entry)
-    end
+  end
 
+  for i=1, self.numHealthUpgradesPerLevel do
+    local spotX, spotY = self:getRandomEmptyTile()
+    entry = {name="LifeUpItem"}
+    entry.x = spotX*screen.tileSize + halfTile
+    entry.y = spotY*screen.tileSize + halfTile
+    table.insert(result, entry)
   end
 
   -- Select and place enemeis

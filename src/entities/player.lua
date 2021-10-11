@@ -186,7 +186,7 @@ function Player:getMapCoordinates()
 end
 
 function Player:takeDamage(dmg)
-  if hasArmour then dmg = dmg/6 end
+  if hasArmour then dmg = dmg/3 end
   local roundedDmg = math.floor(dmg + 0.5)
   self._HP = self._HP - roundedDmg
   if self._HP < 0 then self._HP = 0 end

@@ -1,23 +1,25 @@
-local Snake = class("Snake")
+local Dragon = class("Dragon")
 
-Snake.char = 's'
-Snake.size = 14
-Snake.damage = 6
-Snake.speed = 9
-Snake.dashSpeed = 800
-Snake.dashChance = 0.5
-Snake.force = 200
-Snake.ld = 7
-Snake.baseHP = 25
-Snake.behaviour = "idle" -- Enables AI system
-Snake.stunTime = 0.35
-Snake.IDLE_TIME = 1.10
-Snake.MOVE_TIME = 0.20
-Snake.maxRange = 30
-Snake.colourName = "red"
-Snake.waterPenalty = 2
+Dragon.char = 'D'
+Dragon.size = 28
+Dragon.damage = 10
+Dragon.speed = 9
+Dragon.dashSpeed = 800
+Dragon.dashChance = 0.5
+Dragon.force = 200
+Dragon.ld = 7
+Dragon.baseHP = 100
+Dragon.stunTime = 0.2
+Dragon.IDLE_TIME = 1.10
+Dragon.MOVE_TIME = 1.10
+Dragon.maxRange = 90
+Dragon.colourName = "red"
+Dragon.waterPenalty = 2
+Dragon.flying = true
+Dragon.xScale = 2
+Dragon.yScale = 2
 
-function Snake:init(x, y, saveData)
+function Dragon:init(x, y, saveData)
   self.deleted = false
   self.dead = false
   self.colour = colours[self.colourName]
@@ -41,7 +43,7 @@ function Snake:init(x, y, saveData)
   end
 end
 
-function Snake:getSaveData()
+function Dragon:getSaveData()
   return {
     name = self.class.name,
     hp = self.HP,
@@ -50,8 +52,9 @@ function Snake:getSaveData()
   }
 end
 
-function Snake:destroy()
+function Dragon:destroy()
   -- Clean up resources to prevent leaks
+  ecsWorld:add(DragonArmourItem(self.body:getX()), self.body:getY())
   self.deleted = true
   self.fixture:destroy()
   self.shape:release()
@@ -59,7 +62,7 @@ function Snake:destroy()
 
 end
 
-function Snake:dealHit(otherEntity)
+function Dragon:dealHit(otherEntity)
   if not self.lifetime and otherEntity.isPlayer then
     if otherEntity == self or not otherEntity.takeDamage then return nil end
     otherEntity:takeDamage(self.damage)
@@ -69,7 +72,7 @@ function Snake:dealHit(otherEntity)
   end
 end
 
-function Snake:takeDamage(damage)
+function Dragon:takeDamage(damage)
 
   if not self.lifetime then
     self.HP = self.HP - damage
@@ -86,21 +89,21 @@ end
 
 -- draw handled by asciiDrawSystem
 
-function Snake:update()
+function Dragon:update()
   if self.lifetime then
     self.alpha = 0.5 * (1 - math.cos(self.lifetime * self.lifetime * 4 * math.pi))
   end
 end
 
 
-function Snake:die()
+function Dragon:die()
   self.dead = true
   self.colour = colours.lightGray
   self.lifetime = 1.5  -- Sets the snake to auto delete in 1 second
   ecsWorld:add(self)  -- Needed to refresh what systems snek is part of
 end
 
-function Snake:dash()
+function Dragon:dash()
   local dx, dy = getDirectionVector(self.body, player.body, true)
   if self.waterTime then
     dx = dx / self.waterPenalty
@@ -111,14 +114,14 @@ function Snake:dash()
   self:idle()
 end
 
-function Snake:idle(time)
-  -- Snake will idle for time if given, or IDLE_TIME if none is given
+function Dragon:idle(time)
+  -- Dragon will idle for time if given, or IDLE_TIME if none is given
   local t = time or self.IDLE_TIME
   self.moveTimer = 0
   self.idleTimer = t
 end
 
-function Snake:handleAI(dt)
+function Dragon:handleAI(dt)
   local path = findPathToEntity(self, player, self.maxRange)
   if path then
 
@@ -146,8 +149,8 @@ function Snake:handleAI(dt)
   end
 end
 
-function Snake:toString()
+function Dragon:toString()
   return self.class.name .. ": ".. self.HP.. "- (".. self.body:getX() .. "," .. self.body:getY() .. ")"
 end
 
-return Snake
+return Dragon

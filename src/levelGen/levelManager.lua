@@ -15,6 +15,7 @@ entityFunctions = {
   Snake = makeSnake,
   Jackal = makeJackal,
   Plush = makePlush,
+  Dragon = makeDragon,
   MapItem = makeMap,
   XRayItem = makeXRay,
   BombsItem = makeBombs,
@@ -62,18 +63,18 @@ collectableItems = {
     maxFloor = 8,
     easyAccess = false
   },
-  DragonArmourItem = { -- TODO: Dont need this after this is tested
-    name = "DragonArmourItem",
-    constructor = entityFunctions.DragonArmourItem,
-    minFloor = 1,
-    maxFloor = 1,
-    easyAccess = false
-  },
+  --DragonArmourItem = { -- TODO: Dont need this after this is tested
+  --  name = "DragonArmourItem",
+  --  constructor = entityFunctions.DragonArmourItem,
+  --  minFloor = 1,
+  --  maxFloor = 1,
+  --  easyAccess = false
+  --},
   AmuletItem = {
     name = "AmuletItem",
     constructor = entityFunctions.AmuletItem,
-    minFloor = 3,
-    maxFloor = 5,
+    minFloor = 4,
+    maxFloor = 7,
     easyAccess = false
   },
   WalletItem = {
@@ -89,7 +90,7 @@ floorEnemies = {
   Snake = {5,5,5,5,5,5,5,5,5,10},
   Jackal = {0,1,2,4,8,8,8,8,0,10},
   Plush = {0,0,0,0,0,3,4,5,0,10},
-  --Dragon = {0,0,0,0,0,0,0,0,1,0},
+  Dragon = {0,0,0,0,0,0,0,0,1,0},
 }
 
 numFloors = 10
