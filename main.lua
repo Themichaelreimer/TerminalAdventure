@@ -166,7 +166,11 @@ function love.draw()
   end
 
   if player.HP <= 0  then
-    displayDeathScreen(dt)
+    displayDeathScreen(dt, false)
+  end
+
+  if gameWon == true then
+    displayDeathScreen(dt, true)
   end
 
 end
@@ -259,9 +263,10 @@ function displayTitleScreen()
   if keyboard.x or keyboard.z or keyboard['return'] then titleScreen = false end
 end
 
-function displayDeathScreen(dt)
+function displayDeathScreen(dt, win)
   -- Transparent background
   deathTime  = deathTime + dt
+  local playerWon = win or false
 
   if deathTime < 2 then
     local alpha = deathTime/2
@@ -274,11 +279,20 @@ function displayDeathScreen(dt)
     local alpha = (deathTime - 2) / 2
 
     -- Text
-    love.graphics.setColor(colours.red[1], colours.red[2], colours.red[3], alpha)
-    font = love.graphics.newFont("VeraMono.ttf", 4*screen.tileSize)
-    love.graphics.printf("You died...", 0, screen.height/2 - 2*screen.tileSize, screen.width, "center")
-    font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
-    love.graphics.printf("Press x, z, or enter to exit", 0, screen.height/2, screen.width, "center")
+    if playerWon then
+      love.graphics.setColor(colours.green[1], colours.green[2], colours.green[3], alpha)
+      font = love.graphics.newFont("VeraMono.ttf", 4*screen.tileSize)
+      love.graphics.printf("You escaped with your wallet!", 0, screen.height/2 - 2*screen.tileSize, screen.width, "center")
+      font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
+      love.graphics.printf("Press x, z, or enter to exit", 0, screen.height/2, screen.width, "center")
+    else
+      love.graphics.setColor(colours.red[1], colours.red[2], colours.red[3], alpha)
+      font = love.graphics.newFont("VeraMono.ttf", 4*screen.tileSize)
+      love.graphics.printf("You died...", 0, screen.height/2 - 2*screen.tileSize, screen.width, "center")
+      font = love.graphics.newFont("VeraMono.ttf", screen.tileSize)
+      love.graphics.printf("Press x, z, or enter to exit", 0, screen.height/2, screen.width, "center")
+    end
+
   end
 
   if deathTime > 4 then

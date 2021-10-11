@@ -15,7 +15,7 @@ Player.isPlayer = true -- Used in collision handling with enemies
 Player.waterPenalty = 4
 Player.HPVelocity = 12
 Player.reboundForce = 200
-Player.recoverInterval = 1
+Player.recoverInterval = 4
 Player.recoverAmount = 1
 
 function Player:init(x, y, initParams)
@@ -186,6 +186,7 @@ function Player:getMapCoordinates()
 end
 
 function Player:takeDamage(dmg)
+  if hasArmour then dmg = dmg/6 end
   local roundedDmg = math.floor(dmg + 0.5)
   self._HP = self._HP - roundedDmg
   if self._HP < 0 then self._HP = 0 end

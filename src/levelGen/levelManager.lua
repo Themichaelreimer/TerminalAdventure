@@ -21,6 +21,9 @@ entityFunctions = {
   LifeJacketItem = makeLifeJacket,
   LifeUpItem = makeLifeUp,
   HSwordItem = makeHSword,
+  DragonArmourItem = makeDragonArmour,
+  AmuletItem = makeAmulet,
+  WalletItem = makeWallet,
 }
 
 collectableItems = {
@@ -57,6 +60,27 @@ collectableItems = {
     constructor = entityFunctions.XRayItem,
     minFloor = 1,
     maxFloor = 8,
+    easyAccess = false
+  },
+  DragonArmourItem = { -- TODO: Dont need this after this is tested
+    name = "DragonArmourItem",
+    constructor = entityFunctions.DragonArmourItem,
+    minFloor = 1,
+    maxFloor = 1,
+    easyAccess = false
+  },
+  AmuletItem = {
+    name = "AmuletItem",
+    constructor = entityFunctions.AmuletItem,
+    minFloor = 3,
+    maxFloor = 5,
+    easyAccess = false
+  },
+  WalletItem = {
+    name = "WalletItem",
+    constructor = entityFunctions.WalletItem,
+    minFloor = 10,
+    maxFloor = 10,
     easyAccess = false
   },
 }
@@ -154,6 +178,9 @@ function prevLevel()
 
   if lvlNum > 1 then
     loadLevel(lvlNum, dstNum, false)
+  elseif hasWallet and lvlNum == 1 then
+    deathTime = 0
+    gameWon = true
   end
 end
 
@@ -198,7 +225,7 @@ function makeNewLevel(lvlNum, floorItems)
   else
     MapType = LavaCave
   end
-  
+
   local mapParams = {
     items = floorItems,
     floorNum = lvlNum,

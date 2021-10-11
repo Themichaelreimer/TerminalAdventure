@@ -4,6 +4,10 @@ RecoverySystem.filter = tiny.requireAll("recoverAmount", "recoverInterval", "HP"
 
 function RecoverySystem:process(entity, dt)
 
+  if not hasAmulet and entity == player then
+    return
+  end
+
   if entity.deleted or entity.HP == 0 or entity.HP == entity.maxHP then
     return
   end

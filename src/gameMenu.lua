@@ -9,6 +9,9 @@ hasMap = false
 hasXRay = false
 hasBombs = false
 hasLifeJacket = false
+hasArmour = false
+hasAmulet = false
+hasWallet = false
 ------------------------------------
 
 inventory = {makeSwordAdapter()}
@@ -51,6 +54,15 @@ function menuDraw()
   end
   if hasLifeJacket then
     love.graphics.print("Life Jacket", margin + cellWidth, 3* quarterHeight + lineHeight)
+  end
+  if hasAmulet then
+    love.graphics.print("Recovery Amulet", 2*cellWidth, 3* quarterHeight + lineHeight)
+  end
+  if hasArmour then
+    love.graphics.print("Dragon Armour",  3*cellWidth, 3* quarterHeight + lineHeight)
+  end
+  if hasWallet then
+    love.graphics.print("Your Wallet",  3*cellWidth, 3* quarterHeight + 3*lineHeight)
   end
 
 end
