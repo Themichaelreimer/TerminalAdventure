@@ -120,7 +120,7 @@ function Player:update(dt)
     end
   end
 
-  if self.waterTime then
+  if self.waterTime or self.lavaTime then
     dx = dx / self.waterPenalty
     dy = dy / self.waterPenalty
   end

@@ -8,9 +8,11 @@ lightingSystem = require("src.systems.lightingSystem")
 asciiDrawSystem = require("src.systems.asciiDrawSystem")
 aiSystem = require("src.systems.aiSystem")
 waterSystem = require("src.systems.waterSystem")
+lavaSystem = require("src.systems.lavaSystem")
+FireSystem = require("src.systems.firesystem")
 
 -- ECS world, as opposed to the physics world
-ecsWorld = tiny.world(lifetimeSystem, updateSystem, drawSystem, lightingSystem, asciiDrawSystem, aiSystem, waterSystem)
+ecsWorld = tiny.world(lifetimeSystem, updateSystem, drawSystem, lightingSystem, asciiDrawSystem, aiSystem, waterSystem, lavaSystem, FireSystem)
 
 -- Table of all ECS entities currently loaded
 -- This table is cleaned by updateSystem every frame

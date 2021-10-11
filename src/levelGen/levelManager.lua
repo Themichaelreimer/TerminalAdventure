@@ -7,6 +7,9 @@ Level = require("src.levelGen.level")
 
 SimplexCave = require('src.levelGen.maps.SimplexCave')
 WetCave = require('src.levelGen.maps.wetCave')
+LavaCave = require('src.levelGen.maps.lavacave')
+LavaLake = require('src.levelGen.maps.lavalake')
+
 
 entityFunctions = {
   Snake = makeSnake,
@@ -184,7 +187,18 @@ function resetEntities()
 end
 
 function makeNewLevel(lvlNum, floorItems)
-  local MapType = randomElement({SimplexCave, WetCave})
+
+  local MapType
+  if lvlNum <=4 then
+    MapType = randomElement({SimplexCave, WetCave})
+  elseif lvlNum <= 8 then
+    MapType = randomElement({SimplexCave, WetCave, LavaCave})
+  elseif lvlNum == 9 then
+    MapType = LavaLake
+  else
+    MapType = LavaCave
+  end
+  
   local mapParams = {
     items = floorItems,
     floorNum = lvlNum,

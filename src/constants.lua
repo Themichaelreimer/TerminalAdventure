@@ -10,6 +10,7 @@ tiles={
   floor3 = {char='`', solid=false, colour='lightGray', aiAvoid=false},
   wall = {char='#', solid=true, colour='lightGray', aiAvoid=true},
   water = {char='~', solid=false, colour='blue', aiAvoid=true},
+  lava = {char='~', solid=false, colour='red', aiAvoid=true},
   upstairs = {char='<', solid=false, colour='lightGray', aiAvoid=false},
   downstairs = {char='>', solid=false, colour='lightGray', aiAvoid=false},
 }

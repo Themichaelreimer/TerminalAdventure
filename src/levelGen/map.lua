@@ -66,7 +66,6 @@ function Map:placeEntities(floorItems, floorNum, start)
   end
 
   -- Select and place enemeis
-  assert(floorEnemies ~= nil)
   for k, name in pairs(floorEnemies) do
     local numToSpawn = floorEnemies[k][floorNum]
     for i=1,numToSpawn do

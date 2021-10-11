@@ -40,12 +40,17 @@ end
 
 function asciiDrawSystem:determineColour(e, lightness)
 
+  local baseColour = e.colour
   if e.waterTime and e.waterTime > 0 then
-    return alphaBlendColour(colours.blue, lightness)
+    baseColour = colours.blue
+  end
+
+  if e.fireTime and e.fireTime > 0 then
+    baseColour = colours.red
   end
 
   if not e.invulnTime or e.invulnTime < 0 then
-    return alphaBlendColour(e.colour, lightness)
+    return alphaBlendColour(baseColour, lightness)
   end
 
   local cIndex = math.floor((e.invulnTime * 10)) % 2

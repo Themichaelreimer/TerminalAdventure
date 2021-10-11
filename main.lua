@@ -54,7 +54,7 @@ blockingText = nil
 WINDOW_TITLES = {
   { "A Game About Nothing", title1, "green" },
   { "He's a Close-Attacker", title2, "red" },
-  { "The Caves of Nichevo", title3, "blue" },
+  { "Terminal Adventure", title3, "blue" },
   { "Wallet Quest", title4, "yellow" },
   { "What's the Deal with ASCII?", title5, "purple" },
 }
