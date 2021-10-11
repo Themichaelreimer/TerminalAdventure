@@ -4,6 +4,10 @@ function randomElement(arr)
   return arr[index]
 end
 
+function randomNumInRange(min, max)
+  -- Returns random number in range inclusive
+  return love.math.random(min,max)
+end
 function chance(x)
   assert(0 <= x and x <= 1)
   return love.math.random() <= x

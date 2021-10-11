@@ -89,12 +89,9 @@ function love.load()
   screen.uiSize = screen.height/5
   screen.halfWidth = screen.width/2
 
-
-  level = makeNewLevel(1)
+  planGame()
+  loadLevel(nil, 1, true)
   local playerInitPos = level.map.upstairs
-
-  player = Player(playerInitPos.x * screen.tileSize + halfTile, playerInitPos.y * screen.tileSize + halfTile)
-  ecsWorld:add(player)
 
   camera = makeCamera(world, playerInitPos.x * screen.tileSize, playerInitPos.y* screen.tileSize)
 

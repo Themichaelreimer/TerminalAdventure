@@ -16,10 +16,26 @@ function findPathToEntity(startEntity, goalEntity, maxDist)
   end
 end
 
+function findPathBetweenCells(map, x1, y1, x2, y2, minDistance, maxDistance)
+  local start = {x = x1, y = y1}
+  local goal = {x = x2, y = y2}
+  local path = star:find(map.width, map.height, start, goal, positionIsOpenOnMap(map), true, true, maxDistance )
+  return path
+
+end
+
 function positionIsOpen(x,y)
   -- TODO: Factor passable obstacles into this, and it can be used for
   -- Level generation
   return level:tileInLevel(x,y) and not level.map.map[y][x].aiAvoid
+end
+
+function positionIsOpenOnMap(map)
+  -- Returns a function that indicates whether position x,y is open on a map
+  local map = map
+  return function(x, y)
+    return map:tileInLevel(x, y) and not map.map[y][x].aiAvoid
+  end
 end
 
 function moveToTarget(e, pathCell)

@@ -88,7 +88,7 @@ function Level:restore(data)
   self.floorNum = data.floorNum
   self:makePhysicsBody()
   self:makeLevelBoundaryCollider()
-  lightingSystem:renderEntireCanvas()
+  --lightingSystem:renderEntireCanvas()
 end
 
 function Level:destroy()
@@ -224,7 +224,7 @@ end
 
 function Level:getTileAtCoordinates(x, y)
   if not self:tileInLevel(x, y) then return nil end
-  return self.map.map[round(y)][round(x)]
+  return self.map.map[math.floor(y)][math.floor(x)]
 end
 
 return Level

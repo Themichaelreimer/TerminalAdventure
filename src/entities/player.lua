@@ -67,9 +67,20 @@ function Player:updateRollingHP(dt)
 end
 
 function Player:update(dt)
+  if self.deleted then return end
 
   self:updateRollingHP(dt)
-  if deathTime > 0 then self.colour = colours.white return end
+
+  if deathTime > 0 then
+    self.colour = colours.white
+    if deathTime < 1.5 then
+      local t = 1.5 - deathTime
+      self.alpha = 0.5 * (1 - math.cos(t * t * 4 * math.pi))
+    else
+      self.alpha = 0
+    end
+    return
+  end
 
   local tileSize = screen.tileSize
   local halfTile = tileSize/2
@@ -161,7 +172,6 @@ function Player:update(dt)
   if myTile == tiles.floor then
     self.lastSafeTile = {x = round(px/tileSize), y = round(py/tileSize)}
   end
-
 
   if not self.deleted then
     self.body:applyForce(self.speed * dx, self.speed * dy)
