@@ -8,9 +8,9 @@ lightingSystem = require("src.systems.lightingSystem")
 asciiDrawSystem = require("src.systems.asciiDrawSystem")
 aiSystem = require("src.systems.aiSystem")
 waterSystem = require("src.systems.waterSystem")
-lavaSystem = require("src.systems.lavaSystem")
-FireSystem = require("src.systems.firesystem")
-RecoverySystem = require("src.systems.RecoverySystem")
+lavaSystem = require("src.systems.lavasystem")
+FireSystem = require("src.systems.fireSystem")
+RecoverySystem = require("src.systems.recoverySystem")
 
 -- ECS world, as opposed to the physics world
 ecsWorld = tiny.world(lifetimeSystem, updateSystem, RecoverySystem, drawSystem, lightingSystem, asciiDrawSystem, aiSystem, waterSystem, lavaSystem, FireSystem)

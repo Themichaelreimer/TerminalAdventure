@@ -1,5 +1,4 @@
 Explosion = require("src.entities.explosion")
-SmokePuff = require("src.entities.SmokePuff")
 
 local Bomb = class("Bomb")
 
