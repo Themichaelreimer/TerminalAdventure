@@ -15,6 +15,8 @@ Player.isPlayer = true -- Used in collision handling with enemies
 Player.waterPenalty = 4
 Player.HPVelocity = 12
 Player.reboundForce = 200
+Player.recoverInterval = 1
+Player.recoverAmount = 1
 
 function Player:init(x, y, initParams)
     initParams = initParams or {}
@@ -140,11 +142,11 @@ function Player:update(dt)
     activeInventory.z:update(dt)
   end
 
-  if keyboard.q then
+  if keyboard.q and debug then
     prevLevel()
   end
 
-  if keyboard.w then
+  if keyboard.w and debug then
     nextLevel()
   end
 

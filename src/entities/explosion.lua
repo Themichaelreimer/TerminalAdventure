@@ -6,6 +6,7 @@ Explosion.force = 5000000
 Explosion.maxForce = 10000
 Explosion.baseDamage = 24
 Explosion.className = "Explosion" -- Used for contact callback
+Explosion.fireTime = 4.0
 
 function Explosion:init(x, y, size, maxDamage)
   self.lifetime = self.time
@@ -140,6 +141,11 @@ function Explosion:applyDamage(entity, dx, dy, dist2)
   if entity == nil then return nil end
   local dmg = self.damage / (0.1 + math.sqrt(dist2)/screen.tileSize)
   entity:takeDamage(dmg)
+  
+  local addEntityToFireSystem
+  if not entity.fireTime then addEntityToFireSystem = true end
+  entity.fireTime = self.fireTime
+  if addEntityToFireSystem then ecsWorld:add(entity) end
 end
 
 return Explosion

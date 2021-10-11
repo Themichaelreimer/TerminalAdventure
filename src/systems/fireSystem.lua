@@ -15,7 +15,7 @@ function FireSystem:process(entity, dt)
   else
     if not entity.lastFireDamageTime or entity.lastFireDamageTime - entity.fireTime >= 1 then
       entity.lastFireDamageTime = entity.fireTime
-      entity:takeDamage(1)
+      entity:takeDamage(2)
     end
   end
 end
