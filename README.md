@@ -4,6 +4,15 @@ adventure game!
 
 # Devlog
 
+## Weekend 12 (Demo v0.1 released)
+I've lost track of everything that got added, but:
+- Added two new biomes
+- Added lava and the state of being on fire
+- Added start, death and victory screens
+- Added 3 new items, including your Wallet
+- Added Dragon, health recovery
+Check it out!
+
 ## Weekend 11
 ![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/10.gif)
 ![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/9.gif)
