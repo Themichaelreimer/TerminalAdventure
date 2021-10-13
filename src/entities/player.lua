@@ -73,7 +73,7 @@ function Player:update(dt)
 
   self:updateRollingHP(dt)
 
-  if deathTime > 0 then
+  if deathTime > 0 and not debug then
     self.colour = colours.white
     if deathTime < 1.5 then
       local t = 1.5 - deathTime

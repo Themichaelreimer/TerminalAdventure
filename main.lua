@@ -165,7 +165,7 @@ function love.draw()
     end
   end
 
-  if player.HP <= 0  then
+  if player.HP <= 0 and not debug  then
     displayDeathScreen(dt, false)
   end
 
@@ -265,6 +265,7 @@ end
 
 function displayDeathScreen(dt, win)
   -- Transparent background
+  if debug and not win then return end
   deathTime  = deathTime + dt
   local playerWon = win or false
 

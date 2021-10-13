@@ -1,4 +1,5 @@
 local Dragon = class("Dragon")
+DragonArmourItem = require('src.entities.collectables.dragonarmour')
 
 Dragon.char = 'D'
 Dragon.size = 28
@@ -54,7 +55,7 @@ end
 
 function Dragon:destroy()
   -- Clean up resources to prevent leaks
-  ecsWorld:add(DragonArmourItem(self.body:getX()), self.body:getY())
+  ecsWorld:add(DragonArmourItem(self.body:getX(), self.body:getY() ))
   self.deleted = true
   self.fixture:destroy()
   self.shape:release()
