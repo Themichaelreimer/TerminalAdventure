@@ -10,7 +10,7 @@ function useSword()
 end
 
 function makeSwordAdapter()
-  return Adapter("Sword", useSword, 0.1)
+  return Adapter("Sword", useSword, 0.3)
 end
 
 function useHeroSword()

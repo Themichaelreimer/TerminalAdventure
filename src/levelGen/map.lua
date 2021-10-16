@@ -5,7 +5,7 @@ function Map:init(data, mapData)
     self:restore(data)
   else
     self.map, self.lightMap = self:makeTileMap()
-    self.numHealthUpgradesPerLevel = 2
+    self.numHealthUpgradesPerLevel = 1
 
     self.width = #self.map[0]
     self.height = #self.map

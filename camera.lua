@@ -27,7 +27,7 @@ function moveCamera(camera, dt)
     local dist2 = dx*dx + dy*dy
 
     if player.invulnTime and player.invulnTime > 0 then
-      local ddx, ddy = getRandomVector(1000)
+      local ddx, ddy = getRandomVector(100)
       dx = dx + ddx
       dy = dy + ddy
     end

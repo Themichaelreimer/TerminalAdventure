@@ -124,7 +124,7 @@ function Explosion:applyExplosionToBodies()
       local dy = body:getY() - self.y
       local dist2 = dx*dx + dy*dy
       if dist2 < self.r2 then
-        if object.body then self:applyForce(body, dx, dy, dist2) end
+        if object.body and not object.ignorePhysics then self:applyForce(body, dx, dy, dist2) end
         if object.takeDamage then self:applyDamage(object, dx, dy, dist2) end
       end
     end
@@ -141,7 +141,7 @@ function Explosion:applyDamage(entity, dx, dy, dist2)
   if entity == nil then return nil end
   local dmg = self.damage / (0.1 + math.sqrt(dist2)/screen.tileSize)
   entity:takeDamage(dmg)
-  
+
   local addEntityToFireSystem
   if not entity.fireTime then addEntityToFireSystem = true end
   entity.fireTime = self.fireTime

@@ -2,6 +2,11 @@
 You've lost your wallet, and have to journey deep into "The Cave of Nothing" to find it, in this randomly generated
 adventure game!
 
+# Controls
+Arrow keys - Movement and selecting menu options
+Enter - Open/Close item menu
+X, Z  - Use items
+
 # Devlog
 
 ## Weekend 12 (Demo v0.1 released)
@@ -11,6 +16,7 @@ I've lost track of everything that got added, but:
 - Added start, death and victory screens
 - Added 3 new items, including your Wallet
 - Added Dragon, health recovery
+
 Check it out!
 
 ## Weekend 11

@@ -224,7 +224,7 @@ end
 
 function Level:getTileAtCoordinates(x, y)
   if not self:tileInLevel(x, y) then return nil end
-  return self.map.map[math.floor(y)][math.floor(x)]
+  return self.map.map[math.floor(y+0.1)][math.floor(x+0.1)]
 end
 
 return Level

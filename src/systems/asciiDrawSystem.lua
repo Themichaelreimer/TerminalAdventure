@@ -45,7 +45,7 @@ function asciiDrawSystem:determineColour(e, lightness)
     baseColour = colours.blue
   end
 
-  if e.fireTime and e.fireTime > 0 then
+  if (e.fireTime and e.fireTime > 0) or (e.lavaTime and e.lavaTime > 0) then
     baseColour = colours.red
   end
 

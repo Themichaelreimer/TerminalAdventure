@@ -1,13 +1,13 @@
 local Sword = class("Sword")
 
 Sword.char = 'l'
-Sword.expireTime = 0.30
+Sword.expireTime = 0.2
 Sword.arcAngle = 7 * math.pi / 8
 Sword.force = 100
 Sword.damage = 10
 Sword.width = 8
 Sword.height = 24
-Sword.xScale = 0.1
+Sword.xScale = 0.2
 Sword.yScale = 0.05
 Sword.colourName = 'gray'
 
