@@ -10,7 +10,7 @@ function useSword()
 end
 
 function makeSwordAdapter()
-  return Adapter("Sword", useSword, 0.3)
+  return Adapter("Sword", useSword, nil, nil, 0.5, 0.5)
 end
 
 function useHeroSword()
@@ -20,7 +20,7 @@ function useHeroSword()
 end
 
 function makeHSwordAdapter()
-  return Adapter("HeroSword", useHeroSword, 0.1)
+  return Adapter("HeroSword", useHeroSword, nil, nil, 0.2, 0.5)
 end
 
 function useBomb()
@@ -31,5 +31,5 @@ function useBomb()
 end
 
 function makeBombAdapter()
-  return Adapter("Bombs", useBomb, 0.3)
+  return Adapter("Bombs", useBomb, nil, nil, 0.3, 0.3)
 end

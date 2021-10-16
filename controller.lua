@@ -58,3 +58,7 @@ function updateKeyDown(key, nextPreviousState)
     nextPreviousState[key] = false
   end
 end
+
+function keyIsHeld(key)
+  return love.keyboard.isDown(key) and not keyboard[x]
+end

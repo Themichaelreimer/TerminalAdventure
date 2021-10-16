@@ -2,6 +2,8 @@ Snake = require('src.entities.enemies.snake')
 Jackal = require('src.entities.enemies.jackal')
 Plush = require('src.entities.enemies.plush')
 Dragon = require('src.entities.enemies.dragon')
+GSlime = require('src.entities.enemies.gslime')
+BSlime = require('src.entities.enemies.bslime')
 
 function makeSnake(x, y, saveData)
   local item = Snake(x, y, saveData)
@@ -21,8 +23,14 @@ function makePlush(x, y, saveData)
   table.insert(gameObjects, item)
 end
 
-function makeDragon(x, y, saveData)
-  local enemy = Dragon(x,y,saveData)
+function makeGSlime(x, y, saveData)
+  local enemy = GSlime(x,y,saveData)
+  ecsWorld:add(enemy)
+  table.insert(gameObjects,enemy)
+end
+
+function makeBSlime(x, y, saveData)
+  local enemy = BSlime(x,y,saveData)
   ecsWorld:add(enemy)
   table.insert(gameObjects,enemy)
 end

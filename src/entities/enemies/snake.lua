@@ -4,6 +4,7 @@ Snake.char = 's'
 Snake.size = 14
 Snake.damage = 6
 Snake.speed = 9
+Snake.randomWalkSpeed = 100
 Snake.dashSpeed = 800
 Snake.dashChance = 0.5
 Snake.force = 200
@@ -120,8 +121,15 @@ end
 
 function Snake:handleAI(dt)
   local path = findPathToEntity(self, player, self.maxRange)
-  if path then
 
+  -- IDLE PHASE
+  if self.idleTimer > 0 then
+    self.idleTimer = self.idleTimer - dt
+    if self.idleTimer <= 0 then self.moveTimer = self.MOVE_TIME end
+    return
+  end
+
+  if path then
     -- MOVE PHASE
     if self.moveTimer > 0 then
       -- Beginning of move cycle
@@ -135,19 +143,27 @@ function Snake:handleAI(dt)
       end
     end
 
-    -- IDLE PHASE
-    if self.idleTimer > 0 then
-      self.idleTimer = self.idleTimer - dt
-      if self.idleTimer <= 0 then self.moveTimer = self.MOVE_TIME end
-    end
-
   else
-    self.moveTimer = self.MOVE_TIME
+    self:randomWalk()
   end
 end
 
 function Snake:toString()
   return self.class.name .. ": ".. self.HP.. "- (".. self.body:getX() .. "," .. self.body:getY() .. ")"
+end
+
+function Snake:randomWalk()
+
+
+  self.moveTimer = 0
+  self.idleTimer = self.IDLE_TIME
+
+  local dv = randomElement({{x=-1,y= 0}, {x=0, y=1}, {x=1, y=0}, {x=0, y=-1}})
+  local dx = dv.x * self.randomWalkSpeed
+  local dy = dv.y * self.randomWalkSpeed
+
+  self.body:applyLinearImpulse(dx, dy)
+
 end
 
 return Snake

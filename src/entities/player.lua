@@ -127,10 +127,13 @@ function Player:update(dt)
     dy = dy / self.waterPenalty
   end
 
-  -- TODO: Replace isSwinging with flags that let you use x and z
   if activeInventory.x then
     if keyboard.x then
       activeInventory.x:use()
+    elseif keyIsHeld("x") then
+      activeInventory.x:hold(dt)
+    elseif activeInventory.x.holdTimer > 0 then
+      activeInventory.x:release()
     end
     activeInventory.x:update(dt)
   end
