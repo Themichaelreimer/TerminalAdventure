@@ -8,7 +8,7 @@ function findPathToEntity(startEntity, goalEntity, maxDist)
     local goal = pixelsToTiles(goalEntity.body:getX(), goalEntity.body:getY())
     local path
     if distance > (2 * screen.tileSize) then
-      path = star:find(map.width, map.height, start, goal, positionIsOpen, true, false, maxDist * screen.tileSize )
+      path = star:find(map.width, map.height, start, goal, positionIsOpenForEntity(startEntity), true, false, maxDist * screen.tileSize )
     else
       path = {start, goal}
     end
@@ -35,6 +35,21 @@ function positionIsOpenOnMap(map)
   local map = map
   return function(x, y)
     return map:tileInLevel(x, y) and not map.map[y][x].aiAvoid
+  end
+end
+
+function positionIsOpenForEntity(e)
+  -- Returns a function that indicates whether position x,y is open on a map
+  local entity = e
+  return function(x, y)
+    if level.map:tileInLevel(x, y) then
+      local tile = level.map.map[y][x]
+      if tile == tiles.wall then return false end
+      if tile == tiles.water and not entity.canSwim then return false end
+      if tile == tiles.lava and not entity.flying then return false end
+      return true
+    end
+    return false
   end
 end
 

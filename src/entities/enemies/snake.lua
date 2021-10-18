@@ -1,10 +1,11 @@
 local Snake = class("Snake")
+local Heart = require('src.entities.heart')
 
 Snake.char = 's'
 Snake.size = 14
 Snake.damage = 6
 Snake.speed = 9
-Snake.randomWalkSpeed = 100
+Snake.randomWalkSpeed = 20
 Snake.dashSpeed = 800
 Snake.dashChance = 0.5
 Snake.force = 200
@@ -17,6 +18,9 @@ Snake.MOVE_TIME = 0.20
 Snake.maxRange = 30
 Snake.colourName = "red"
 Snake.waterPenalty = 2
+
+Snake.heartProbability = 0.2
+Snake.heartRecovery = 3
 
 function Snake:init(x, y, saveData)
   self.deleted = false
@@ -53,6 +57,7 @@ end
 
 function Snake:destroy()
   -- Clean up resources to prevent leaks
+  if chance(self.heartProbability) then ecsWorld:add( Heart(self.body:getX(), self.body:getY(), self.heartRecovery) ) end
   self.deleted = true
   self.fixture:destroy()
   self.shape:release()
@@ -95,6 +100,7 @@ end
 
 
 function Snake:die()
+  --ecsWorld:add( Heart(self.body:getX(), self.body:getY(), self.heartRecovery) )
   self.dead = true
   self.colour = colours.lightGray
   self.lifetime = 1.5  -- Sets the snake to auto delete in 1 second
@@ -159,6 +165,11 @@ function Snake:randomWalk()
   self.idleTimer = self.IDLE_TIME
 
   local dv = randomElement({{x=-1,y= 0}, {x=0, y=1}, {x=1, y=0}, {x=0, y=-1}})
+  local tx = self.body:getX()/screen.tileSize + dv.x
+  local ty = self.body:getY()/screen.tileSize + dv.y
+  local myTile = level:getTileAtCoordinates(tx, ty)
+  if myTile and myTile.aiAvoid then return end
+
   local dx = dv.x * self.randomWalkSpeed
   local dy = dv.y * self.randomWalkSpeed
 
