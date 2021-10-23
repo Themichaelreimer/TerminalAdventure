@@ -143,7 +143,7 @@ function loadSavedEntities(lvlNum)
         assert(v.x ~= nil)
         assert(v.y ~= nil)
         assert(v.name ~= nil)
-        assert(entityFunctions[name], "Name:" .. name)
+        --assert(entityFunctions[name], "Name:" .. name)
         local x = v.x
         local y = v.y
         entityFunctions[name](x,y,v)  -- Calls the constructor for the entity, at (x, y) and the saveData table from it's save function

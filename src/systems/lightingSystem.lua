@@ -106,8 +106,9 @@ function lightingSystem:redrawCell(x, y, alpha)
   love.graphics.rectangle("fill", x*tileSize, y*tileSize, tileSize, tileSize)
 
   --Draw
-  love.graphics.setColor(colour[1], colour[2], colour[3], alpha)
-  love.graphics.print(level.map.map[y][x].char, x*screen.tileSize, y*screen.tileSize )
+  --love.graphics.setColor(colour[1], colour[2], colour[3], alpha)
+  love.graphics.setColor(1, 1, 1, alpha)
+  love.graphics.draw(level.map.map[y][x].img, x*screen.tileSize, y*screen.tileSize )
 end
 
 function lightingSystem:rayTrace(x, y, dist, numRays)

@@ -17,6 +17,13 @@ function makeJackal(x, y, saveData)
   table.insert(gameObjects, item)
 end
 
+function makeDragon(x, y, saveData)
+  local item = Dragon(x, y, saveData)
+  ecsWorld:add(item)
+  table.insert(gameObjects, item)
+end
+
+
 function makePlush(x, y, saveData)
   local item = Plush(x, y, saveData)
   ecsWorld:add(item)

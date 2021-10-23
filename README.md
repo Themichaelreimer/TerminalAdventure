@@ -9,6 +9,13 @@ X, Z  - Use items
 
 # Devlog
 
+## Weekend 13 (Demo v0.1 Updated)
+- Fixed several bugs of varying severity
+- Added Slime enemies
+- Added recovery items that sometimes drops from defeated enemies
+- Several balance changes
+- Work towards an item charging system
+
 ## Weekend 12 (Demo v0.1 released)
 I've lost track of everything that got added, but:
 - Added two new biomes
