@@ -69,6 +69,7 @@ CHARACTER_NAMES = {
 debugRender = false -- Whether or not to draw bounding boxes
 canDie = true  -- Whether or not the game ends
 debug = true
+useTiles = true
 
 function love.load()
   -- Init physics and world

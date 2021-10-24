@@ -107,8 +107,13 @@ function lightingSystem:redrawCell(x, y, alpha)
 
   --Draw
   --love.graphics.setColor(colour[1], colour[2], colour[3], alpha)
-  love.graphics.setColor(1, 1, 1, alpha)
-  love.graphics.draw(level.map.map[y][x].img, x*screen.tileSize, y*screen.tileSize )
+  if useTiles then
+    love.graphics.setColor(1, 1, 1, alpha)
+    love.graphics.draw(level.map.map[y][x].img, x*screen.tileSize, y*screen.tileSize )
+  else
+    love.graphics.setColor(colour[1], colour[2], colour[3], alpha)
+    love.graphics.print(level.map.map[y][x].char, x*screen.tileSize, y*screen.tileSize )
+  end
 end
 
 function lightingSystem:rayTrace(x, y, dist, numRays)
