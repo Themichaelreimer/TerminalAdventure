@@ -12,7 +12,6 @@ imageTiles = {
   down=love.graphics.newImage("assets/tiles/stone_stairs_down.png"),
 }
 
-
 tiles={
   floor = {char='.', img=imageTiles.floor, solid=false, colour='lightGray', aiAvoid=false},
   floor1 = {char=',', img=imageTiles.floor, solid=false, colour='lightGray', aiAvoid=false},

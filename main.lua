@@ -21,6 +21,7 @@ seed = love.math.random()*10000
 playerName = ""
 deathTime = 0
 
+require("src.shaders")
 require("src.constants")
 require("src.colours")
 require("src.helpers")
@@ -72,6 +73,8 @@ debug = true
 useTiles = true
 
 function love.load()
+  loadShaders()
+
   -- Init physics and world
   world = love.physics.newWorld(0, 0, true)
   world:setCallbacks(beginContact, endContact)
