@@ -27,7 +27,9 @@ function lightingSystem:process(entity, dt)
       self:resetMapCanvas()
     end
     local x, y = player:getMapCoordinates()
+
     self:updateCanvasLighting(x, y, entity.lightDistance, self.NUM_RAYS)
+
   end
 
   -- DEBUG REGION
@@ -43,12 +45,15 @@ function lightingSystem:process(entity, dt)
   end
   -- / DEBUG REGION
 
-  if firstFrameOnFloor or self.mustRefreshCanvas then self:renderEntireCanvas() end
+  if firstFrameOnFloor or self.mustRefreshCanvas then
+     self:renderEntireCanvas()
+  end
   love.graphics.setCanvas()
   love.graphics.translate(-camera:getX(), -camera:getY())
 end
 
 function lightingSystem:updateCanvasLighting(x, y, dist, numRays)
+
   local tileSize = screen.tileSize
 
   -- Ensures the player's current cell is seen, which is otherwise not guarenteed
@@ -107,13 +112,31 @@ function lightingSystem:redrawCell(x, y, alpha)
 
   --Draw
   --love.graphics.setColor(colour[1], colour[2], colour[3], alpha)
+  love.graphics.setShader(shaders.lighting)
   if useTiles then
-    love.graphics.setColor(1, 1, 1, alpha)
+    --love.graphics.setColor(1, 1, 1, alpha)
+    local tl, tr, bl, br = self:getShaderLightingCoords(x, y)
+    shaders.lighting:send("tl", tl)
+    shaders.lighting:send("tr", tr)
+    shaders.lighting:send("bl", bl)
+    shaders.lighting:send("br", br)
+
     love.graphics.draw(level.map.map[y][x].img, x*screen.tileSize, y*screen.tileSize )
   else
     love.graphics.setColor(colour[1], colour[2], colour[3], alpha)
     love.graphics.print(level.map.map[y][x].char, x*screen.tileSize, y*screen.tileSize )
   end
+  love.graphics.setShader()
+end
+
+function lightingSystem:getShaderLightingCoords(x, y)
+  if not level:tileInLevel(x, y) or level.map.lightMap[y][x] == 0 then return 0,0,0,0 end
+  local l,r,b,t
+  if level:tileInLevel(x-1,y) then l = level.map.lightMap[y][x-1] else l = 0 end
+  if level:tileInLevel(x+1,y) then r = level.map.lightMap[y][x+1] else r = 0 end
+  if level:tileInLevel(x,y+1) then b = level.map.lightMap[y+1][x] else b = 0 end
+  if level:tileInLevel(x,y-1) then t = level.map.lightMap[y-1][x] else t = 0 end
+  return l,r,b,t
 end
 
 function lightingSystem:rayTrace(x, y, dist, numRays)

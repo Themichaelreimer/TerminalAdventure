@@ -13,8 +13,24 @@ function chance(x)
   return love.math.random() <= x
 end
 
+function ternary(condition, a, b)
+  if condition then return a end
+  return b
+end
+
 function round(x)
   return math.floor(0.5 + x)
+end
+
+function getMouseAngle(px, py)
+  local mx, my = love.mouse.getPosition()
+  local dx = px - mx
+  local dy = py - my
+  if dx == 0 then return 0 end
+
+  local result = math.atan(dy/dx)
+  if dx > 0 then result = result + math.pi end
+  return result + math.pi
 end
 
 -- I think west and east should be flipped, but this gives the correct behaviour in src/entities/sword

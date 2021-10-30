@@ -20,6 +20,7 @@ function Level:init(floorNum, map, data)
     self.floorNum = floorNum
     self.projectiles = {}
     self.colliders = {}
+    self.colliderPositions = {}
     levelCanvas = love.graphics.newCanvas(self.pixelWidth + screen.tileSize, self.pixelHeight + screen.tileSize)
 
     self:makePhysicsBody()
@@ -84,6 +85,7 @@ function Level:restore(data)
 
   self.projectiles = {}
   self.colliders = {}
+  self.colliderPositions = {}
 
   self.floorNum = data.floorNum
   self:makePhysicsBody()
@@ -150,12 +152,13 @@ end
 
 function Level:makeCollider(x, y)
   local tSize = screen.tileSize
-  local tarX = (x + 0.3) * tSize
-  local tarY = (y + 0.6) * tSize
+  local tarX = (x + 0.5) * tSize
+  local tarY = (y + 0.5) * tSize
   local body = love.physics.newBody(world, 0, 0, "static")
   local shape = love.physics.newRectangleShape(tarX, tarY, tSize, tSize)
   local fixture = love.physics.newFixture(body, shape)
   self.colliders[getTileKey(x,y)] = fixture
+  table.insert(self.colliderPositions, {x , y})
 end
 
 function Level:makePhysicsBody()

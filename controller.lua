@@ -9,6 +9,8 @@ function _getEmptyKeyboardState()
     z = false,
     q = false,
     w = false,
+    m1 = false,
+    m2 = false
   }
   r["return"] = false
   return r
@@ -37,6 +39,8 @@ function keyboardUpdate(dt)
   updateKeyDown("left", nextPreviousState)
   updateKeyDown("right", nextPreviousState)
   updateKeyDown("return", nextPreviousState)
+  updateMouseDown("m1", nextPreviousState)
+  updateMouseDown("m2", nextPreviousState)
 
 
   -- TODO: When in menu, we want direction keys to behave like keyDown.
@@ -59,6 +63,27 @@ function updateKeyDown(key, nextPreviousState)
   end
 end
 
+function updateMouseDown(key, nextPreviousState)
+  local code = 0
+  if key == "m1" then code = 1 else code = 2 end
+
+  if love.mouse.isDown(code) then
+    nextPreviousState[key] = true
+    if _previousKeyboardState[key] == false then
+      keyboard[key] = true
+    else
+      keyboard[key] = false
+    end
+  else
+    keyboard[key] = false
+    nextPreviousState[key] = false
+  end
+end
+
 function keyIsHeld(key)
+  if key == "m1" or key == 'm2' then
+    local code = ternary(key == "m1", 1, 2)
+    return love.mouse.isDown(code) and not keyboard[x]
+  end
   return love.keyboard.isDown(key) and not keyboard[x]
 end

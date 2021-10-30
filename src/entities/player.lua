@@ -2,11 +2,14 @@ Bomb = require("src.entities.bomb")
 Sword = require("src.entities.sword")
 HeroSword = require("src.entities.heroSword")
 
+primary = "x"
+secondary = "z"
+
 local Player = class("Player")
 
 Player.char = '@'
-Player.size = 20
-Player.speed = 20
+Player.size = 8
+Player.speed = 15
 Player.ld = 7
 Player.baseHP = 24
 Player.lightDistance = 8
@@ -26,7 +29,8 @@ function Player:init(x, y, initParams)
     self.colour = colours.green
 
     self.body = love.physics.newBody(world, x, y, "dynamic")
-    self.shape = love.physics.newRectangleShape(-5, 5, self.size, self.size)
+    --self.shape = love.physics.newRectangleShape(-5, 5, self.size, self.size)
+    self.shape = love.physics.newCircleShape(self.size)
     self.fixture = love.physics.newFixture(self.body, self.shape)
     self.fixture:setUserData(self)
 
@@ -127,15 +131,15 @@ function Player:update(dt)
     dy = dy / self.waterPenalty
   end
 
-  if activeInventory.x then
-    if keyboard.x then
-      activeInventory.x:use()
-    elseif keyIsHeld("x") then
-      activeInventory.x:hold(dt)
-    elseif activeInventory.x.holdTimer > 0 then
-      activeInventory.x:release()
+  if activeInventory[primary] then
+    if keyboard[primary] then
+      activeInventory[primary]:use()
+    elseif keyIsHeld(primary) then
+      activeInventory[primary]:hold(dt)
+    elseif activeInventory[primary].holdTimer > 0 then
+      activeInventory[primary]:release()
     end
-    activeInventory.x:update(dt)
+    activeInventory[primary]:update(dt)
   end
 
   if activeInventory.z then

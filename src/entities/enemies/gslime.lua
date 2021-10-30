@@ -16,6 +16,7 @@ GSlime.dashChance = 1.0
 GSlime.range = 30
 GSlime.waterPenalty = 0.5
 GSlime.canSwim = true
+GSlime.size = 20
 
 function GSlime:update()
   if self.lifetime then

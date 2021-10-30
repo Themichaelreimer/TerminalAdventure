@@ -26,8 +26,16 @@ function Sword:init(parentEntity)
   self.deleted = false
 
   self.angularVelocity = self.arcAngle / self.expireTime
-  local facing = parentEntity.facing or SOUTH
-  self.angle = angleFromDirection(facing) - self.arcAngle / 2
+
+  if not useMouse then
+    local facing = parentEntity.facing or SOUTH
+    self.angle = angleFromDirection(facing) - self.arcAngle / 2
+  else
+    -- Calculate local position of player on screen
+    local lx = player.body:getX() - camera:getX()
+    local ly = player.body:getY() - camera:getY()
+    self.angle = getMouseAngle(lx, ly) - (self.arcAngle/2)
+  end
 
   table.insert(gameObjects, self)
 end
@@ -41,8 +49,8 @@ function Sword:update(dt)
   -- Update Position
   local pBody = self.parent.body
   local r = self.height + 8
-  local x = pBody:getX()  - r * math.cos(self.angle)
-  local y = pBody:getY()  -  r * math.sin(self.angle)
+  local x = pBody:getX() - r * math.cos(self.angle)
+  local y = pBody:getY() -  r * math.sin(self.angle)
   self.body:setPosition(x, y)
 end
 
