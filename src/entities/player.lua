@@ -12,6 +12,7 @@ Player.size = 8
 Player.speed = 15
 Player.ld = 7
 Player.baseHP = 24
+Player.baseMagic = 12
 Player.lightDistance = 8
 Player.bouncyStep = true -- Enables bouncy step in asciiDrawSystem
 Player.isPlayer = true -- Used in collision handling with enemies
@@ -20,6 +21,9 @@ Player.HPVelocity = 12
 Player.reboundForce = 200
 Player.recoverInterval = 4
 Player.recoverAmount = 1
+Player.magicRecoverInterval = 1
+Player.magicRecoverAmount = 1
+Player.magicRecoverTimer = 1
 
 function Player:init(x, y, initParams)
     initParams = initParams or {}
@@ -40,11 +44,15 @@ function Player:init(x, y, initParams)
 
     local maxhp = initParams.maxHP or self.baseHP
     local hp = initParams.HP or maxhp
+    local maxMagic = initParams.maxMagic or self.baseMagic
+    local magic = initParams.magic or maxMagic
 
     self.facing = initParams.facing or SOUTH
     self.HP = hp
     self.maxHP = maxhp
     self._HP = hp
+    self.magic = magic
+    self.maxMagic = maxMagic
 
     table.insert(gameObjects, self)
 end
@@ -53,6 +61,8 @@ function Player:getSaveData()
   return {
     HP = self.HP,
     maxHP = self.maxHP,
+    magic = self.magic,
+    maxMagic = self.maxMagic,
     facing = self.facing,
   }
 end
@@ -86,6 +96,14 @@ function Player:update(dt)
       self.alpha = 0
     end
     return
+  end
+
+  if self.magic < self.maxMagic then
+    self.magicRecoverTimer = self.magicRecoverTimer - dt
+    if self.magicRecoverTimer <= 0 then
+      self.magic = self.magic + self.magicRecoverAmount
+      self.magicRecoverTimer = self.magicRecoverInterval
+    end
   end
 
   local tileSize = screen.tileSize

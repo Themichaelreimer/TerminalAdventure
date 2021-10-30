@@ -40,7 +40,6 @@ require("titles")
 --require("items")  -- This will be deletable soon
 --require("weapons") -- This will be deletable soon
 
-
 colours = japanesque
 
 -- Basically an enum; at most 16 entries allowed
@@ -192,7 +191,7 @@ function drawUI()
   -- DRAW GUI
   -- FUTURE OPTIMIZATION - could draw this to canvas on updates instead of re-rendering every screen
   love.graphics.translate(0, 4*uiSize) -- Transform into UI screen space
-  love.graphics.setColor(colours.black)
+  love.graphics.setColor(colours.black) 
   love.graphics.rectangle('fill', 0, 0, screen.width, uiSize)
   love.graphics.setColor(colours.white)
 
@@ -203,9 +202,9 @@ function drawUI()
   love.graphics.setColor(colours.green)
   love.graphics.print(getAsciiBar(player.HP, player.maxHP), 216, 2*lineHeight)
   love.graphics.setColor(colours.white)
-  love.graphics.print("Magic: 10/10", margin + halfWidth, 2*lineHeight)
+  love.graphics.print("Health: " .. round(player.magic) .. "/"..player.maxMagic, margin + halfWidth, 2*lineHeight)
   love.graphics.setColor(colours.blue)
-  love.graphics.print("[==========]", 216 + halfWidth, 2*lineHeight)
+  love.graphics.print(getAsciiBar(player.magic, player.maxMagic), 216 + halfWidth, 2*lineHeight)
 
   love.graphics.setColor(colours.white)
 

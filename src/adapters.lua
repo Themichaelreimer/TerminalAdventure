@@ -24,10 +24,13 @@ function makeHSwordAdapter()
 end
 
 function useBomb()
-  local px = player.body:getX()
-  local py = player.body:getY()
-  local dx, dy = player.body:getLinearVelocity()
-  ecsWorld:add(Bomb(px, py, dx, dy))
+  if player.magic >= 4 then
+    local px = player.body:getX()
+    local py = player.body:getY()
+    local dx, dy = player.body:getLinearVelocity()
+    ecsWorld:add(Bomb(px, py, dx, dy))
+    player.magic = player.magic - 4
+  end
 end
 
 function makeBombAdapter()

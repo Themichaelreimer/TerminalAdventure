@@ -12,21 +12,20 @@ function loadShaders()
       return pixel;
     }]]),
     perPixelRayTrace = love.graphics.newShader([[
-      extern number px;
-      extern number py;
-      extern number maxDistance;
+    extern number px;
+    extern number py;
+    extern number maxDistance;
 
-      vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords)
-      {
-        vec4 pixel = Texel(texture, texture_coords);
-        number dx = pixel_coords[0] - px;
-        number dy = pixel_coords[1] - py;
-        number dist = (dx*dx + dy*dy);
-        number light = dist / maxDistance;
-        //pixel[3] = max(min(1.0, light), 1.0);
-        pixel[3] = 1;
-        return pixel;
-      }
-    ]])
+    vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords)
+    {
+      vec4 pixel = Texel(texture, texture_coords);
+      number dx = pixel_coords[0] - px;
+      number dy = pixel_coords[1] - py;
+      number dist = (dx*dx + dy*dy);
+      number light = dist / maxDistance;
+      //pixel[3] = max(min(1.0, light), 1.0);
+      pixel[3] = 1;
+      return pixel;
+    }]])
   }
 end
