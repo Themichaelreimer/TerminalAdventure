@@ -3,7 +3,7 @@ levels = {}
 savedEntities = {}
 
 require('src.enemies')
-Level = require("src.levelGen.level")
+Level = require("src.levelGen.Level")
 
 SimplexCave = require('src.levelGen.maps.simplexcave')
 WetCave = require('src.levelGen.maps.wetCave')
