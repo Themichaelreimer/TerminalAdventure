@@ -23,3 +23,8 @@ tiles={
   upstairs = {char='<', solid=false, img=imageTiles.up, colour='lightGray', aiAvoid=false},
   downstairs = {char='>', solid=false, img=imageTiles.down, colour='lightGray', aiAvoid=false},
 }
+
+sprites = {
+  upstairs = {char='<', colour='lightGray', img=imageTiles.up},
+  downstairs = {char='>', colour='lightGray', img=imageTiles.down}
+}

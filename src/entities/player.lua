@@ -180,15 +180,14 @@ function Player:update(dt)
   end
 
   local myTile = level:getTileAtCoordinates(px/tileSize, py/tileSize)
-  if myTile == tiles.downstairs then
+  if myTile == tiles.downstairs or gameState.canGoDown then
     debugString = "Stairs leading downwards. Press 'a' to go down a floor."
     if keyboard.a then
       nextLevel()
     end
     displayedTileHintThisFrame = true
-  end
 
-  if myTile == tiles.upstairs then
+  elseif myTile == tiles.upstairs or gameState.canGoUp then
     debugString = "Stairs leading upwards. Press 'a' to go up a floor."
     if keyboard.a then
       prevLevel()

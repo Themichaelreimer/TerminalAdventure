@@ -72,6 +72,11 @@ debug = true
 useTiles = true
 useMouse = false
 
+gameState = {
+  canGoUp = false,
+  canGoDown = false
+}
+
 function love.load()
   loadShaders()
 
@@ -344,8 +349,26 @@ function beginContact(fixture1, fixture2, contact)
 
   if obj1 == nil or obj2 == nil then return nil end
 
+  if obj1.onContactStart then
+    obj1:onContactStart(obj2)
+  end
+
+  if obj2.onContactStart then
+    obj2:onContactStart(obj1)
+  end
 end
 
 function endContact(fixture1, fixture2, contact)
   debugString = ""
+  local obj1 = fixture1:getUserData()
+  local obj2 = fixture2:getUserData()
+
+  if not (obj1 and obj2) then return end
+
+  if obj1.onContactEnd then
+    obj1:onContactEnd(obj2)
+  end
+  if obj2.onContactEnd then
+    obj2:onContactEnd(obj1)
+  end
 end

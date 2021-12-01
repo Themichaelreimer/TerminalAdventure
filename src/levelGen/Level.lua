@@ -117,6 +117,7 @@ function Level:placeItemInLevel(itemName, x, y)
   if not x or not y then
     x, y = self.map:getRandomEmptyTile()
   end
+
   x = (x+0.5)*screen.tileSize
   y = (y+0.5)*screen.tileSize
 

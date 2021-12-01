@@ -12,13 +12,11 @@ function Map:init(data, mapData)
 
     local easyStairs = mapData.floorNum < 4
     local stairs = self:placeStairs(easyStairs)
-    self.ents = self:placeEntities(mapData.items, mapData.floorNum, stairs.up)
 
     self.upstairs = stairs.up
     self.downstairs = stairs.down
-    -- Generates nil error somehow
-    self.map[self.upstairs.y][self.upstairs.x] = tiles.upstairs
-    self.map[self.downstairs.y][self.downstairs.x] = tiles.downstairs
+    self.ents = self:placeEntities(mapData.items, mapData.floorNum, stairs.up)
+
   end
 end
 
@@ -31,7 +29,7 @@ end
 
 function Map:placeEntities(floorItems, floorNum, start)
   -- Place items
-  result = {}
+  local result = {}
   local halfTile = screen.tileSize/2
   for k, v in pairs(floorItems) do
     local entry = {name = v.name}
@@ -39,7 +37,8 @@ function Map:placeEntities(floorItems, floorNum, start)
 
     if easy then
       local path = nil
-      local spot = nil
+      local spotX = nil
+      local spotY = nil
       while not path do
         spotX, spotY = self:getRandomEmptyTile()
         path = findPathBetweenCells(self, start.x, start.y, spotX, spotY, 0, 5000)
@@ -59,17 +58,33 @@ function Map:placeEntities(floorItems, floorNum, start)
 
   for i=1, self.numHealthUpgradesPerLevel do
     local spotX, spotY = self:getRandomEmptyTile()
-    entry = {name="LifeUpItem"}
+    local entry = {name="LifeUpItem"}
     entry.x = spotX*screen.tileSize + halfTile
     entry.y = spotY*screen.tileSize + halfTile
     table.insert(result, entry)
   end
 
-  -- Select and place enemeis
+  -- Place stairs as entities
+  local stairsUp = {
+    name="UpStairs",
+    x = ( self.upstairs.x ) * screen.tileSize,
+    y = ( self.upstairs.y ) * screen.tileSize
+  }
+  table.insert(result, stairsUp)
+
+  local stairsDown = {
+    name="DownStairs",
+    x = ( self.downstairs.x ) * screen.tileSize, 
+    y = ( self.downstairs.y ) * screen.tileSize
+  }
+  table.insert(result, stairsDown)
+
+
+  -- Select and place enemies
   for k, name in pairs(floorEnemies) do
     local numToSpawn = floorEnemies[k][floorNum]
     for i=1,numToSpawn do
-      local spotX, spotY = self:getRandomEmptyTile(10,start)
+      local spotX, spotY = self:getRandomEmptyTile(10, start)
       local entry = {
         name = k,
         x = spotX*screen.tileSize + halfTile,
@@ -113,9 +128,18 @@ function Map:placeStairs(easy)
     local x1, y1 = self:getRandomEmptyTile()
     local x2, y2 = self:getRandomEmptyTile()
     path = findPathBetweenCells(self, x1, y1, x2, y2, 0, 50000)
-    if easy == false then path = true end -- the actual path doesn't matter, only matters if it's defined
+    if easy == false then
+      path = true
+    end -- the actual path doesn't matter, only matters if it's defined
+
     up = {x = x1, y = y1}
     down = {x = x2, y = y2}
+
+    -- Disallow placing both stairs on same square for obvious reasons
+    if x1 == x2 and y1 == y2 then
+      path = false
+    end
+
   end
 
   return {

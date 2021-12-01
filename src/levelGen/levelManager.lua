@@ -27,6 +27,8 @@ entityFunctions = {
   DragonArmourItem = makeDragonArmour,
   AmuletItem = makeAmulet,
   WalletItem = makeWallet,
+  UpStairs = makeUpStairs,
+  DownStairs = makeDownStairs
 }
 
 collectableItems = {
@@ -124,10 +126,12 @@ end
 
 function saveEntities(lvlNum)
   levels[lvlNum].entities = {}
-  local expectedLen = #gameObjects
   for _, v in pairs(gameObjects) do
     if v.getSaveData then
       table.insert(levels[lvlNum].entities, v:getSaveData())
+      print("Saving entity: " .. v.name)
+    else
+      print("Skipping entity: " .. v.name)
     end
   end
 
