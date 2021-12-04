@@ -13,15 +13,15 @@ DownStairs = require('src.entities.downstairs')
 -- NOTE: Entity save/load process requires X and Y to be in pixels, and
 -- Any other initial properties to be in a table after that (eg, saved properties)
 function makeUpStairs(x, y)
-  local stairs = UpStairs(x, y)
-  ecsWorld:add(stairs)
-  table.insert(gameObjects, stairs)
+  local item = UpStairs(x, y)
+  ecsWorld:add(item)
+  table.insert(gameObjects, item)
 end
 
 function makeDownStairs(x, y)
-  local stairs = DownStairs(x, y)
-  ecsWorld:add(stairs)
-  table.insert(gameObjects, stairs)
+  local item = DownStairs(x, y)
+  ecsWorld:add(item)
+  table.insert(gameObjects, item)
 end
 
 

@@ -148,9 +148,11 @@ function loadSavedEntities(lvlNum)
         assert(v.y ~= nil)
         assert(v.name ~= nil)
         --assert(entityFunctions[name], "Name:" .. name)
+        print("Loading entity: " .. name)
         local x = v.x
         local y = v.y
         entityFunctions[name](x,y,v)  -- Calls the constructor for the entity, at (x, y) and the saveData table from it's save function
+        assert(checkObjectWithNameExists(name))
       end
     end
    end
@@ -168,6 +170,7 @@ function nextLevel()
 
   local lvlNum = level.floorNum
   local dstNum = level.floorNum+1
+
 
   if dstNum <= numFloors then
     loadLevel(lvlNum,dstNum, true)
@@ -205,11 +208,13 @@ function loadLevel(lvlNum, dstNum, fromAbove)
   ecsWorld:add(player)
   camera = makeCamera(world, playerInitPos.x* screen.tileSize, playerInitPos.y* screen.tileSize)
   loadSavedEntities(dstNum)
+  assert(checkObjectWithNameExists("UpStairs"))
   lightingSystem.mustRefreshCanvas = true
   return level
 end
 
 function resetEntities()
+  print("Reset Entities")
   ecsWorld:clearEntities()
   ecsWorld:refresh()
   gameObjects = {}

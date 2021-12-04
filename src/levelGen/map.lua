@@ -74,7 +74,7 @@ function Map:placeEntities(floorItems, floorNum, start)
 
   local stairsDown = {
     name="DownStairs",
-    x = ( self.downstairs.x ) * screen.tileSize, 
+    x = ( self.downstairs.x ) * screen.tileSize,
     y = ( self.downstairs.y ) * screen.tileSize
   }
   table.insert(result, stairsDown)

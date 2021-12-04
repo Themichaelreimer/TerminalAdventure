@@ -52,6 +52,7 @@ function Sword:update(dt)
   local x = pBody:getX() - r * math.cos(self.angle)
   local y = pBody:getY() -  r * math.sin(self.angle)
   self.body:setPosition(x, y)
+
 end
 
 function Sword:draw()

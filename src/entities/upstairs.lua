@@ -1,5 +1,6 @@
 local UpStairs = class("UpStairs")
 
+UpStairs.deleted = false
 UpStairs.size = screen.tileSize
 UpStairs.ignorePhysics = true
 UpStairs.physicsable = false

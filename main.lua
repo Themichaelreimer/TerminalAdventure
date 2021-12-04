@@ -182,6 +182,8 @@ function love.draw()
     displayDeathScreen(dt, true)
   end
 
+  --assert(checkObjectWithNameExists("UpStairs"))
+
 end
 
 function drawUI()
@@ -371,4 +373,11 @@ function endContact(fixture1, fixture2, contact)
   if obj2.onContactEnd then
     obj2:onContactEnd(obj1)
   end
+end
+
+function checkObjectWithNameExists(name)
+  for i,go in ipairs(gameObjects) do
+    if go.name == name then return true end
+  end
+  return false
 end
