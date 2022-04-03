@@ -209,7 +209,7 @@ function drawUI()
   love.graphics.setColor(colours.green)
   love.graphics.print(getAsciiBar(player.HP, player.maxHP), 216, 2*lineHeight)
   love.graphics.setColor(colours.white)
-  love.graphics.print("Health: " .. round(player.magic) .. "/"..player.maxMagic, margin + halfWidth, 2*lineHeight)
+  love.graphics.print("Magic: " .. round(player.magic) .. "/"..player.maxMagic, margin + halfWidth, 2*lineHeight)
   love.graphics.setColor(colours.blue)
   love.graphics.print(getAsciiBar(player.magic, player.maxMagic), 216 + halfWidth, 2*lineHeight)
 
