@@ -24,6 +24,7 @@ deathTime = 0
 require("src.shaders")
 require("src.constants")
 require("src.colours")
+require("src.music")
 require("src.helpers")
 require("src.sfx")
 require("src.enemies")
@@ -116,7 +117,9 @@ end
 
 function love.update(dt)
 
+  print("Hi?")
   keyboardUpdate(dt)
+  musicUpdate(dt)
   menuClosedThisFrame = false
 
   if titleScreen then return end
@@ -143,7 +146,6 @@ function love.draw()
 
   if titleScreen then displayTitleScreen() return end
   local dt = love.timer.getDelta()
-
 
   if deathTime < 4 then
     love.graphics.translate(-camera:getX(), -camera:getY())
