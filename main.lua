@@ -117,7 +117,6 @@ end
 
 function love.update(dt)
 
-  print("Hi?")
   keyboardUpdate(dt)
   musicUpdate(dt)
   menuClosedThisFrame = false
