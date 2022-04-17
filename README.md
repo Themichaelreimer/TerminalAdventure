@@ -9,6 +9,14 @@ X, Z  - Use items
 
 # Devlog
 
+## Update 1 (No build yet)
+![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/11.gif)
+- Tiles/Graphical mode (Soon to be made togglable at runtime, featured in gif)
+- Smooth-lighting like shader
+- Music
+- Proper window resizing
+
+
 ## Weekend 13 (Demo v0.1 Updated)
 - Fixed several bugs of varying severity
 - Added Slime enemies
