@@ -91,8 +91,13 @@ function love.load()
   -- Screen Settings
   screen.tileSize = 24
   halfTile = screen.tileSize/2
-  screen.width = screen.tileSize * 40 -- viewport width
-  screen.height = screen.tileSize * 30 -- viewport height
+
+  -- Draw Scale
+  local px, py = getBaseScreenDim()
+  screen.width = px -- viewport width
+  screen.height = py -- viewport height
+  screen.sx = 1
+  screen.sy = 1
   screen.settings = {
     resizable=true,
   }
@@ -145,24 +150,40 @@ function love.draw()
 
   if titleScreen then displayTitleScreen() return end
   local dt = love.timer.getDelta()
+  local sx = screen.sx
+  local sy = screen.sy
+
 
   if deathTime < 4 then
-    love.graphics.translate(-camera:getX(), -camera:getY())
     -- Draw level canvas
     if levelCanvas then
       love.graphics.setBackgroundColor(colours.black)
       love.graphics.setColor(1,1,1)
+
+      -- Enter player coords
+      love.graphics.scale(sx, sy)
+      love.graphics.translate(-camera:getX() , -camera:getY())
+
       love.graphics.draw(levelCanvas)
+
+      -- Exit player coords
+      --love.graphics.translate(camera:getX() , camera:getY())
+      --love.graphics.scale(1/sx, 1/sy)
     end
+      --love.graphics.translate(-camera:getX() , -camera:getY())
+
+    -- TODO:
+    -- Map draws correctly, UI and actors do not
 
     -- Updates the ECS world. This happens here because
     -- ECS contains a drawing system that can only draw inside of love.draw
+
     if not blockingText and not menuOpen then
       ecsWorld:update(dt)
     end
 
     -- / CAMERA SPACE
-    love.graphics.translate(camera:getX(), camera:getY())
+    love.graphics.translate(camera:getX() , camera:getY())
 
     if player then drawUI() end
 
@@ -185,6 +206,10 @@ function love.draw()
 
   --assert(checkObjectWithNameExists("UpStairs"))
 
+end
+
+function getBaseScreenDim()
+  return screen.tileSize * 40, screen.tileSize * 30
 end
 
 function drawUI()
@@ -239,8 +264,9 @@ function getAsciiBar(val, max)
 end
 
 function love.resize(width, height)
-  screen.width = width
-  screen.height = height
+  local px, py = getBaseScreenDim() 
+  screen.sx = width / px
+  screen.sy = height / py
 end
 
 function displayBlockingText()

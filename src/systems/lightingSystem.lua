@@ -12,6 +12,8 @@ function lightingSystem:process(entity, dt)
   local firstFrameOnFloor = false
   love.graphics.setCanvas(levelCanvas)
   love.graphics.translate(camera:getX(), camera:getY())
+  love.graphics.scale(1/screen.sx, 1/screen.sy)
+  
 
   -- Check if the level has changed over the last frame
   if not self.previousLevel == level then
@@ -49,6 +51,7 @@ function lightingSystem:process(entity, dt)
      self:renderEntireCanvas()
   end
   love.graphics.setCanvas()
+  love.graphics.scale(screen.sx, screen.sy)
   love.graphics.translate(-camera:getX(), -camera:getY())
 end
 
