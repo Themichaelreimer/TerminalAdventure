@@ -28,7 +28,7 @@ function Snake:init(x, y, saveData)
   self.colour = colours[self.colourName]
 
   self.body = love.physics.newBody(world, x, y, "dynamic")
-  self.shape = love.physics.newRectangleShape(-5, 5, self.size, self.size)
+  self.shape = love.physics.newCircleShape(self.size)
   self.fixture = love.physics.newFixture(self.body, self.shape, 1)
   self.fixture:setUserData(self)
 
