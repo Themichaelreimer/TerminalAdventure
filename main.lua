@@ -38,8 +38,6 @@ require("controller")
 Player = require("src.entities.player")
 require("camera")
 require("titles")
---require("items")  -- This will be deletable soon
---require("weapons") -- This will be deletable soon
 
 colours = japanesque
 
@@ -70,7 +68,7 @@ CHARACTER_NAMES = {
 debugRender = false -- Whether or not to draw bounding boxes
 canDie = true  -- Whether or not the game ends
 debug = true
-useTiles = true
+useTiles = false
 useMouse = false
 
 gameState = {
@@ -165,18 +163,7 @@ function love.draw()
       love.graphics.translate(-camera:getX() , -camera:getY())
 
       love.graphics.draw(levelCanvas)
-
-      -- Exit player coords
-      --love.graphics.translate(camera:getX() , camera:getY())
-      --love.graphics.scale(1/sx, 1/sy)
     end
-      --love.graphics.translate(-camera:getX() , -camera:getY())
-
-    -- TODO:
-    -- Map draws correctly, UI and actors do not
-
-    -- Updates the ECS world. This happens here because
-    -- ECS contains a drawing system that can only draw inside of love.draw
 
     if not blockingText and not menuOpen then
       ecsWorld:update(dt)
@@ -203,8 +190,6 @@ function love.draw()
   if gameWon == true then
     displayDeathScreen(dt, true)
   end
-
-  --assert(checkObjectWithNameExists("UpStairs"))
 
 end
 
