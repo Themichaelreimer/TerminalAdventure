@@ -175,6 +175,11 @@ function Player:update(dt)
     nextLevel()
   end
 
+  if keyboard["/"] then
+    useTiles = not useTiles
+    lightingSystem.mustRefreshCanvas = true
+  end
+
   if keyboard['return'] and not menuClosedThisFrame then
     menuOpen = true
   end

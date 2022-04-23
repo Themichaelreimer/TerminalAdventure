@@ -10,8 +10,9 @@ function _getEmptyKeyboardState()
     q = false,
     w = false,
     m1 = false,
-    m2 = false
+    m2 = false,
   }
+  r["/"] = false
   r["return"] = false
   return r
 end
@@ -39,9 +40,9 @@ function keyboardUpdate(dt)
   updateKeyDown("left", nextPreviousState)
   updateKeyDown("right", nextPreviousState)
   updateKeyDown("return", nextPreviousState)
+  updateKeyDown("/", nextPreviousState)
   updateMouseDown("m1", nextPreviousState)
   updateMouseDown("m2", nextPreviousState)
-
 
   -- TODO: When in menu, we want direction keys to behave like keyDown.
   -- TODO: When in game, we want direction keys to fire every frame

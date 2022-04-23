@@ -5,6 +5,7 @@ lightingSystem.NUM_RAYS = 80
 lightingSystem.previousLevel = nil
 lightingSystem.updateTiles = {}
 lightingSystem.mustRefreshCanvas = false
+lightingSystem.usingShaderThisFrame = false
 
 -- The entities in this system represent light sources
 function lightingSystem:process(entity, dt)
@@ -19,7 +20,6 @@ function lightingSystem:process(entity, dt)
   if not self.previousLevel == level then
     self:resetCanvas()
     love.graphics.setCanvas(levelCanvas)
-    firstFrameOnFloor = true
   end
   self.previousLevel = level
 
@@ -30,16 +30,32 @@ function lightingSystem:process(entity, dt)
     end
     local x, y = player:getMapCoordinates()
 
-    self:updateCanvasLighting(x, y, entity.lightDistance, self.NUM_RAYS)
+    if useTiles then
+      -- Shader should be used atomically - wrt to a frame
+      self.usingShaderThisFrame = true
+      love.graphics.setShader(shaders.lighting)
+      if firstFrameOnFloor or self.mustRefreshCanvas then
+        self:resetMapCanvas()
+        self:renderEntireCanvas()
+        self.mustRefreshCanvas = false
+      end
+      self:updateCanvasLighting(x, y, entity.lightDistance, self.NUM_RAYS)
+      love.graphics.setShader()
+    else
+      if firstFrameOnFloor or self.mustRefreshCanvas then
+        self:resetMapCanvas()
+        self:renderEntireCanvas()
+        self.mustRefreshCanvas = false
+      end
+      self:updateCanvasLighting(x, y, entity.lightDistance, self.NUM_RAYS)
 
+    end
+    self.usingShaderThisFrame = false
   end
 
   -- DEBUG REGION
   if debugRender then
     love.graphics.setColor(0.5, 0.1, 0.1,0.5)
-    --bodies = world:getBodies()
-    --body = bodies[1]
-    --for k,v in pairs(body:getFixtures()) do
     for k,v in pairs(level.colliders) do
       love.graphics.polygon("fill", v:getBody():getWorldPoints(v:getShape():getPoints()))
     end
@@ -47,9 +63,6 @@ function lightingSystem:process(entity, dt)
   end
   -- / DEBUG REGION
 
-  if firstFrameOnFloor or self.mustRefreshCanvas then
-     self:renderEntireCanvas()
-  end
   love.graphics.setCanvas()
   love.graphics.scale(screen.sx, screen.sy)
   love.graphics.translate(-camera:getX(), -camera:getY())
@@ -110,29 +123,39 @@ function lightingSystem:redrawCell(x, y, alpha)
   alpha = alpha or level.map.lightMap[y][x]
 
   --Blank out cell. Looks more weird if we don't do this
-  love.graphics.setColor(colours.black)
+  --love.graphics.setColor(colours.black)
+  if self.usingShaderThisFrame then
+    shaders.lighting:send("tl", 0.0)
+    shaders.lighting:send("tr", 0.0)
+    shaders.lighting:send("bl", 0.0)
+    shaders.lighting:send("br", 0.0)
+  else
+    love.graphics.setColor(colours.black)
+  end
   love.graphics.rectangle("fill", x*tileSize, y*tileSize, tileSize, tileSize)
 
   --Draw
-  --love.graphics.setColor(colour[1], colour[2], colour[3], alpha)
-  love.graphics.setShader(shaders.lighting)
-  if useTiles then
-    --love.graphics.setColor(1, 1, 1, alpha)
+  if self.usingShaderThisFrame then
     local tl, tr, bl, br = self:getShaderLightingCoords(x, y)
     shaders.lighting:send("tl", tl)
     shaders.lighting:send("tr", tr)
     shaders.lighting:send("bl", bl)
     shaders.lighting:send("br", br)
 
-    love.graphics.draw(level.map.map[y][x].img, x*screen.tileSize, y*screen.tileSize )
+    local pw = level.map.map[y][x].img:getWidth()
+    local ph = level.map.map[y][x].img:getHeight()
+
+    love.graphics.draw(level.map.map[y][x].img, (x-0.11)*screen.tileSize, (y+0.11)*screen.tileSize, 0, screen.tileSize/pw, screen.tileSize/ph)
+
   else
     love.graphics.setColor(colour[1], colour[2], colour[3], alpha)
     love.graphics.print(level.map.map[y][x].char, x*screen.tileSize, y*screen.tileSize )
   end
-  love.graphics.setShader()
 end
 
 function lightingSystem:getShaderLightingCoords(x, y)
+  --if true then return 1,1,1,1 end
+
   if not level:tileInLevel(x, y) or level.map.lightMap[y][x] == 0 then return 0,0,0,0 end
   local l,r,b,t
   if level:tileInLevel(x-1,y) then l = level.map.lightMap[y][x-1] else l = 0 end
@@ -193,7 +216,15 @@ function lightingSystem:resetCanvas()
 end
 
 function lightingSystem:resetMapCanvas()
-  love.graphics.setColor(colours.black)
+  if self.usingShaderThisFrame then
+    shaders.lighting:send("tl", 0.0)
+    shaders.lighting:send("tr", 0.0)
+    shaders.lighting:send("bl", 0.0)
+    shaders.lighting:send("br", 0.0)
+  else
+    love.graphics.setColor(colours.black)
+  end
+  
   if level then
     love.graphics.rectangle("fill", 0, 0, level.pixelWidth, level.pixelHeight)
   else

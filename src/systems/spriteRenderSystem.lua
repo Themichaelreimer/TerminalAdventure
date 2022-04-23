@@ -3,7 +3,7 @@ local spriteRenderSystem = tiny.processingSystem(class "spriteRenderSystem")
 spriteRenderSystem.filter = tiny.filter("sprite&body&!draw")
 
 function spriteRenderSystem:process(e, dt)
-	if not e.deleted then
+	if not e.deleted and useTiles then
 		local x = e.body:getX()
 		local y = e.body:getY()
 		local size = e.size or screen.tileSize

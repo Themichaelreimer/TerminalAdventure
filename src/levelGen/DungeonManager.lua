@@ -1,0 +1,3 @@
+-- The current plan is to outsource this to pythonland
+-- The general idea is this module would manage much more complicated level generation with
+-- more interesting constraints, allowing for a game's solution to include backtracking

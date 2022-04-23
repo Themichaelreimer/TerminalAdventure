@@ -38,8 +38,8 @@ function menuDraw()
   for i, v in ipairs(inventory) do
     if i == menuIndex then love.graphics.setColor(colours.green) else love.graphics.setColor(colours.white) end
     local str = ""
-      if v == activeInventory.x then str = "[x]" end
-      if v == activeInventory.z then str = "[z]" end
+    if v == activeInventory.x then str = "[x]" end
+    if v == activeInventory.z then str = "[z]" end
 
     love.graphics.print(str..v.name, margin, margin + i * lineHeight)
   end

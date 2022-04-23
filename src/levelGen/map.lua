@@ -67,8 +67,8 @@ function Map:placeEntities(floorItems, floorNum, start)
   -- Place stairs as entities
   local stairsUp = {
     name="UpStairs",
-    x = ( self.upstairs.x ) * screen.tileSize,
-    y = ( self.upstairs.y ) * screen.tileSize
+    x = ( self.upstairs.x + 0.5) * screen.tileSize,
+    y = ( self.upstairs.y + 0.5) * screen.tileSize
   }
   table.insert(result, stairsUp)
 
@@ -120,6 +120,7 @@ function Map:getSaveData()
 end
 
 function Map:placeStairs(easy)
+  -- Easy forces the next level's stairs to be accessible without extra items
 
   local up
   local down

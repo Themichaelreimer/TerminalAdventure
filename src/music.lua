@@ -13,7 +13,7 @@ local music = {
     },
 }
 
-local MAX_VOL = 0.5
+local MAX_VOL = 0.1
 local MIDGAME_LEVEL = 5
 local LATEGAME_LEVEL = 8
 local MUSIC_VELOCITY = 0.2

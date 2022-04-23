@@ -30,6 +30,7 @@ function UpStairs:init(x, y)
 	self.permX = x
 	self.permY = y
 	self.body:setLinearDamping(self.ld)
+	self.colour = colours.lightGray
 end
 
 function UpStairs:getSaveData()
