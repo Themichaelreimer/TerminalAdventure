@@ -28,7 +28,7 @@ end
 
 function Adapter:hold(dt)
   self.holdTimer = self.holdTimer + dt
-  if self.holdFcn and self.persistentObject then self.holdFcn(persistentObject, dt) end
+  if self.holdFcn and self.persistentObject then self.holdFcn(self.persistentObject, dt) end
 end
 
 function Adapter:release(...)
