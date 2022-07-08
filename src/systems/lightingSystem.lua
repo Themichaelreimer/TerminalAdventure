@@ -137,10 +137,10 @@ function lightingSystem:redrawCell(x, y, alpha)
   --Draw
   if self.usingShaderThisFrame then
     local tl, tr, bl, br = self:getShaderLightingCoords(x, y)
-    shaders.lighting:send("tl", tl)
-    shaders.lighting:send("tr", tr)
-    shaders.lighting:send("bl", bl)
-    shaders.lighting:send("br", br)
+    shaders.lighting:send("tl", alpha)
+    shaders.lighting:send("tr", alpha)
+    shaders.lighting:send("bl", alpha)
+    shaders.lighting:send("br", alpha)
 
     local pw = level.map.map[y][x].img:getWidth()
     local ph = level.map.map[y][x].img:getHeight()
@@ -226,7 +226,7 @@ function lightingSystem:resetMapCanvas()
   end
   
   if level then
-    love.graphics.rectangle("fill", 0, 0, level.pixelWidth, level.pixelHeight)
+    love.graphics.rectangle("fill", 0, 0, level.pixelWidth + screen.tileSize, level.pixelHeight + screen.tileSize)
   else
     love.graphics.rectangle("fill", 0, 0, screen.width, screen.height)
   end

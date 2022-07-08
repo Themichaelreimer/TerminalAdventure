@@ -20,7 +20,7 @@ function spriteRenderSystem:process(e, dt)
 		if e.alpha then c4 = c4 * e.alpha end
 		love.graphics.setColor(c1, c2, c3, c4)
 
-		love.graphics.draw(e.sprite, x - size, y, 0, sx, sy)
+		love.graphics.draw(e.sprite, x - size/2, y - size/2, 0, sx, sy)
 	end
 end
 

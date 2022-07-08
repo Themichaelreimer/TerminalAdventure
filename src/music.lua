@@ -50,12 +50,6 @@ end
 
 function musicUpdate(dt)
 
-    for key,musicItem in pairs(music) do
-        print("earlyVol" .. music.early.volume)
-        print("midVol" .. music.mid.volume)
-        print("lateVol" .. music.late.volume)
-    end
-
     --if not level then return end
     local curLevel = level:getFloorNum()
 

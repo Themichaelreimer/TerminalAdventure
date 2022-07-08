@@ -71,13 +71,16 @@ function Map:placeEntities(floorItems, floorNum, start)
     y = ( self.upstairs.y + 0.5) * screen.tileSize
   }
   table.insert(result, stairsUp)
+  self.map[self.upstairs.y][self.upstairs.x] = tiles.upstairs
 
   local stairsDown = {
     name="DownStairs",
-    x = ( self.downstairs.x ) * screen.tileSize,
-    y = ( self.downstairs.y ) * screen.tileSize
+    x = ( self.downstairs.x + 0.5) * screen.tileSize,
+    y = ( self.downstairs.y + 0.5) * screen.tileSize
   }
   table.insert(result, stairsDown)
+  self.map[self.downstairs.y][self.downstairs.x] = tiles.downstairs
+
 
 
   -- Select and place enemies

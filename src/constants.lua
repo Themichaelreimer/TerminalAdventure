@@ -20,8 +20,8 @@ tiles={
   wall = {char='#', img=imageTiles.wall, solid=true, colour='lightGray', aiAvoid=true},
   water = {char='~', img=imageTiles.water, solid=false, colour='blue', aiAvoid=true},
   lava = {char='~', img=imageTiles.lava, solid=false, colour='red', aiAvoid=true},
-  upstairs = {char='<', solid=false, img=imageTiles.up, colour='lightGray', aiAvoid=false},
-  downstairs = {char='>', solid=false, img=imageTiles.down, colour='lightGray', aiAvoid=false},
+  upstairs = {char='<', solid=false, img=imageTiles.floor, colour='lightGray', aiAvoid=false},
+  downstairs = {char='>', solid=false, img=imageTiles.floor, colour='lightGray', aiAvoid=false},
 }
 
 sprites = {

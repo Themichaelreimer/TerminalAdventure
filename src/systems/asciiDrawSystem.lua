@@ -5,6 +5,8 @@ local asciiDrawSystem = tiny.processingSystem(class "asciiDrawSystem")
 asciiDrawSystem.filter = tiny.filter("body&colour&char&!draw")
 
 function asciiDrawSystem:process(e, dt)
+  if e.sprite and useTiles then return nil end
+
   if not e.deleted then
     local x = e.body:getX()
     local y = e.body:getY()

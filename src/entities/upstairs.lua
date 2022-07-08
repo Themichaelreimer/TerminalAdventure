@@ -42,24 +42,11 @@ function UpStairs:getSaveData()
 end
 
 function UpStairs:onContactStart(otherEntity)
-	if otherEntity == player then
-		if self.isUp then
-			gameState.canGoUp = true
-		else
-			gameState.canGoDown = true
-		end
-	end
+
 end
 
 function UpStairs:onContactEnd(otherEntity)
-	if otherEntity == player then
-		if self.isUp then
-			gameState.canGoUp = false
-		else
-			gameState.canGoDown = false
-		end
 
-	end
 end
 
 function UpStairs:update(dt)
