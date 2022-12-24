@@ -9,8 +9,12 @@ To run the latest version, download Love2D from https://love2d.org/ and run it w
 
 # Controls
 Arrow keys - Movement and selecting menu options
+
 Enter - Open/Close item menu
+
 X, Z  - Use items
+
+/ - Toggle render mode between ASCII and tiles
 
 # Devlog
 
