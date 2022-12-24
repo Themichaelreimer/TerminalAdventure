@@ -2,6 +2,10 @@
 You've lost your wallet, and have to journey deep into "The Cave of Nothing" to find it, in this randomly generated
 adventure game!
 
+# How to run
+To run the latest version, download Love2D from https://love2d.org/ and run it with this folder.
+(Linux/Mac: `love TerminalAdventure/`; Mac/Windows: Drag folder onto Love2D executable) 
+
 # Controls
 Arrow keys - Movement and selecting menu options
 Enter - Open/Close item menu
