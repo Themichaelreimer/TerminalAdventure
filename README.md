@@ -20,7 +20,7 @@ X, Z  - Use items
 
 ## Update 1 (No build yet)
 ![](https://github.com/Themichaelreimer/TerminalAdventure/blob/main/gif/11.gif)
-- Tiles/Graphical mode (Soon to be made togglable at runtime, featured in gif)
+- Tiles/Graphical mode
 - Smooth-lighting like shader
 - Music
 - Proper window resizing
